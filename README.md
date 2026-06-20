@@ -5,6 +5,7 @@ Platform-neutral procedural shader intelligence for LLM coding agents.
 This repository packages the same shader-craft knowledge for multiple assistants:
 
 - Codex skill: `skills/codex/shader-art-coding`
+- Hermes Agent skill: copy `skills/codex/shader-art-coding` to `~/.hermes/skills/shader-art-coding`, or add the parent skills directory as a Hermes external skill directory.
 - Universal prompt: `prompts/universal-system-prompt.md`
 - Claude project instructions: `CLAUDE.md` and `.claude/CLAUDE.md`
 - Cursor rules: `.cursor/rules/shader-art-coding.mdc`
@@ -41,6 +42,27 @@ Example:
 ```text
 Use the shader-art-coding instructions in this repo. Create a Shadertoy GLSL shader using formal SDF and heightfield construction, and explain the debug modes.
 ```
+
+## Hermes Agent
+
+Hermes uses `SKILL.md` directories with progressive reference loading, so the bundled skill can be used directly.
+
+Install by copying the skill directory:
+
+```bash
+mkdir -p ~/.hermes/skills
+cp -R skills/codex/shader-art-coding ~/.hermes/skills/shader-art-coding
+```
+
+Or point Hermes at a shared skill directory in `~/.hermes/config.yaml`:
+
+```yaml
+skills:
+  external_dirs:
+    - /path/to/shader-skills/skills/codex
+```
+
+Then invoke it as `/shader-art-coding` or ask naturally for shader art, GLSL, Shadertoy, SDF, heightfield, raymarching, noise, or material-field work.
 
 ## Repository Layout
 

@@ -1,6 +1,11 @@
 ---
 name: shader-art-coding
-description: Expert procedural shader art and GLSL/Shadertoy coding guidance. Use when Codex needs to write, improve, debug, explain, port, critique, or art-direct fragment shaders, raymarching shaders, signed-distance-field scenes, procedural heightfields, mathematical organic/object drawing, noise/fbm/domain-warp effects, lighting/material shaders, or compact real-time visual code.
+description: Expert procedural shader art and GLSL/Shadertoy coding guidance. Use when an agent needs to write, improve, debug, explain, port, critique, or art-direct fragment shaders, raymarching shaders, signed-distance-field scenes, procedural heightfields, mathematical organic/object drawing, noise/fbm/domain-warp effects, lighting/material shaders, or compact real-time visual code.
+license: MIT
+metadata:
+  hermes:
+    tags: [shader, glsl, shadertoy, procedural-art, raymarching, sdf]
+    category: development
 ---
 
 # Shader Art Coding
@@ -32,7 +37,7 @@ Read only what the current task needs:
 - `references/composition-and-debugging.md`: visual hierarchy, debug modes, readable iterations, and shader critique.
 - `references/formula-cookbook.md`: visually checked formula stacks for radial modular repetition, heightfield synthesis, implicit organic composition, volumetric density, atmospheric fields, and material breakup.
 - `references/formula-code-couples-sdf.md`: equation-to-GLSL pairs for implicit primitives, booleans, smoothing, local transforms, contour debugging, radial-cell lattices, bilateral feature fields, anisotropic strand fields, and shell intersections.
-- `references/formula-code-couples-heightfield.md`: equation-to-GLSL pairs for polynomial height patches, octave synthesis, finite-difference normals, horizon visibility, density fields, atmospheric coverage, accumulation masks, and distance LOD.
+- `references/formula-code-couples-terrain.md`: equation-to-GLSL pairs for polynomial height patches, octave synthesis, finite-difference normals, horizon visibility, density fields, atmospheric coverage, accumulation masks, and distance LOD.
 - `references/formula-code-couples-materials.md`: equation-to-GLSL pairs for palettes, scalar material masks, lighting terms, sparse stochastic spots, ID-based albedo variation, composition overlays, antialiasing, tonemapping, and temporal polish.
 - `references/glsl-snippets.md`: original Shadertoy-compatible helper snippets and a compact complete template.
 
