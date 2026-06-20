@@ -1,0 +1,24 @@
+---
+description: Procedural shader art coding rules for GLSL, Shadertoy, SDF, heightfield, material, and atmospheric shaders
+globs:
+  - "**/*.frag"
+  - "**/*.glsl"
+  - "shaders/**"
+alwaysApply: false
+---
+
+Read `prompts/universal-system-prompt.md` and relevant references in `skills/codex/shader-art-coding/references/`.
+
+Use Shadertoy-compatible GLSL by default. Keep `mainImage(out vec4 fragColor, in vec2 fragCoord)`.
+
+Use `iDebugMode`:
+
+- `0`: final render
+- `1`: scalar field / SDF contours
+- `2`: normals
+- `3`: material IDs
+- `4`: step count / depth
+- `5`: masks / density
+- `6`: lighting terms
+
+Use formal mathematical helper names for reusable code. Run `npm run check` after substantial shader changes.

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Shader Art Coding"
+  short_description: "Procedural shader math and GLSL craft"
+  default_prompt: "Use $shader-art-coding to design and implement a polished Shadertoy GLSL shader."
