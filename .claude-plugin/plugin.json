@@ -2,10 +2,27 @@
   "name": "shader-skills",
   "displayName": "Shader Skills",
   "version": "2.0.0",
-  "description": "Procedural GLSL / Shadertoy shader skill: a verified building-block library (SDFs, noise, raymarching, shading, color, volumes) with a bundler, checker, templates and references.",
-  "author": { "name": "gokayfem", "url": "https://github.com/gokayfem" },
+  "description": "GLSL and Shadertoy shader skill for AI coding agents. Includes 186 functions, SDF raymarching, procedural terrain, water, clouds, noise, a bundler, a checker and 11 examples.",
+  "author": {
+    "name": "gokayfem",
+    "url": "https://github.com/gokayfem"
+  },
   "homepage": "https://github.com/gokayfem/shader-skills",
   "repository": "https://github.com/gokayfem/shader-skills",
   "license": "MIT",
-  "keywords": ["glsl", "shadertoy", "webgl", "shader", "sdf", "raymarching", "procedural", "noise", "generative-art"]
+  "keywords": [
+    "agent-skills",
+    "claude-code",
+    "glsl",
+    "shadertoy",
+    "webgl2",
+    "shaders",
+    "sdf",
+    "raymarching",
+    "procedural-generation",
+    "generative-art",
+    "terrain",
+    "water",
+    "noise"
+  ]
 }

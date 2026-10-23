@@ -1,10 +1,29 @@
-# Shader Skills
+# Shader Skills — GLSL & Shadertoy for AI coding agents
 
-A skill that teaches coding agents to write procedural GLSL shaders that compile on the first try and look
-intentional. It works with Claude Code, Codex, Cursor, Copilot, Gemini and others. It pairs a shader-craft
-workflow with a **verified GLSL building-block library**: 186 functions across 20 modules, each one compiled in
-WebGL2 and numerically tested on the GPU. A bundler inlines exactly the functions a shader uses, so the result
-pastes straight into Shadertoy.
+[![Checks](https://github.com/gokayfem/shader-skills/actions/workflows/checks.yml/badge.svg)](https://github.com/gokayfem/shader-skills/actions/workflows/checks.yml)
+[![Release](https://img.shields.io/github/v/release/gokayfem/shader-skills)](https://github.com/gokayfem/shader-skills/releases/latest)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+
+**Create, debug and refine procedural GLSL shaders with Claude Code, Codex, Cursor, GitHub Copilot and Gemini CLI.**
+Shader Skills combines an agent skill with **186 GLSL functions in 20 modules**, a dependency bundler, a checker
+and **11 ready-to-run Shadertoy examples**. Build SDF raymarched scenes, procedural textures, terrain, water,
+clouds and generative art. The library is compiled in WebGL2 and checked with GPU property tests.
+
+```bash
+npx skills add gokayfem/shader-skills
+```
+
+Choose `shader-art-coding` and your coding agent in the installer. Then ask:
+
+> Create a Shadertoy shader of an alpine valley with snow, a winding river and atmospheric depth.
+> Use the shader-art-coding skill, bundle the result into one file, and check it.
+
+[Install options](#install) · [Shader gallery](#shader-gallery) · [Usage](#use) ·
+[GLSL library](skills/shader-art-coding/references/library-index.md) ·
+[Video-to-shader prompt](prompts/video-to-shader-prompt.md) ·
+[Releases](https://github.com/gokayfem/shader-skills/releases) · [Contributing](CONTRIBUTING.md)
+
+## Shader gallery
 
 | | | |
 |---|---|---|
@@ -17,8 +36,8 @@ Each image links to its paste-ready shader. The sources are in [`skills/shader-a
 
 ## Why
 
-Agents write shaders blind: they cannot see the output, they misremember formulas, and WebGL rejects code that
-desktop GLSL accepts. Common results are struct ternaries, sine hashes that differ per GPU, SDFs with wrong signs,
+Coding agents can misremember formulas or skip visual checks, and WebGL rejects code that desktop GLSL accepts.
+Common results are struct ternaries, sine hashes that differ per GPU, SDFs with wrong signs,
 double gamma, and fog that ignores the sky. This skill closes those gaps:
 
 - **Tested building blocks instead of recalled ones.** Every SDF is checked on the GPU:
@@ -48,22 +67,31 @@ claude plugin marketplace add gokayfem/shader-skills
 claude plugin install shader-skills@shader-skills
 ```
 
-Or copy the skill: `cp -R skills/shader-art-coding ~/.claude/skills/`.
+For a manual Claude Code installation, copy `skills/shader-art-coding` into `~/.claude/skills/` after cloning the repository (see below).
 
-**Codex, Cursor, Gemini CLI, Copilot and about 70 other agents** (via [skills](https://github.com/vercel-labs/skills)):
+**Codex, Cursor, Gemini CLI, GitHub Copilot and other supported agents** (via [skills](https://github.com/vercel-labs/skills)):
 
 ```bash
 npx skills add gokayfem/shader-skills
 ```
 
-Or install by hand:
+The installer requires Node.js 22.20 or later and installs into the current project by default; add `-g` for a
+global installation. See the [skills CLI documentation](https://github.com/vercel-labs/skills) for supported agents.
+
+**Manual installation:** clone the repository first, then copy the skill into your agent's skill directory.
+
+```bash
+git clone https://github.com/gokayfem/shader-skills.git
+cd shader-skills
+```
+
 - **Codex:** copy `skills/shader-art-coding` to `~/.agents/skills/`.
 - **Cursor:** copy it to `~/.cursor/skills/`, plus the rule in `adapters/cursor/`.
 - **Copilot:** `gh skill install gokayfem/shader-skills shader-art-coding`, plus `adapters/copilot/`.
 - **Gemini CLI:** `gemini extensions install https://github.com/gokayfem/shader-skills`.
 - **Hermes:** copy it to `~/.hermes/skills/`.
 
-**claude.ai:** zip `skills/shader-art-coding` and upload it under Settings > Capabilities > Skills.
+**claude.ai:** download `shader-art-coding-v2.0.0.zip` from the [v2.0.0 release](https://github.com/gokayfem/shader-skills/releases/tag/v2.0.0) and upload it under Settings > Capabilities > Skills. The ZIP also works as a portable skill folder for manual installation.
 
 **ChatGPT, Gemini Gems and other chat tools:** see [`adapters/`](adapters/).
 
@@ -71,12 +99,12 @@ Or install by hand:
 
 Ask naturally: *"Make a Shadertoy shader of a glass jellyfish drifting through god rays"*, or *"why does my
 raymarcher have holes?"* The skill routes the request, then the agent finds blocks, writes the shader, bundles it
-and checks it:
+and checks it. From a cloned repository, try the included still-life template:
 
 ```bash
-python3 scripts/glsl_tools.py search petal leaf
-python3 scripts/glsl_tools.py bundle jellyfish.glsl -o jellyfish.out.glsl
-python3 scripts/glsl_tools.py check jellyfish.out.glsl
+python3 skills/shader-art-coding/scripts/glsl_tools.py search petal leaf
+python3 skills/shader-art-coding/scripts/glsl_tools.py bundle skills/shader-art-coding/templates/raymarch-sdf.glsl -o /tmp/shader-skills-example.glsl
+python3 skills/shader-art-coding/scripts/glsl_tools.py check /tmp/shader-skills-example.glsl
 ```
 
 What the commands do:
@@ -84,6 +112,12 @@ What the commands do:
 - `bundle` resolves dependencies transitively and emits them in declaration order.
 - `check` lints the file and compiles it when `glslangValidator` is installed (`brew install glslang` or
   `apt install glslang-tools`).
+
+The command-line tools need Python 3 and use only its standard library. Generated shaders target
+**Shadertoy / WebGL2 / GLSL ES 3.00**; HLSL and Unity ShaderLab are outside this skill's scope.
+
+For an existing video reference, start with the [video-to-shader prompt](prompts/video-to-shader-prompt.md),
+which guides scene analysis, procedural reconstruction and visual comparison against the clip.
 
 ## What's in the library
 
@@ -202,7 +236,10 @@ adapters/                   prompts for tools without skill support
 .claude-plugin/             Claude Code plugin + marketplace manifests
 ```
 
-Contributing: see [AGENTS.md](AGENTS.md) for the rules every library change must pass.
+See [CONTRIBUTING.md](CONTRIBUTING.md) to report a bug, suggest a shader technique or contribute a fix.
+[AGENTS.md](AGENTS.md) defines the checks every library change must pass.
+Release history and downloads are in the [changelog](CHANGELOG.md) and
+[GitHub Releases](https://github.com/gokayfem/shader-skills/releases).
 
 ## Credits and license
 

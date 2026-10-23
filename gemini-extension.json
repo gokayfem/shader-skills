@@ -1,5 +1,5 @@
 {
   "name": "shader-skills",
   "version": "2.0.0",
-  "description": "Procedural GLSL / Shadertoy shader skill with a verified building-block library, bundler and checker."
+  "description": "GLSL and Shadertoy shader skill for Gemini CLI: a tested procedural graphics library, SDF raymarching, terrain, water, clouds, bundler, checker and examples."
 }

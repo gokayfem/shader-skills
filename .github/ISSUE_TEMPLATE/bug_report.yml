@@ -1,0 +1,33 @@
+name: Bug report
+description: Report a shader, installation, bundler or documentation problem.
+title: "[Bug]: "
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What went wrong?
+      description: Describe the expected result and what happened instead.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: How can we reproduce it?
+      description: Include a minimal prompt, shader, command or sequence of steps. Remove private data and credentials.
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Version or commit
+      placeholder: "v2.0.0, or the commit from git rev-parse HEAD"
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: Coding agent and version, install method, OS, and browser/GPU if relevant.
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Screenshots or logs
+      description: Add compiler output, checker results, or images showing the problem.

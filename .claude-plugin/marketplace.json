@@ -1,14 +1,25 @@
 {
   "name": "shader-skills",
-  "description": "Procedural shader art skills for coding agents",
-  "owner": { "name": "gokayfem", "url": "https://github.com/gokayfem" },
+  "description": "GLSL and Shadertoy shader skills for AI coding agents",
+  "owner": {
+    "name": "gokayfem",
+    "url": "https://github.com/gokayfem"
+  },
   "plugins": [
     {
       "name": "shader-skills",
       "source": "./",
-      "description": "Procedural GLSL / Shadertoy shaders with a verified building-block library",
+      "description": "Create and debug procedural GLSL shaders with a tested library, SDF raymarching, terrain, water, clouds and ready-to-run Shadertoy examples.",
       "category": "development",
-      "tags": ["glsl", "shadertoy", "webgl", "sdf", "raymarching"]
+      "tags": [
+        "agent-skills",
+        "glsl",
+        "shadertoy",
+        "webgl2",
+        "raymarching",
+        "procedural-generation",
+        "generative-art"
+      ]
     }
   ]
 }

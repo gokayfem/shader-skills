@@ -1,0 +1,21 @@
+name: Technique or feature request
+description: Suggest a GLSL technique, shader example, integration or documentation improvement.
+title: "[Feature]: "
+body:
+  - type: textarea
+    id: use_case
+    attributes:
+      label: What would you like to create or improve?
+      description: Describe the visual result or workflow and who it would help.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed approach
+      description: Suggest a technique or explain what the current library is missing.
+  - type: textarea
+    id: references
+    attributes:
+      label: References or examples
+      description: Link relevant papers, author-maintained implementations or visual references, with attribution.

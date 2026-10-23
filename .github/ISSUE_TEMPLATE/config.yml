@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Installation and usage
+    url: https://github.com/gokayfem/shader-skills#install
+    about: Find setup instructions for supported coding agents.
+  - name: GLSL function reference
+    url: https://github.com/gokayfem/shader-skills/blob/main/skills/shader-art-coding/references/library-index.md
+    about: Browse functions, signatures and intended uses before requesting a new technique.

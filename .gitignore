@@ -1,4 +1,5 @@
 .env
+.venv/
 .research/
 tmp/
 *.mp4
