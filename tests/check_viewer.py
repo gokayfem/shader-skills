@@ -24,6 +24,11 @@ def main():
         page.goto((ROOT / "gallery/studies.html").as_uri())
         page.click("#play")
         page.select_option("#size", "480")
+        page.select_option("#size", "auto")
+        for interval, expected in [(50, 480), (32, 480), (16, 640)]:
+            page.evaluate("ms=>{for(let i=0;i<45;i++)trackCadence(ms);show()}", interval)
+            assert page.locator("#view").evaluate("c=>c.width") == expected
+        page.select_option("#size", "480")
         scenes = page.locator("#scene option").evaluate_all("options => options.map(o=>o.value)")
         checks = {}
         for name in scenes:
@@ -54,6 +59,30 @@ def main():
                 slider.fill("1")
                 assert page.locator("#view").evaluate("c=>c.toDataURL()") == before
             checks[name] = round(mean, 2)
+        page.select_option("#scene", "room-radiosity")
+        radiance = page.evaluate("""() => {
+            function read() {
+                const t=targets[0], rgb=new Float32Array(t.w*t.h*4);
+                gl.bindFramebuffer(gl.FRAMEBUFFER,t.fb);
+                gl.readPixels(0,0,t.w,t.h,gl.RGBA,gl.FLOAT,rgb);
+                if(gl.getError()!==gl.NO_ERROR) throw Error('Radiosity readback failed');
+                return rgb.filter((_,i)=>i%4!==3);
+            }
+            draw(buffer,targets[1],targets[0].tex,0);
+            targets.reverse();
+            const direct=read();
+            solveRoom();
+            const solved=read();
+            solveRoom();
+            const repeated=read();
+            return {finite:solved.every(Number.isFinite), brighter:solved.some((v,i)=>v>direct[i]+0.01),
+                    repeat:solved.every((v,i)=>v===repeated[i])};
+        }""")
+        assert all(radiance.values()), radiance
+        lamp = page.get_by_label("Lamp position", exact=False)
+        before = page.locator("#view").evaluate("c=>c.toDataURL()")
+        lamp.fill("-0.7")
+        assert page.locator("#view").evaluate("c=>c.toDataURL()") != before
         page.select_option("#scene", "lensed-disk")
         comparison = page.evaluate("""count => {
             const direct=link(scene.image), bytes=canvas.width*canvas.height*4;

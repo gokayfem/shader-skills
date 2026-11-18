@@ -1,0 +1,20 @@
+# A weeping willow by the water: a short, thick trunk that divides into a few great limbs, which
+# rise, arch over, and let down curtains of slender golden withes almost to the grass.
+height 6.2
+trunk radius=0.46 flare=0.65 gnarl=0.11
+# The limbs are longest from the middle of the trunk's crown, so the tree is a broad dome.
+crown profile 0.85 1 0.95 0.8 0.6
+bark willow_bark
+# The great limbs: the lower spread wide, the upper climb, and all arch over under their weight.
+level per_metre=2 span=0.36..0.98 angle=68..26 length=1.12 radius=0.6 upturn=0.3 droop=0.13 gnarl=0.24
+# Branches off the limbs, spreading and bowing.
+level per_metre=1.6 span=0.22..0.98 angle=58..40 length=0.5 taper=0.3 radius=0.5 upturn=0.08 droop=0.3 gnarl=0.3
+# The boughs the withes hang from.
+level per_metre=2.3 span=0.15..1 angle=50 length=0.6 taper=0.3 radius=0.5 droop=0.5 gnarl=0.3
+# The withes: they leave their bough, turn over within a hand's length, and hang straight down,
+# each as long as takes it nearly to the ground, and none longer than four or five metres.
+level per_metre=4.5 span=0.08..1 angle=62 length=2.9 taper=0.15 radius=0.42 droop=3 gnarl=0.05 reach=0.8
+# Long narrow leaves, hanging along the withe.
+leaves willow_leaves per_metre=26 length=0.09..0.14 width=0.17 variants=0.3,0.35,0.27,0.08 normals=0.35 lean=1.7
+# Young willow shoots are olive-gold, not grey.
+twigs below=0.012 color=0.2,0.175,0.055

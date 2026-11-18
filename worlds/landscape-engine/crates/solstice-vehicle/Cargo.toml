@@ -1,0 +1,9 @@
+[package]
+name = "solstice-vehicle"
+description = "Vehicle dynamics for gameplay: tyres, suspension, powertrain and aerodynamics of a car, stepped headless."
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+glam.workspace = true

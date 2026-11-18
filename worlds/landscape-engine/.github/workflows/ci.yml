@@ -1,0 +1,74 @@
+name: CI
+
+# Changes to documentation alone build nothing, so they skip the build and tests.
+on:
+  push:
+    branches: [main]
+    paths-ignore:
+      - "**.md"
+      - "docs/**"
+      - "LICENSE"
+  pull_request:
+    paths-ignore:
+      - "**.md"
+      - "docs/**"
+      - "LICENSE"
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      # Full history, to compare against where the change started.
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: dtolnay/rust-toolchain@1.95.0
+        with:
+          components: clippy, rustfmt
+          targets: wasm32-unknown-unknown
+      - uses: Swatinem/rust-cache@v2
+      # Which crates a pull request affects (scripts/affected.py): those whose files changed
+      # and everything depending on them. A change outside the crates (Cargo.lock, CI, build
+      # scripts, scenes) affects everything. A pull request is checked out as its merge into the
+      # base, whose first parent is the base, so that is what it is compared against; anything
+      # that is not such a merge checks everything. A push to main always checks everything:
+      # main is where every change meets, so the whole workspace is proved there, features
+      # unified as they are in every build, whatever the selection missed.
+      - name: Affected crates
+        id: affected
+        run: |
+          if [[ "${{ github.event_name }}" == pull_request ]] && git rev-parse -q --verify HEAD^2 >/dev/null; then
+            python3 scripts/affected.py --base "$(git rev-parse HEAD^1)" --head HEAD --github-output
+          else
+            python3 scripts/affected.py --all --github-output
+          fi
+      - name: Format
+        run: cargo fmt --all -- --check
+      - name: Test the crate selection
+        run: python3 scripts/test_affected.py
+      - name: Lint
+        if: steps.affected.outputs.any == 'true'
+        run: cargo clippy ${{ steps.affected.outputs.all == 'true' && '--workspace' || '' }} $(for p in ${{ steps.affected.outputs.packages }}; do printf -- '-p %s ' "$p"; done) --all-targets --release -- -D warnings
+      # These runners have no GPU, so tests/gpu.rs skips itself here. Shader validation
+      # and all geometry tests still run. Run scripts/check-changed.sh locally to cover the GPU
+      # tests too.
+      - name: Test
+        if: steps.affected.outputs.any == 'true'
+        run: cargo test ${{ steps.affected.outputs.all == 'true' && '--workspace' || '' }} $(for p in ${{ steps.affected.outputs.packages }}; do printf -- '-p %s ' "$p"; done) --release
+      - name: Build for the browser
+        if: steps.affected.outputs.web == 'true'
+        run: |
+          cargo build --release --target wasm32-unknown-unknown -p viewer --lib --no-default-features
+          cargo clippy --release --target wasm32-unknown-unknown -p viewer --lib --no-default-features -- -D warnings
+          cargo build --release --target wasm32-unknown-unknown -p viewer --lib
+          cargo clippy --release --target wasm32-unknown-unknown -p viewer --lib -- -D warnings
+          cargo build --release --target wasm32-unknown-unknown -p viewer --lib --no-default-features --features editor
+          cargo clippy --release --target wasm32-unknown-unknown -p viewer --lib --no-default-features --features editor -- -D warnings
+      - name: Build the editor's bake for the browser
+        if: steps.affected.outputs.all == 'true' || contains(steps.affected.outputs.packages, 'bake-web')
+        run: |
+          cargo build --release --target wasm32-unknown-unknown -p bake-web
+          cargo clippy --release --target wasm32-unknown-unknown -p bake-web -- -D warnings
+      - name: Test the editor's page
+        if: steps.affected.outputs.web == 'true'
+        run: node apps/viewer/web/editor/test.mjs

@@ -1,0 +1,4 @@
+# Clear: a blue sky with no cloud but a trace of very high cirrus.
+coverage 0
+cirrus 0.05
+wind speed=5 from=250 gusts=0.25 turbulence=0.3

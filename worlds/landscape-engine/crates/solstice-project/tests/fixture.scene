@@ -1,0 +1,185 @@
+{
+  "format": 1,
+  "note": "Every kind of thing a scene holds, for the project writers' tests.",
+  "texture_size": 2048,
+  "camera": {
+    "position": [66.0, 1.5, -41.0],
+    "yaw_radians": 2.31,
+    "pitch_radians": 0.03
+  },
+  "terrain": {
+    "size": 900.0,
+    "cells": 1024,
+    "height": 0.3,
+    "shore_x": 52.0
+  },
+  "land": {
+    "sand": 10.0,
+    "dirt": 5.0
+  },
+  "meadow": 75.0,
+  "sea": {
+    "level": -0.6,
+    "ocean": "coastal"
+  },
+  "entities": [
+    {
+      "id": "gtrgPV4G",
+      "name": "Ground",
+      "note": "Ground. Sand, dirt and grass.",
+      "children": [
+        {
+          "id": "w3osAlZU",
+          "name": "Yard",
+          "yard": {
+            "from": [-21.0, -21.0],
+            "to": [21.0, 21.0]
+          }
+        },
+        {
+          "id": "bIVSr8y5",
+          "name": "Path",
+          "path": {
+            "from": [23.0, 0.0],
+            "to": [58.0, -6.0],
+            "width": 3.2
+          }
+        },
+        {
+          "id": "H7cjZQV9",
+          "name": "Clear",
+          "transform": {
+            "position": [0.0, 0.0, 0.0]
+          },
+          "clear": {
+            "radius": 33.0
+          }
+        },
+        {
+          "id": "Dir5OS4z",
+          "name": "Wood",
+          "transform": {
+            "position": [-58.0, 0.0, -38.0]
+          },
+          "wood": {
+            "radius": 20.0,
+            "spacing": 7.0
+          }
+        },
+        {
+          "id": "9gnxh49i",
+          "name": "Pond",
+          "pond": {
+            "min": [-10.0, -10.0],
+            "max": [-4.0, -2.0],
+            "level": 0.5,
+            "water": "coastal"
+          }
+        }
+      ]
+    },
+    {
+      "id": "gwAazR8m",
+      "name": "The fort",
+      "children": [
+        {
+          "id": "owy2xVBC",
+          "name": "tower_round",
+          "transform": {
+            "position": [22.0, 0.0, 22.0]
+          },
+          "mesh": {
+            "asset": "kit/fort.gltf",
+            "part": "tower_round"
+          }
+        },
+        {
+          "id": "57MfCxtw",
+          "name": "tower_round",
+          "transform": {
+            "position": [22.0, 0.0, -22.0],
+            "rotation": [0.0, 90.0, 0.0]
+          },
+          "mesh": {
+            "asset": "kit/fort.gltf",
+            "part": "tower_round",
+            "collide": "hull"
+          }
+        },
+        {
+          "id": "S2nu9H6y",
+          "name": "statue",
+          "transform": {
+            "position": [-7.0, 0.0, 0.0],
+            "rotation": [12.5, 90.0, -3.25],
+            "scale": 2.4
+          },
+          "mesh": {
+            "asset": "scans/statue.gltf"
+          }
+        },
+        {
+          "id": "0uAbJ4nE",
+          "name": "boulder",
+          "note": "half buried",
+          "transform": {
+            "position": [31.0, 0.0, -24.0],
+            "rotation": [0.0, 40.0, 0.0],
+            "scale": 2.2,
+            "ground": 0.2
+          },
+          "mesh": {
+            "asset": "scans/boulder.gltf"
+          }
+        },
+        {
+          "id": "2gzKrlyn",
+          "name": "keeper",
+          "transform": {
+            "position": [2.0, 0.0, 3.0]
+          },
+          "mesh": {
+            "asset": "people/keeper.glb",
+            "skinned": true
+          }
+        },
+        {
+          "id": "jOHO1AzT",
+          "name": "Blocker",
+          "transform": {
+            "position": [-1.1, 0.19, 17.3]
+          },
+          "blocker": {
+            "size": [0.4, 0.38, 3.0]
+          }
+        },
+        {
+          "id": "2HGOWrcu",
+          "name": "gate",
+          "transform": {
+            "position": [20.7, 0.0, 0.0],
+            "rotation": [0.0, 90.0, 0.0]
+          },
+          "actor": {
+            "asset": "cove/gate.actor",
+            "properties": {
+              "locked": "true",
+              "speed": "2"
+            }
+          }
+        },
+        {
+          "id": "iEd2cCCm",
+          "name": "Light",
+          "transform": {
+            "position": [0.0, 2.0, 0.0]
+          },
+          "light": {
+            "range": 16.0,
+            "intensity": [40.0, 14.0, 3.0]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+[package]
+name = "solstice-render"
+description = "A WebGPU renderer built around virtualized geometry and dynamic global illumination."
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+solstice-asset.workspace = true
+block_compression.workspace = true
+bytemuck.workspace = true
+glam.workspace = true
+log.workspace = true
+wgpu.workspace = true
+
+[dev-dependencies]
+naga.workspace = true
+pollster.workspace = true
+solstice-builder.workspace = true
+solstice-procgen.workspace = true
+png = "0.17"

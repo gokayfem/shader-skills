@@ -1,0 +1,9 @@
+# Overcast: a low, grey sheet of stratus with only faint texture, hiding the sun.
+coverage 0.97
+type 0.12
+base 600
+thickness 900
+density 1.3
+cirrus 0
+wind speed=8 from=220 gusts=0.3 turbulence=0.3
+evolution 0.6

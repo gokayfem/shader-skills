@@ -7,9 +7,42 @@ for (const name of Object.keys(DATA.scenes).sort()) menu.add(new Option(title(na
 menu.value = Object.hasOwn(DATA.scenes,location.hash.slice(1)) ? location.hash.slice(1) : 'lensed-disk';
 let image, buffer, targets=[], frame=0, time=0, playing=true, previous=0, nextFrame=0;
 let mouse=[0,0,0,0], scene, vs;
+const adaptiveWidths=[320,480,640,800,960,1280];
+let cadence=[];
+
+function resizeOutput(width) {
+    if (canvas.width===width) return;
+    canvas.width=width;
+    canvas.height=width*9/16;
+    if (scene.kind==='transfer' && targets.length) {
+        gl.deleteTexture(targets[0].tex);
+        gl.deleteFramebuffer(targets[0].fb);
+        targets[0]=target(canvas.width,canvas.height,true);
+        refreshTransfer();
+    }
+}
+function trackCadence(interval) {
+    if (element('size').value!=='auto' || document.hidden || interval<=0) return;
+    cadence.push(interval);
+    if (cadence.length<45) return;
+    // The median ignores occasional shader compilation, screenshots and input stalls.
+    const median=cadence.sort((a,b)=>a-b)[22];
+    cadence=[];
+    const level=adaptiveWidths.indexOf(canvas.width);
+    if (median>39 && level>0) resizeOutput(adaptiveWidths[level-1]);
+    if (median<21 && level<adaptiveWidths.length-1) resizeOutput(adaptiveWidths[level+1]);
+    element('scale').value=canvas.width+' × '+canvas.height;
+}
 
 // name, label, minimum, maximum, default, increment. Turn just these named constants into live uniforms.
 const knobs={
+    'room-radiosity':[['PANEL_X','Lamp position',-0.7,0.7,0.15,0.025],['BOUNCE','Indirect contribution',0,3,1,0.05]],
+    'kelp-passage':[['CURRENT','Current strength',0,1.5,0.7,0.05],['SHAFTS','Sun shafts',0,2,0.8,0.05]],
+    'sponge-shelf':[['LANTERN','Rim fluorescence',0,3,1.2,0.05]],
+    'ribbed-wreck':[['CAMERA_ARC','Orbit angle',0,6.28,0.63,0.02],['DIVE_DEPTH','Dive depth',0,1,0.45,0.02],['MURK','Water attenuation',0.03,0.6,0.16,0.01]],
+    'pigment-chamber':[['BOUNCE','Wall bounce',0,3,1,0.05],['PANEL_X','Lamp position',-0.7,0.7,0.15,0.025]],
+    'tide-observatory':[['HOUR','Solar hour',0,24,19.7,0.1],['OVERCAST','Cloud cover',0,1,0.32,0.01],['MOON_PHASE','Lunar phase',0,1,0.18,0.01]],
+    'cloudline-forest':[['ERROR_PX','Branch error (px)',0.2,8,1.5,0.1],['WIND','Wind strength',0,1.8,0.55,0.05]],
     'lensed-disk':[['INCLINATION','Disk elevation',0.025,0.8,0.17,0.005],['EXPOSURE','Exposure',0.2,3,1.3,0.05]],
     'morpho':[['LAYER_PERIOD_NM','Layer period (nm)',145,184,172,1],['WING_BEAT','Wingbeat rate',0,2,0.62,0.02]],
     'comb-jelly':[['KEY_LIGHT','Side light',0,2,1,0.02],['BEAT_SPEED','Comb beat',0,6,2.6,0.1]],
@@ -17,6 +50,10 @@ const knobs={
     'reaction-diffusion':[['FEED','Feed',0.018,0.060,0.035,0.001],['KILL','Removal',0.045,0.070,0.061,0.001]]
 };
 const diagnosticNames={
+    'room-radiosity':{6:'Indirect radiance'},
+    'kelp-passage':{3:'Kelp / wildlife / shafts'}, 'sponge-shelf':{2:'Surface normals'},
+    'ribbed-wreck':{4:'Trace cost'}, 'pigment-chamber':{6:'Direct / left / right bounce'},
+    'tide-observatory':{3:'Clouds / moon / coast'}, 'cloudline-forest':{4:'Branch refinement'},
     'morpho':{3:'Scale return / pigment / veins'},
     'comb-jelly':{3:'Front / rear / thickness'},
     'lensed-disk':{3:'Direct / secondary disk'},
@@ -39,7 +76,7 @@ function controls(){
         const label=document.createElement('label'), slider=document.createElement('input'), value=document.createElement('output');
         slider.type='range'; Object.assign(slider,{min,max,step,value:initial});
         value.value=String(initial);parameters[name]=initial;
-        slider.oninput=()=>{parameters[name]=Number(slider.value);value.value=slider.value;if(name==="INCLINATION")refreshTransfer();show();};
+        slider.oninput=()=>{parameters[name]=Number(slider.value);value.value=slider.value;if(name==="INCLINATION")refreshTransfer();if(name==="PANEL_X" && scene.kind==="radiosity")solveRoom();show();};
         label.append(desc,slider,value);holder.append(label);
     }
     holder.hidden=!holder.childElementCount;
@@ -95,6 +132,12 @@ function advanceSimulation(steps) {
         targets.reverse();
     }
 }
+function solveRoom() {
+    for(let bounce=0;bounce<4;bounce++){
+        draw(buffer,targets[1],targets[0].tex,bounce);
+        targets.reverse();
+    }
+}
 function reset() {
     time=scene.time??0; frame=0; previous=0;
     if(scene.kind==='simulation') {
@@ -108,6 +151,7 @@ function load() {
     if (buffer) gl.deleteProgram(buffer.p);
     for(const t of targets){gl.deleteTexture(t.tex);gl.deleteFramebuffer(t.fb);}
     image=null; buffer=null; targets=[];
+    cadence=[];
     scene=DATA.scenes[menu.value];
     modes.replaceChildren(...scene.modes.map(n=>new Option(n===0?'Final':(diagnosticNames[menu.value]?.[n]??'Debug '+n),n)));
     element('modeLabel').hidden=scene.modes.length<2;
@@ -125,6 +169,9 @@ function load() {
         buffer=link(scene.buffer,scene.kind==='transfer');
         if(scene.kind==='transfer') {
             targets.push(target(canvas.width,canvas.height,true));refreshTransfer();
+        } else if(scene.kind==='radiosity'){
+            targets.push(target(20,4),target(20,4));
+            solveRoom();
         } else {
             targets.push(target(scene.kind==='cache'?1536:320,scene.kind==='cache'?1536:180));
             if(scene.kind==='simulation') targets.push(target(320,180));
@@ -135,6 +182,7 @@ function load() {
 }
 function tick(now) {
     if(playing){
+        if(previous) trackCadence(now-previous);
         time+=previous?Math.min((now-previous)/1000,0.1):0;
         if(scene.kind==='simulation') advanceSimulation(5); else frame++;
         show();
@@ -169,11 +217,11 @@ element('reuse').onchange=()=>attempt(()=>{
     refreshTransfer();show();
 });
 element('size').onchange=()=>attempt(()=>{
-    canvas.width=Number(element('size').value);canvas.height=canvas.width*9/16;
-    if(scene.kind==='transfer' && targets.length){
-        gl.deleteTexture(targets[0].tex);gl.deleteFramebuffer(targets[0].fb);
-        targets[0]=target(canvas.width,canvas.height,true);refreshTransfer();
-    }
+    const auto=element('size').value==='auto';
+    cadence=[];
+    resizeOutput(auto?640:Number(element('size').value));
+    element('scale').hidden=!auto;
+    element('scale').value=canvas.width+' × '+canvas.height;
     show();
 });
 function point(event) {

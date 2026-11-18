@@ -1,0 +1,5 @@
+# Pinned so that a new Rust release cannot break CI through new lints. Upgrade on purpose.
+[toolchain]
+channel = "1.95.0"
+components = ["clippy", "rustfmt"]
+targets = ["wasm32-unknown-unknown"]

@@ -1,0 +1,7 @@
+# Whoever is playing: for now an eye on legs, until a body comes (steps 6 to 8).
+name player
+script player.star
+property walk_speed float 1.6   # metres a second
+property run_speed float 4.5
+camera 0 1.65 0
+character 0.3 1.75

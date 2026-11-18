@@ -1,0 +1,18 @@
+# The textures apps/townkit builds the harbour's stonework from, with their height maps (all CC0).
+# Fetch them first: python scripts/fetch-scans.py scenes/harbour.surfaces 2k
+
+# Large worn ashlar for the quay and mole walls.
+surface stone_wall_02
+# Granite setts on the quay.
+surface cobblestone_floor_07
+# Large flags on the mole, steps and copings.
+surface granite_tile_04
+# The market square's paving.
+surface square_cobblestone
+
+# Limewashed plaster, tinted house by house.
+surface white_stucco
+# Canal-tile roofs.
+surface clay_roof_tiles_02
+# Painted timber for shutters and doors, tinted.
+surface distressed_painted_planks

@@ -1,0 +1,47 @@
+name: Pages
+
+on:
+  push:
+    branches: [main]
+    # The site uses none of the documentation, so changes to it alone don't redeploy.
+    paths-ignore:
+      - "**.md"
+      - "docs/**"
+      - "LICENSE"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@1.95.0
+        with:
+          targets: wasm32-unknown-unknown
+      - uses: Swatinem/rust-cache@v2
+      # The viewer only: each scene is served by its own Pages site (SamG-Coder/solstice-scene-*),
+      # published from a PC with scripts/publish-scenes.py, so this never moves scenes.
+      - name: Build the site
+        run: bash scripts/build-web.sh
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

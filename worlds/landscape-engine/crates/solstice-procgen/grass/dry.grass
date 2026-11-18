@@ -1,0 +1,10 @@
+# Grass at the end of a dry summer: straw-coloured, half of it dead, in loose leaning tufts.
+size 2
+tufts per_m2=35 blades=10..24 height=0.3..0.7 width=0.004..0.008 lean=0.2..0.9
+undergrowth per_m2=300 height=0.04..0.12
+variants 0.4,0.35,0.25,0
+dry 0.55
+# Living blades yellow-green to tan; dead ones pale straw.
+colors 0.11,0.12,0.035 0.16,0.14,0.05 0.09,0.1,0.04 0.32,0.25,0.12
+# Plantain, whose tough rosettes outlast the drought.
+weed kind=rosette per_m2=3 leaves=4..7 length=0.07..0.14 width=0.55 flowers=0.6 flower_height=0.15..0.3 flower_size=0.006 leaf=0.05,0.09,0.025 flower=0.12,0.1,0.05

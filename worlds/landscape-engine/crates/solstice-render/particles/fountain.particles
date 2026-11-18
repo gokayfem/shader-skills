@@ -1,0 +1,40 @@
+# A fountain: a jet of water that arcs up, spreads and falls back, for trying the particle
+# system out. `strength` scales how much water it throws.
+param strength 1
+
+emitter jet
+  budget 6000
+  spawn rate=1500*strength
+  shape sphere 0.05
+  lifetime 1.6 2.0
+  velocity 0 6.5 0 cone=7 spread=0.08
+  size 0.006 0.015
+  gravity
+  drag 0.15
+  color 0.75 0.85 0.95 1
+  color life 0=1 1 1 0 0.06=1 1 1 1 0.85=1 1 1 1 1=1 1 1 0
+  size life 0=0.6 1=1.6
+  # The drops end where they land: on the ground, on anything in the way, or in the sea.
+  collide depth field water kill
+  # Water scatters light mostly onward: the jet sparkles with the sun behind it. Its drops are
+  # solid, so the temporal filter follows each exactly.
+  render sprite solid phase=0.7
+
+emitter mist
+  budget 1500
+  spawn rate=200*strength
+  shape sphere 0.3
+  offset 0 2 0
+  lifetime 2 3
+  velocity 0 0.6 0 cone=60 spread=0.5
+  size 0.15 0.3
+  gravity 0.3
+  drag 0.8
+  # The breeze carries the mist off, and it swirls as it goes.
+  wind 1
+  curl 0.4 scale=2 change=0.3
+  color 0.85 0.9 1 0.035
+  color life 0=1 1 1 0 0.3=1 1 1 1 1=1 1 1 0
+  size life 0=0.5 1=2.5
+  # Mist is sorted far to near, as smoke is.
+  render sprite sort soft=0.5 phase=0.6

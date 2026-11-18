@@ -1,0 +1,60 @@
+[workspace]
+resolver = "2"
+members = ["crates/*", "apps/*"]
+
+[workspace.package]
+version = "0.2.0"
+edition = "2021"
+license = "MIT"
+
+[workspace.dependencies]
+solstice-anim = { path = "crates/solstice-anim" }
+solstice-asset = { path = "crates/solstice-asset" }
+solstice-bake = { path = "crates/solstice-bake" }
+solstice-builder = { path = "crates/solstice-builder" }
+solstice-import = { path = "crates/solstice-import" }
+solstice-physics = { path = "crates/solstice-physics" }
+solstice-procgen = { path = "crates/solstice-procgen" }
+solstice-project = { path = "crates/solstice-project" }
+solstice-render = { path = "crates/solstice-render" }
+solstice-game = { path = "crates/solstice-game" }
+solstice-script = { path = "crates/solstice-script" }
+solstice-world = { path = "crates/solstice-world" }
+solstice-vehicle = { path = "crates/solstice-vehicle" }
+# Pure Rust, MIT. The GPU compressor and its wgpu dependency are left out.
+block_compression = { version = "0.11", default-features = false, features = ["bc15", "bc7"] }
+bytemuck = { version = "1", features = ["derive"] }
+glam = { version = "0.33", features = ["bytemuck"] }
+# The entity store under the gameplay framework (docs/gameplay.md): small and stable.
+hecs = "0.11"
+log = "0.4"
+# Gameplay scripts (docs/gameplay.md): Starlark, from Meta, with the crates its custom types need.
+starlark = "0.14"
+starlark_derive = "0.14"
+allocative = "0.3"
+anyhow = "1"
+# Pure Rust. Compresses pages when baking and unpacks them natively.
+miniz_oxide = "0.8"
+naga = { version = "30", features = ["wgsl-in"] }
+pollster = "0.4"
+# Physics for gameplay (docs/gameplay.md): pure Rust, with the same glam as the rest of us.
+# `enhanced-determinism` makes a run the same on every platform, for about 3% of its cost.
+rapier3d = { version = "0.36", features = ["enhanced-determinism"] }
+rayon = "1"
+rustc-hash = "2"
+# The editor's project files (docs/editor.md). Both were already built, through Starlark.
+serde = { version = "1", features = ["derive"] }
+# `float_roundtrip` reads every number back exactly as it was written.
+serde_json = { version = "1", features = ["float_roundtrip"] }
+wgpu = "30"
+
+# Geometry processing is unusably slow unoptimised, even while debugging the renderer.
+[profile.dev]
+opt-level = 1
+
+[profile.dev.package."*"]
+opt-level = 3
+
+[profile.release]
+opt-level = 3
+lto = "thin"

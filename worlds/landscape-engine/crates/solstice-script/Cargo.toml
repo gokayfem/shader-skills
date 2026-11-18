@@ -1,0 +1,18 @@
+[package]
+name = "solstice-script"
+description = "Gameplay scripts in Starlark, a Python-like language, running in a solstice-world."
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+allocative.workspace = true
+anyhow.workspace = true
+glam.workspace = true
+solstice-world.workspace = true
+starlark.workspace = true
+starlark_derive.workspace = true
+
+# Starlark's dependencies reach getrandom, which on the web needs telling to use the browser.
+[target.'cfg(target_arch = "wasm32")'.dependencies]
+getrandom = { version = "0.4", features = ["wasm_js"] }

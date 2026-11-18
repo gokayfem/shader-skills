@@ -1,0 +1,8 @@
+# Clear: tropical water, nearly pure, turquoise over sand and deep blue beyond, with a low swell.
+absorption 0.35 0.06 0.015   # per metre, close to pure water
+scattering 0.002 0.004 0.007 # per metre
+turbidity 0
+foam 1
+choppiness 0.8
+swell height=0.4 period=9 from=120
+fetch 50

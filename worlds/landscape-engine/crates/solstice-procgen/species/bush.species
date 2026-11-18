@@ -1,0 +1,8 @@
+# A dense bush of many stems from the ground.
+height 0.25
+trunk radius=0.05 flare=0.2 gnarl=0.1
+crown even
+bark beech_bark
+level per_metre=64 span=0..1 angle=58..30 length=6 radius=0.55 upturn=0.15 droop=0.35 gnarl=0.6
+level per_metre=12 span=0.2..1 angle=45 length=0.35 radius=0.6 upturn=0.4 droop=0.2 gnarl=0.8
+leaves broadleaf_leaves per_metre=55 length=0.04..0.065 width=0.6 variants=0.3,0.4,0.3,0 normals=0.55

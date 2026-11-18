@@ -83,6 +83,7 @@ Read only what the task needs:
 | `references/procedural-buildings.md` | parcel IDs, building massing, setbacks/roofs, facade filtering, city repetition and game integration |
 | `references/terrain-production.md` | terrain representations, designed valleys, slope/altitude materials, tracing limits, chunks and LOD |
 | `references/research-studies.md` | optics, null geodesics, streamline engraving, reaction-diffusion, terrain caching and offline playback |
+| `references/world-rendering.md` | kelp forests, sponges, shipwrecks, tides, foliage detail, room radiosity and full-world source navigation |
 | `references/water-quality.md` | high-quality ocean/coastal water, wave derivatives, Fresnel/refraction/absorption, foam, presets and engine-side upgrades |
 | `references/shader-workflow.md` | planning a complex shader end to end; review checklist |
 | `references/composition-and-debugging.md` | the image reads poorly, or something is visually wrong |

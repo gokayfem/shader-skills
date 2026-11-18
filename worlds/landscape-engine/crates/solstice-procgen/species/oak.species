@@ -1,0 +1,10 @@
+# A young oak grown in the open: a short, flared trunk and a broad, rounded crown of
+# crooked limbs, the lower ones spreading wide.
+height 11
+trunk radius=0.24 flare=0.6 gnarl=0.05
+crown round
+bark oak_bark
+level per_metre=4.2 span=0.28..0.97 angle=72..44 length=0.5 radius=0.55 upturn=0.12 droop=0.05 gnarl=0.25
+level per_metre=2.6 span=0.15..0.95 angle=42 length=0.42 radius=0.6 upturn=0.25 droop=0.1 gnarl=0.4
+level per_metre=8 span=0.2..1 angle=48 length=0.35 radius=0.6 upturn=0.3 droop=0.2 gnarl=0.6
+leaves broadleaf_leaves per_metre=42 length=0.08..0.13 width=0.55 variants=0.4,0.3,0.2,0.1 normals=0.45

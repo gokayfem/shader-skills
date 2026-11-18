@@ -1,0 +1,12 @@
+# An unmown summer meadow: tufts of grass up to half a metre, fanning out and arcing over,
+# with short shoots and thatch between them.
+size 2
+tufts per_m2=50 blades=8..20 height=0.22..0.55 width=0.005..0.009 lean=0.12..0.82
+undergrowth per_m2=450 height=0.05..0.16
+variants 0.45,0.3,0.25,0
+dry 0.08
+# Linear albedo at mid-blade: lush, fresh, blue-green, and dry.
+colors 0.05,0.105,0.018 0.085,0.13,0.022 0.042,0.09,0.034 0.23,0.18,0.08
+# Dandelions and white clover.
+weed kind=rosette per_m2=1.5 leaves=6..10 length=0.08..0.18 width=0.28 flowers=0.5 flower_height=0.12..0.3 flower_size=0.018 leaf=0.045,0.095,0.02 flower=0.6,0.42,0.01 centre=0.55,0.32,0
+weed kind=clover per_m2=6 leaves=5..10 length=0.01..0.016 width=0.9 stalk=0.03..0.08 flowers=0.35 flower_height=0.06..0.12 flower_size=0.008 leaf=0.035,0.08,0.03 flower=0.55,0.5,0.48

@@ -5,8 +5,8 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
 **Create, debug and refine procedural GLSL shaders with Claude Code, Codex, Cursor, GitHub Copilot and Gemini CLI.**
-Shader Skills combines an agent skill with **191 GLSL functions in 21 modules**, a dependency bundler, a checker
-and **16 single-pass shaders and two multipass examples**. Build SDF raymarched scenes, procedural textures, terrain, water,
+Shader Skills combines an agent skill with **196 GLSL functions in 21 modules**, a dependency bundler, a checker
+and **22 single-pass shaders and three multipass examples**. Build SDF raymarched scenes, procedural textures, terrain, water,
 clouds and generative art. The library is compiled in WebGL2 and checked with GPU property tests.
 
 ```bash
@@ -27,7 +27,7 @@ Choose `shader-art-coding` and your coding agent in the installer. Then ask:
 
 [![Four live shader studies in motion](gallery/studies-motion.webp)](gallery/studies.html)
 
-Open [the self-contained shader viewer](gallery/studies.html) from a local checkout, or download the HTML using GitHub’s **Download raw file** button. It runs offline in a WebGL2 browser. Switch among 18 scenes, pause motion, inspect diagnostic views and change the controls while rendering.
+Open [the self-contained shader viewer](gallery/studies.html) from a local checkout, or download the HTML using GitHub’s **Download raw file** button. It runs offline in a WebGL2 browser. Switch among 25 scenes, pause motion, inspect diagnostic views and change the controls while rendering.
 
 | [![Morpho wing study](gallery/morpho.png)](gallery/morpho.glsl) | [![Comb jelly under side light](gallery/comb-jelly.png)](gallery/comb-jelly.glsl) | [![Lensed accretion disk](gallery/lensed-disk.png)](gallery/lensed-disk.glsl) |
 |---|---|---|
@@ -36,6 +36,18 @@ Open [the self-contained shader viewer](gallery/studies.html) from a local check
 | **Streamline press.** Paper grain follows a vector field around a vermilion cylinder. Change its radius to move the stagnation points. | **Reaction–diffusion.** Drag to seed a two-channel feedback simulation. Change the feed and removal rates to grow a different pattern. | **Cached alpine valley.** Move the camera over a retained elevation texture. [Three-camera comparison](gallery/alpine-cache/benchmark.md) |
 
 The [research studies guide](skills/shader-art-coding/references/research-studies.md) links the original papers, explains the approximations and gives a second shot to try for each technique.
+
+## Dive, landscape and lighting studies
+
+| [![Kelp passage](gallery/kelp-passage.png)](gallery/kelp-passage.glsl) | [![Sponge shelf](gallery/sponge-shelf.png)](gallery/sponge-shelf.glsl) | [![Wreck ribs](gallery/ribbed-wreck.png)](gallery/ribbed-wreck.glsl) |
+|---|---|---|
+| Kelp passage · current and sun shafts | Sponge shelf · cavities and fluorescence | Ribbed wreck · orbit and dive depth |
+| [![Coastal observatory](gallery/tide-observatory.png)](gallery/tide-observatory.glsl) | [![Layered forest](gallery/cloudline-forest.png)](gallery/cloudline-forest.glsl) | [![Pigment chamber](gallery/pigment-chamber.png)](gallery/pigment-chamber.glsl) |
+| Tide observatory · hour, clouds, moon phase | Cloudline forest · wind and projected detail | Pigment chamber · lamp position and wall bounce |
+
+Compare the chamber to its [80-patch feedback solver](gallery/room-radiosity) in the [offline viewer](gallery/studies.html). The [world rendering guide](skills/shader-art-coding/references/world-rendering.md) gives a diagnostic experiment for each scene.
+
+The full checkout also contains a [swimmable WebGPU dive](worlds/dive/index.html) and a Rust/WebGPU landscape renderer with a browser editor. Open the [worlds guide](worlds/README.md) for launch instructions and subsystem walkthroughs, or [browse all 541 source files and assets](worlds/catalog.md).
 
 ## Shader gallery
 
@@ -224,8 +236,8 @@ All three water presets and every annotated diagnostic view are compiled and ren
 | Lint + drift | `glsl_tools.py check` | docs and tags on every function, module order, no WebGL1 or sine-hash patterns, reference snippets identical to the library |
 | glslang compile | CI (`checks.yml`) | every library module, reference snippet and template compiles as GLSL ES 3.00 |
 | WebGL2 compile | `tests/` harness | all library/reference/template units and annotated quality/debug variants compile under ANGLE, which also enforces WebGL-only rules |
-| GPU property tests | `tests/properties.py` | 95 tests × 16,384 samples: Lipschitz, exactness, signs, brute-force curve distance, derivatives, divergence, ranges, round trips, facade filtering, water dispersion/Fresnel/attenuation |
-| Renders | harness + gallery | 16 beauty templates plus 22 quality/debug variants; no NaNs or black frames; beauty PNGs saved to `gallery/` |
+| GPU property tests | `tests/properties.py` | 100 tests × 16,384 samples: Lipschitz, exactness, signs, brute-force curve distance, derivatives, divergence, ranges, round trips, facade filtering, water dispersion/Fresnel/attenuation |
+| Renders | harness + gallery | 22 beauty templates plus 28 quality/debug variants; no NaNs or black frames; beauty PNGs saved to `gallery/` |
 | Bundler regressions | `tests/test_bundler.py` | conditional quality macros cannot hide dependencies; annotated variants replace the intended define and reject missing defines |
 | Skill effect | `evals/` (`claude plugin eval`, paid, manual) | output-rule adherence with the skill vs without it on 6 shader tasks, plus no false triggers on 3 near-miss tasks; see [evals/README.md](evals/README.md) |
 

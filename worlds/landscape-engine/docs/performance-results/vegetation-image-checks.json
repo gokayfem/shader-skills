@@ -1,0 +1,74 @@
+{
+  "128-ground-r1": {
+    "frames": 240,
+    "different_cluster_count_frames": 0,
+    "different_triangle_count_frames": 0,
+    "mean_abs_rgb_0_255": 0.30354407793209875,
+    "changed_fraction": 0.3151027199074074,
+    "over_4_fraction": 0.016120273919753087,
+    "over_16_fraction": 0.0017708333333333332
+  },
+  "128-ground-r2": {
+    "frames": 240,
+    "different_cluster_count_frames": 0,
+    "different_triangle_count_frames": 0,
+    "mean_abs_rgb_0_255": 0.3193187371399177,
+    "changed_fraction": 0.34630642361111114,
+    "over_4_fraction": 0.01640335648148148,
+    "over_16_fraction": 0.0017959104938271605
+  },
+  "128-ground-baseline-repeat": {
+    "mean_abs_rgb_0_255": 0.16526234567901235,
+    "changed_fraction": 0.265844425154321,
+    "over_4_fraction": 0.00433449074074074,
+    "over_16_fraction": 0.000394483024691358
+  },
+  "128-walk-r1": {
+    "frames": 240,
+    "different_cluster_count_frames": 0,
+    "different_triangle_count_frames": 0,
+    "mean_abs_rgb_0_255": 0.2880097415123457,
+    "changed_fraction": 0.30665895061728393,
+    "over_4_fraction": 0.014103973765432098,
+    "over_16_fraction": 0.0013855131172839507
+  },
+  "128-walk-r2": {
+    "frames": 240,
+    "different_cluster_count_frames": 0,
+    "different_triangle_count_frames": 0,
+    "mean_abs_rgb_0_255": 0.2970949074074074,
+    "changed_fraction": 0.32957947530864196,
+    "over_4_fraction": 0.013974247685185185,
+    "over_16_fraction": 0.0013478973765432098
+  },
+  "128-walk-baseline-repeat": {
+    "mean_abs_rgb_0_255": 0.14866319444444445,
+    "changed_fraction": 0.2369357638888889,
+    "over_4_fraction": 0.004045621141975308,
+    "over_16_fraction": 0.00038532021604938273
+  },
+  "512-overview-r1": {
+    "frames": 240,
+    "different_cluster_count_frames": 0,
+    "different_triangle_count_frames": 0,
+    "mean_abs_rgb_0_255": 0.11462673611111111,
+    "changed_fraction": 0.17119020061728396,
+    "over_4_fraction": 0.0027464313271604937,
+    "over_16_fraction": 1.109182098765432e-05
+  },
+  "512-overview-r2": {
+    "frames": 240,
+    "different_cluster_count_frames": 0,
+    "different_triangle_count_frames": 0,
+    "mean_abs_rgb_0_255": 0.11458027906378601,
+    "changed_fraction": 0.17118296682098766,
+    "over_4_fraction": 0.0027483603395061728,
+    "over_16_fraction": 1.2056327160493826e-05
+  },
+  "512-overview-baseline-repeat": {
+    "mean_abs_rgb_0_255": 0.020959362139917698,
+    "changed_fraction": 0.04390432098765432,
+    "over_4_fraction": 0.0001769868827160494,
+    "over_16_fraction": 0.0
+  }
+}

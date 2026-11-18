@@ -1,0 +1,5 @@
+# Cirrus: a high, fibrous veil ahead of a front, with no low cloud.
+coverage 0.04
+type 0.9
+cirrus 0.75
+wind speed=20 from=260 gusts=0.35 turbulence=0.3

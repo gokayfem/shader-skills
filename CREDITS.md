@@ -57,3 +57,7 @@ default to CC BY-NC-SA 3.0, which is incompatible with MIT.
 | Streamline engraving | [Cabral and Leedom](https://www.osti.gov/servlets/purl/10185520-hIb0EP/), [MIT cylinder flow](https://web.mit.edu/fluids-modules/www/potential_flows/Lectures/lec10/lecture10.pdf) | Bidirectional midpoint integration, tapered noise convolution and procedural print |
 | Reaction–diffusion | [Pearson](https://arxiv.org/abs/patt-sol/9304003) | Original finite-difference ping-pong simulation and relief display |
 | Elevation texture reuse | [Asirvatham and Hoppe](https://hhoppe.com/proj/gpugcm/) | Fixed rectangular cache for the existing alpine scene |
+
+## World studies
+
+The patch lighting studies use the classical diffuse interreflection formulation of Goral, Torrance, Greenberg and Battaile, [Modeling the Interaction of Light Between Diffuse Surfaces](https://doi.org/10.1145/800031.808601). The templates approximate patch transfer with center-to-center visibility and bounded diffuse weights. The complete world distributions carry their original notices in their respective LICENSE files under worlds/.

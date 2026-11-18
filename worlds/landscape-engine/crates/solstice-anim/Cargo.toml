@@ -1,0 +1,10 @@
+[package]
+name = "solstice-anim"
+description = "Animation clips, blends and state machines for Solstice."
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+solstice-asset.workspace = true
+glam.workspace = true

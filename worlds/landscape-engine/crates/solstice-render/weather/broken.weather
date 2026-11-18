@@ -1,0 +1,9 @@
+# Broken cloud: large cumulus, some growing tall, covering most of the sky with gaps of blue.
+coverage 0.62
+type 0.95
+base 1000
+thickness 2600
+density 1.15
+cirrus 0.3
+wind speed=10 from=240 gusts=0.5 turbulence=0.45
+evolution 1.3

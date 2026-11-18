@@ -18,6 +18,8 @@ jobs:
         run: sudo apt-get update && sudo apt-get install -y glslang-tools
       - name: Library index is up to date
         run: python3 skills/shader-art-coding/scripts/glsl_tools.py index --check
+      - name: Verify world snapshots and catalog
+        run: python3 tests/check_worlds.py
       - name: Gallery bundles are up to date
         run: python3 tests/build_gallery.py --check
       - name: Lint, drift and compile every unit

@@ -1,0 +1,9 @@
+# Murky: a sheltered harbour, brown-green with silt, where little light gets far and the wind
+# has only a short reach of water to raise waves on.
+absorption 0.60 0.30 0.40    # per metre
+scattering 0.060 0.080 0.050 # per metre
+turbidity 0.8
+foam 0.8
+choppiness 0.8
+swell height=0 period=8 from=0
+fetch 5

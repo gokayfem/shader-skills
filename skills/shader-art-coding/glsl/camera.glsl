@@ -42,3 +42,10 @@ void orthoRay(mat3 cam, vec2 uv, float size, inout vec3 ro, out vec3 rd) {
     ro += cam * vec3(uv * size, 0.0);
     rd = cam[2];
 }
+
+/// Project a world-space transverse error into pixels at positive camera-space depth, with vertical FOV focal length.
+/// @use cluster refinement thresholds, selecting vegetation detail, silhouette error budgets
+/// @see Pinhole projection, screen height times focal length divided by twice the forward depth.
+float projectedErrorPx(float worldError, float depth, float focal, float imageHeight) {
+    return max(worldError, 0.0) * max(focal, 0.0) * max(imageHeight, 0.0) / (2.0 * max(depth, 1e-5));
+}

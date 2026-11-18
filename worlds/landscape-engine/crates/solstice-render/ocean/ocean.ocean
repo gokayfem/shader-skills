@@ -1,0 +1,9 @@
+# Ocean: the deep open sea, dark blue, with a long swell from distant storms and the wind with
+# hundreds of kilometres to build its waves.
+absorption 0.38 0.07 0.03    # per metre
+scattering 0.003 0.006 0.008 # per metre
+turbidity 0
+foam 1
+choppiness 0.9
+swell height=1.5 period=13 from=250
+fetch 500

@@ -242,6 +242,7 @@ camera: look-at frames, primary rays, field of view, thin-lens depth of field. C
 - `vec3 cameraRay(mat3 cam, vec2 uv, float focal)` - Primary ray direction for screen point uv. focal is about 1.5-2.5 for natural framing (see fovToFocal). *Use: every 3D shader.*
 - `void thinLensRay(mat3 cam, vec2 uv, float focal, float aperture, float focusDist, vec2 xi, inout vec3 ro, out vec3 rd)` - Thin-lens depth of field. Moves the ray origin over a lens disk of radius aperture, and re-aims it so that points at distance focusDist stay sharp. xi is a pair of uniform random numbers in [0,1) (e.g. hash22 of the pixel and frame). Average many samples (AA loop or multipass accumulation). *Use: macro shots, product renders, cinematic focus pulls, bokeh.*
 - `void orthoRay(mat3 cam, vec2 uv, float size, inout vec3 ro, out vec3 rd)` - Orthographic ray: parallel rays from a plane of half-height `size` centered on ro. *Use: isometric scenes, technical illustrations, flat diorama looks.*
+- `float projectedErrorPx(float worldError, float depth, float focal, float imageHeight)` - Project a world-space transverse error into pixels at positive camera-space depth, with vertical FOV focal length. *Use: cluster refinement thresholds, selecting vegetation detail, silhouette error budgets.*
 
 ## shading
 
@@ -257,6 +258,7 @@ shading: BRDF terms and practical lighting models. Vectors are unit length: n = 
 - `vec3 hemisphereLight(vec3 n, vec3 skyColor, vec3 groundColor)` - Hemisphere light: sky color from above blended to ground color from below. *Use: ambient fill, outdoor sky light, studio fill.*
 - `float translucency(vec3 n, vec3 v, vec3 l, float distortion, float power, float thickness)` - Fast translucency (Barre-Brisebois and Bouchard 2011): light passing through thin parts, seen from the back. distortion bends the light along the normal (0.2-0.5). thickness is 0 (thin) .. 1 (thick); see sdfThickness. *Use: leaves, ears, wax, jade, marble, backlit petals, jellyfish.*
 - `float rimLight(vec3 n, vec3 v, float power)` - Rim light from the viewing angle: strongest at silhouettes. *Use: character separation from background, fresnel-like glow, stylized outlines.*
+- `float diffusePatchWeight(vec3 point, vec3 normal, vec3 center, vec3 patchNormal, float area)` - Approximate diffuse form factor from a small, oriented patch to a surface point. Both normals point out of their surfaces. Area is in squared world units. The finite area softens near-field error. *Use: room color bleeding, emissive wall tiles, diffuse bounce from a coarse surface cache.*
 
 ## water
 
@@ -266,6 +268,8 @@ water: finite-depth wave dispersion, analytic wave derivatives, exact dielectric
 - `vec4 waterWaveD(vec2 xz, float time, vec2 direction, float wavelength, float amplitude, float depth, float footprint)` - One sinusoidal wave: vec4(height, dh/dx, dh/dz, Laplacian). Direction is normalized internally; zero uses +X. wavelength > 0, amplitude in meters. footprint filters waves below 2-6 pixels; derivatives hold it constant. *Use: analytic water normals, layered swell/chop, curvature foam, finite-depth lake and coastal waves.*
 - `float fresnelDielectric(float cosIncident, float etaIncident, float etaTransmitted)` - Exact unpolarized dielectric Fresnel for a positive incident cosine and positive refractive indices. Returns 1 for total internal reflection. Caller chooses etaIncident/etaTransmitted for the ray's side. *Use: air-water interfaces (1.0,1.333), underwater views (1.333,1.0), glass.* Range [0,1].
 - `vec3 beerTransmittance(vec3 extinction, float pathLength)` - Beer-Lambert RGB transmittance exp(-extinction*pathLength). Negative extinction/path is clamped to zero. Use the refracted optical path, not vertical water depth. Attenuation alone does not add scattered light. *Use: depth-colored water, underwater visibility, tinted glass, homogeneous fog.* Range [0,1].
+- `float currentBend(float heightFraction, float amplitude, float phase)` - Displace a rooted blade along the horizontal current, with zero offset and slope at its base. heightFraction is zero at the root and one at the tip. Amplitude uses world units; phase uses radians. *Use: kelp forests, sea grass, wind moving through reeds.*
+- `float causticLace(vec2 p, float time, float footprint)` - Procedural caustic filaments on a receiving surface. Footprint is measured in input pattern units. *Use: rippled sand, submerged timbers, shallow pools, shafts meeting the floor.*
 
 ## color
 
@@ -318,6 +322,7 @@ atmosphere: skies and sun. simpleSky is a cheap artistic gradient. atmosphereSky
 - `vec3 atmosphereDensity(float h)` - Densities (rayleigh, mie, ozone) at altitude h km above the ground. *Use: custom atmosphere marches (aerial perspective, planet views).*
 - `vec3 atmosphereExtinction(vec3 density)` - Extinction per km for the given densities. *Use: transmittance through air for sun color and aerial perspective.*
 - `vec3 atmosphereSky(vec3 rd, vec3 sunDir, float viewHeightKm, float sunIntensity)` - Physically based sky radiance along rd for a viewer viewHeightKm above the ground, with single scattering (16 view steps x 8 light steps). sunIntensity about 20. Sunsets come out somewhat dark because multiple scattering is ignored; add a small ambient term if needed. *Use: realistic skies, sunsets, aerial perspective colors, planet-from-space views.*
+- `float lunarDiskLight(vec2 xy, vec3 lightDirection)` - Lambertian light on the visible hemisphere of a projected disk. xy are in disk radii; +z faces the viewer. *Use: lunar phases, rotating terminators, distant moons and planets.*
 
 ## post
 

@@ -1,0 +1,10 @@
+# Calm: a still, fair day in a sheltered place. A few small cumulus drift over, leaves barely
+# stir, and ponds lie almost as mirrors, ruffled only where a breath of air crosses them.
+coverage 0.24
+type 0.85
+base 1300
+thickness 1400
+density 1
+cirrus 0.2
+wind speed=1.8 from=235 gusts=0.5 turbulence=0.4
+evolution 0.8

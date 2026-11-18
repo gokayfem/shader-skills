@@ -129,6 +129,29 @@ EXACT_ALLOWANCE = 0.01
 
 # Hand-written properties. Each body is the inside of `int runTest(vec4 a, vec4 b)`; return failure bits.
 PROPERTIES = [
+    ("diffuse patch is reciprocal for equal areas, one-sided and bounded", """
+        vec3 p=vec3(0), q=vec3(a.xy,0.1+b.x);
+        vec3 n=normalize(q);
+        float area=0.01+a.z;
+        float w=diffusePatchWeight(p,n,q,-n,area);
+        return !(w>0.0 && w<1.0 && abs(w-diffusePatchWeight(q,-n,p,n,area))<1e-5
+           && diffusePatchWeight(p,n,q,n,area)==0.0 && diffusePatchWeight(p,n,p,n,area)==0.0)?1:0;""", {}),
+    ("projected detail halves at twice the depth", """
+        float z=0.1+12.0*a.x;
+        float nearSize=projectedErrorPx(b.y,z,1.6,720.0);
+        return !(abs(nearSize-2.0*projectedErrorPx(b.y,2.0*z,1.6,720.0))<1e-4)?1:0;""", {}),
+    ("rooted current stays anchored and bounded", """
+        float amplitude=b.y, phase=16.0*a.x;
+        return !(currentBend(0.0,amplitude,phase)==0.0
+           && abs(currentBend(a.z,amplitude,phase))<=amplitude*a.z*a.z+1e-5)?1:0;""", {}),
+    ("lunar disk has a dark new moon and a Lambertian full moon", """
+        vec2 p=a.xy*2.0-1.0;
+        float full=lunarDiskLight(p,vec3(0,0,1));
+        return !(abs(full-sqrt(max(0.0,1.0-dot(p,p))))<2e-5
+           && lunarDiskLight(p,vec3(0,0,-1))==0.0)?1:0;""", {}),
+    ("caustic lace stays bounded and converges under minification", """
+        float v=causticLace(a.xy*5.0,b.x,a.z);
+        return !(v>=0.0 && v<=1.0 && abs(causticLace(a.xy,b.y,1.0)-0.085)<1e-5)?1:0;""", {}),
     ("Bragg peak shortens with obliquity and scales with period", """
         float d=100.0+100.0*a.x, n=1.1+b.y, c=a.z;
         float peak=braggPeakNm(d,n,c);

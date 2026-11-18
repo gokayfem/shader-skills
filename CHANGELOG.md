@@ -5,8 +5,12 @@ Published versions and downloadable packages are available on
 
 ## Unreleased
 
+- Six new single-pass shaders explore underwater habitats, a wreck, coastal night lighting, forest detail selection and diffuse color bleeding. A seventh study retains indirect radiance in an 80-patch feedback buffer.
+- Five shader helpers cover anchored current motion, caustic patterns, projected error, diffuse patch transport and lunar lighting. The viewer can adapt its resolution from recent frame cadence.
+- Two complete WebGPU world source trees include a one-file dive and a landscape engine with scene baking, streamed geometry, weather, gameplay and a browser editor. A subsystem guide and file catalog accompany the source.
+
 - Four single-pass studies cover butterfly structural color, transparent comb rows, Schwarzschild lensing and streamline engraving. A two-channel feedback simulation adds paintable reaction–diffusion.
-- The offline viewer renders 18 scenes, exposes material and simulation controls, supports frame stepping and exports PNGs.
+- The offline viewer renders 25 scenes, exposes material and simulation controls, supports frame stepping and exports PNGs.
 - Static alpine elevations and fixed-camera black-hole light paths can be retained across animation frames. The terrain comparison reports image error and frame time at three camera positions.
 - The agate study and footprint-aware fBm bring filtered growth bands and terrain grain into the existing library. Shader checks catch unordered literal smoothstep edges.
 

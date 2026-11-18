@@ -1,0 +1,6 @@
+target/
+target_simd/
+target_native/
+js/
+js_strip/
+node_modules/

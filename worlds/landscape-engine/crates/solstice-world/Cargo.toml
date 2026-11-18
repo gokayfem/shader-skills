@@ -1,0 +1,10 @@
+[package]
+name = "solstice-world"
+description = "The gameplay framework: entities and components, tick groups, events, timers and a fixed clock. No GPU."
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+glam.workspace = true
+hecs.workspace = true

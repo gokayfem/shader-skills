@@ -51,3 +51,23 @@ float fresnelDielectric(float cosIncident, float etaIncident, float etaTransmitt
 vec3 beerTransmittance(vec3 extinction, float pathLength) {
     return exp(-max(extinction,vec3(0.0))*max(pathLength,0.0));
 }
+
+/// Displace a rooted blade along the horizontal current, with zero offset and slope at its base.
+/// heightFraction is zero at the root and one at the tip. Amplitude uses world units; phase uses radians.
+/// @use kelp forests, sea grass, wind moving through reeds
+/// @see Original two-frequency bending profile.
+float currentBend(float heightFraction, float amplitude, float phase) {
+    float h = clamp(heightFraction, 0.0, 1.0);
+    return amplitude * h * h * (0.72 * sin(phase - 2.4*h) + 0.28 * sin(1.7*phase + 3.1*h));
+}
+
+/// Procedural caustic filaments on a receiving surface. Footprint is measured in input pattern units.
+/// @use rippled sand, submerged timbers, shallow pools, shafts meeting the floor
+/// @see Original crossed sine-field pattern. Unresolved bands fade to their average coverage.
+float causticLace(vec2 p, float time, float footprint) {
+    vec2 q=p+0.22*vec2(sin(1.7*p.y+time),cos(1.3*p.x-0.7*time));
+    float f=sin(2.9*q.x+q.y)+0.80*sin(2.6*q.y-1.2*q.x);
+    float width=clamp(2.0*footprint,0.015,0.30);
+    float line=1.0-smoothstep(0.055,0.055+width,abs(f));
+    return mix(line,0.085,smoothstep(0.08,0.32,footprint));
+}

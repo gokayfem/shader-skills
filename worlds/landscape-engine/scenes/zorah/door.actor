@@ -1,0 +1,10 @@
+# One leaf of a door or gate, placed at its hinge. The scene it is in already draws it: its
+# line in scene.game names those instances, and it swings them about the hinge when someone
+# near the doorway uses it. Both leaves of a doorway share a `middle`, so they open together.
+name door
+script door.star
+property middle vec3 0 0 0      # the middle of the doorway
+property reach float 5          # how near that, in metres, someone must be to use it
+property swing float 90         # how far it opens, in degrees; the sign is which way
+property slide vec3 0 0 0       # how far it moves aside as it opens, in metres
+property seconds float 2.5      # how long opening takes
