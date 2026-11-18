@@ -8,7 +8,10 @@ menu.value = Object.hasOwn(DATA.scenes,location.hash.slice(1)) ? location.hash.s
 let image, buffer, targets=[], frame=0, time=0, playing=true, previous=0, nextFrame=0;
 let mouse=[0,0,0,0], scene, vs;
 const adaptiveWidths=[320,480,640,800,960,1280];
-let cadence=[];
+let cadence=[], fastWindows=0, recoveryWindows=2;
+function resetCadence() {
+    cadence=[]; fastWindows=0; recoveryWindows=2;
+}
 
 function resizeOutput(width) {
     if (canvas.width===width) return;
@@ -22,15 +25,27 @@ function resizeOutput(width) {
     }
 }
 function trackCadence(interval) {
-    if (element('size').value!=='auto' || document.hidden || interval<=0) return;
+    const mode=element('size').value;
+    if (!mode.startsWith('auto') || document.hidden || interval<=0 || interval>=1000) return;
     cadence.push(interval);
     if (cadence.length<45) return;
-    // The median ignores occasional shader compilation, screenshots and input stalls.
     const median=cadence.sort((a,b)=>a-b)[22];
     cadence=[];
     const level=adaptiveWidths.indexOf(canvas.width);
-    if (median>39 && level>0) resizeOutput(adaptiveWidths[level-1]);
-    if (median<21 && level<adaptiveWidths.length-1) resizeOutput(adaptiveWidths[level+1]);
+    const slow=mode==='auto60'?19:39;
+    const fast=mode==='auto60'?17.2:21;
+    if (median>slow && level>0) {
+        resizeOutput(adaptiveWidths[level-1]);
+        fastWindows=0;
+        recoveryWindows=Math.min(8,recoveryWindows*2);
+    } else if (median<fast && level<adaptiveWidths.length-1) {
+        if (++fastWindows>=recoveryWindows) {
+            resizeOutput(adaptiveWidths[level+1]);
+            fastWindows=0;
+        }
+    } else {
+        fastWindows=0;
+    }
     element('scale').value=canvas.width+' × '+canvas.height;
 }
 
@@ -151,7 +166,7 @@ function load() {
     if (buffer) gl.deleteProgram(buffer.p);
     for(const t of targets){gl.deleteTexture(t.tex);gl.deleteFramebuffer(t.fb);}
     image=null; buffer=null; targets=[];
-    cadence=[];
+    resetCadence();
     scene=DATA.scenes[menu.value];
     modes.replaceChildren(...scene.modes.map(n=>new Option(n===0?'Final':(diagnosticNames[menu.value]?.[n]??'Debug '+n),n)));
     element('modeLabel').hidden=scene.modes.length<2;
@@ -217,8 +232,8 @@ element('reuse').onchange=()=>attempt(()=>{
     refreshTransfer();show();
 });
 element('size').onchange=()=>attempt(()=>{
-    const auto=element('size').value==='auto';
-    cadence=[];
+    const auto=element('size').value.startsWith('auto');
+    resetCadence();
     resizeOutput(auto?640:Number(element('size').value));
     element('scale').hidden=!auto;
     element('scale').value=canvas.width+' × '+canvas.height;

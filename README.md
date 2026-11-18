@@ -49,6 +49,8 @@ Compare the chamber to its [80-patch feedback solver](gallery/room-radiosity) in
 
 The full checkout also contains a [swimmable WebGPU dive](worlds/dive/index.html) and a Rust/WebGPU landscape renderer with a browser editor. Open the [worlds guide](worlds/README.md) for launch instructions and subsystem walkthroughs, or [browse all 541 source files and assets](worlds/catalog.md).
 
+[Frame-budget guide and benchmarks](skills/shader-art-coding/references/frame-budgets.md) · Diagnose expensive scenes with paired resolution measurements, inspect the rendering passes, and try the 30 or 60 fps adaptive modes in the offline viewer.
+
 ## Shader gallery
 
 | | | |

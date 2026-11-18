@@ -17,6 +17,8 @@ Open http://localhost:8765/?scene=web to load the baked temple. See the [engine 
 |---|---|
 | Medium detail, first dive viewpoint | Local web-quality temple bake, daylight |
 
+[Frame-budget field guide](../skills/shader-art-coding/references/frame-budgets.md) covers the draw loops, visibility decisions, GPU timers and measured performance of both worlds.
+
 ## From a pixel to its implementation
 
 | What to investigate | Where to look and what to change |
