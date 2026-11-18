@@ -17,6 +17,8 @@ Open http://localhost:8765/?scene=web to load the baked temple. See the [engine 
 |---|---|
 | Medium detail, first dive viewpoint | Local web-quality temple bake, daylight |
 
+[Frame-budget field guide](../skills/shader-art-coding/references/frame-budgets.md) covers the draw loops, visibility decisions, GPU timers and measured performance of both worlds.
+
 ## From a pixel to its implementation
 
 | What to investigate | Where to look and what to change |
@@ -36,6 +38,21 @@ Open http://localhost:8765/?scene=web to load the baked temple. See the [engine 
 | Persistent terrain marks | The [ruts guide](landscape-engine/docs/ruts.md) and [wetness guide](landscape-engine/docs/wetness.md) describe how local surface memory affects shading. Test a wheel path during rain and again as the ground dries. |
 | Actors and scene interaction | Walk from the [scene definitions](landscape-engine/scenes) into [animation](landscape-engine/crates/solstice-anim), [physics](landscape-engine/crates/solstice-physics), [vehicles](landscape-engine/crates/solstice-vehicle) and the [gameplay guide](landscape-engine/docs/gameplay.md). |
 | Editing, interchange and performance | See [browser editor API](landscape-engine/docs/editor-api.md), [Blender tools](landscape-engine/tools/blender), [gameplay benchmarks](landscape-engine/tools/gameplay-bench) and the [GPU performance audit](landscape-engine/docs/performance-audit.md). Use the captured workload and quality settings when comparing changes. |
+
+## Desktop dive timing
+
+The six keyboard viewpoints exercise different visibility and shading loads. These measurements used the checked-in dive, Medium detail, Apple M4, desktop Chrome 157 and a 640 × 360 viewport at device scale 1. The dive kept its normal adaptive controller enabled. The HUD reported 640 × 360 at the end of each sample.
+
+| Viewpoint key | Mean animation callback rate | p95 interval between callbacks |
+|---|---:|---:|
+| 1 | 49.8 fps | 25.4 ms |
+| 2 | 67.6 fps | 17.5 ms |
+| 3 | 72.0 fps | 17.5 ms |
+| 4 | 66.7 fps | 17.5 ms |
+| 5 | 67.0 fps | 17.5 ms |
+| 6 | 65.8 fps | 17.5 ms |
+
+To repeat, bring the dive to the foreground, switch to each viewpoint in order, allow 1.5 seconds to settle and collect the next 120 consecutive `requestAnimationFrame` intervals. Divide the sample count by elapsed seconds for mean rate and sort the intervals for p95. This is one sequential run, so viewpoint 1 also had the least warm-up. Repeat in reverse order before attributing the first viewpoint's cost to its geometry. The five faster viewpoints still had a p95 above the 16.67 ms budget for 60 Hz.
 
 ## Complete inventory
 

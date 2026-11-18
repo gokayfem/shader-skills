@@ -24,10 +24,15 @@ def main():
         page.goto((ROOT / "gallery/studies.html").as_uri())
         page.click("#play")
         page.select_option("#size", "480")
-        page.select_option("#size", "auto")
-        for interval, expected in [(50, 480), (32, 480), (16, 640)]:
-            page.evaluate("ms=>{for(let i=0;i<45;i++)trackCadence(ms);show()}", interval)
-            assert page.locator("#view").evaluate("c=>c.width") == expected
+        for mode, steady, slow in [("auto", 32, 50), ("auto60", 18, 25)]:
+            page.select_option("#size", mode)
+            for interval, windows, expected in [(slow, 1, 480), (steady, 1, 480),
+                                                 (16, 3, 480), (16, 1, 640)]:
+                page.evaluate("""([ms, windows])=>{
+                    for(let i=0;i<45*windows;i++)trackCadence(ms);
+                    show();
+                }""", [interval, windows])
+                assert page.locator("#view").evaluate("c=>c.width") == expected
         page.select_option("#size", "480")
         scenes = page.locator("#scene option").evaluate_all("options => options.map(o=>o.value)")
         checks = {}

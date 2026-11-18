@@ -12,7 +12,7 @@ button{cursor:pointer}label{display:inline-flex;align-items:center;gap:8px}outpu
 <main><header><h1>Shader studies</h1><label>Scene <select id="scene"></select></label></header>
 <canvas id="view" width="800" height="450" aria-label="Live shader render"></canvas>
 <nav><button id="play">Pause</button><button id="reset">Reset</button><button id="step" hidden>Step</button><button id="save">Save PNG</button><label id="modeLabel">View <select id="mode"></select></label>
-<label>Resolution <select id="size"><option value="auto">Adaptive · target 30 fps</option><option value="480">480 × 270</option><option selected value="800">800 × 450</option><option value="1280">1280 × 720</option></select></label>
+<label>Resolution <select id="size"><option value="auto">Adaptive · target 30 fps</option><option value="auto60">Adaptive · target 60 fps</option><option value="480">480 × 270</option><option selected value="800">800 × 450</option><option value="1280">1280 × 720</option></select></label>
 <label id="reuseLabel" hidden><input id="reuse" type="checkbox" checked> Cache light paths</label><output id="clock"></output><output id="scale" hidden></output></nav><nav id="controls" aria-label="Scene parameters"></nav><p id="hint"></p><p id="error" role="alert"></p></main>
 <script>
 const DATA=/*SCENE_DATA*/null;
