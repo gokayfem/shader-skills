@@ -23,6 +23,7 @@ Tags: **exact** is a true Euclidean distance, safe for blending, AO, shadows and
 - [architecture](#architecture) - stable building parameters and filtered facade fields
 - [raymarch](#raymarch) - sphere tracing, normals, soft shadows and ambient occlusion for SDF scenes
 - [intersect](#intersect) - analytic ray-primitive intersections
+- [relativity](#relativity) - null rays in a Schwarzschild orbital plane, in units of the Schwarzschild radius.
 - [camera](#camera) - look-at frames, primary rays, field of view, thin-lens depth of field
 - [shading](#shading) - BRDF terms and practical lighting models
 - [water](#water) - finite-depth wave dispersion, analytic wave derivatives, exact dielectric Fresnel and RGB attenuation
@@ -223,6 +224,14 @@ intersect: analytic ray-primitive intersections. Rays are ro + t * rd with unit 
 - `float iPlane(vec3 ro, vec3 rd, vec3 n, float h)` - Ray vs plane dot(p, n) + h = 0 (unit n). Returns t, which is negative when the plane is behind the ray or parallel to it. *Use: floors, water, mirrors, clipping marches to a ground plane.*
 - `vec2 iSphere(vec3 ro, vec3 rd, vec3 c, float r)` - Ray vs sphere centered at c with radius r. Returns vec2(tNear, tFar), or vec2(-1) on a miss. Uses the precision-friendly form that measures from the closest point on the ray. *Use: bounding spheres, glass balls, eyeballs, planets, bubbles.*
 - `vec2 iBox(vec3 ro, vec3 rd, vec3 b)` - Ray vs axis-aligned box centered at the origin with half-extents b (slab method). Returns vec2(tNear, tFar), or vec2(-1) on a miss. Works when the ray starts inside (tNear < 0 < tFar). *Use: bounding boxes for raymarching, glass cubes, rooms.*
+- `vec2 iEllipsoid(vec3 ro, vec3 rd, vec3 radii)` - Ray interval for an axis-aligned ellipsoid at the origin with positive radii. Returns (-1,-1) on a miss. *Use: transparent sea creatures, squashable bubbles, bounded volume integration with a known optical path.*
+
+## relativity
+
+relativity: null rays in a Schwarzschild orbital plane, in units of the Schwarzschild radius.
+
+- `vec2 nullOrbitRate(vec2 state)` - Derivative of (u, du/dphi), where u = Schwarzschild radius / ray radius. phi is the orbital angle in radians. *Use: light bending around a spherical nonrotating black hole, photon sphere diagnostics.*
+- `vec2 nullOrbitStep(vec2 state, float angle)` - Advance a null geodesic by a fixed orbital angle with fourth-order Runge-Kutta. *Use: thin accretion disk crossings, black hole capture cones, critical orbit tests.*
 
 ## camera
 
@@ -272,6 +281,7 @@ color: transfer functions, perceptual color (Oklab / OkLCh), palettes, luminance
 - `vec3 oklchToLinearSrgb(vec3 lch)` - OkLCh (lightness, chroma, hue in radians) -> linear sRGB. Hue sweeps keep lightness constant. L about 0.4-0.9, C about 0.05-0.2 stays mostly in gamut. *Use: harmonious palettes, rainbow ramps with even brightness, per-instance hue variation.*
 - `vec3 cosinePalette(float t, vec3 a, vec3 b, vec3 c, vec3 d)` - Cosine palette a + b * cos(2 pi (c t + d)). Output is display-like (sRGB-ish), so decode it for albedo. Integer c values loop seamlessly over t in [0,1]. *Use: quick gradients, heat maps, psychedelic color cycling, per-id colors.*
 - `vec3 blackbody(float kelvin)` - Approximate linear sRGB color of a blackbody at temperature kelvin (1000-15000 K), normalized to max channel 1. Uses the Krystek (1985) Planckian-locus fit -> XYZ -> sRGB. *Use: fire, embers, lava, stars, incandescent lamps, sunset light, molten metal.*
+- `float braggPeakNm(float periodNm, float n, float cosIncidence)` - First-order peak wavelength for a periodic stack in air, using effective index n and layer period in nm. *Use: structural blue on butterfly wings, angle-dependent multilayer coatings.*
 
 ## tonemap
 

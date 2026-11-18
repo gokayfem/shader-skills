@@ -5,8 +5,8 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
 **Create, debug and refine procedural GLSL shaders with Claude Code, Codex, Cursor, GitHub Copilot and Gemini CLI.**
-Shader Skills combines an agent skill with **187 GLSL functions in 20 modules**, a dependency bundler, a checker
-and **12 ready-to-run Shadertoy examples**. Build SDF raymarched scenes, procedural textures, terrain, water,
+Shader Skills combines an agent skill with **191 GLSL functions in 21 modules**, a dependency bundler, a checker
+and **16 single-pass shaders and two multipass examples**. Build SDF raymarched scenes, procedural textures, terrain, water,
 clouds and generative art. The library is compiled in WebGL2 and checked with GPU property tests.
 
 ```bash
@@ -22,6 +22,20 @@ Choose `shader-art-coding` and your coding agent in the installer. Then ask:
 [GLSL library](skills/shader-art-coding/references/library-index.md) ·
 [Video-to-shader prompt](prompts/video-to-shader-prompt.md) ·
 [Releases](https://github.com/gokayfem/shader-skills/releases) · [Contributing](CONTRIBUTING.md)
+
+## Explore the shader studies
+
+[![Four live shader studies in motion](gallery/studies-motion.webp)](gallery/studies.html)
+
+Open [the self-contained shader viewer](gallery/studies.html) from a local checkout, or download the HTML using GitHub’s **Download raw file** button. It runs offline in a WebGL2 browser. Switch among 18 scenes, pause motion, inspect diagnostic views and change the controls while rendering.
+
+| [![Morpho wing study](gallery/morpho.png)](gallery/morpho.glsl) | [![Comb jelly under side light](gallery/comb-jelly.png)](gallery/comb-jelly.glsl) | [![Lensed accretion disk](gallery/lensed-disk.png)](gallery/lensed-disk.glsl) |
+|---|---|---|
+| **Morpho.** Change the optical period or watch the left and right wings flash as they tilt. | **Comb jelly.** Follow the light along eight rows of beating plates. Turn off the side light to isolate the transparent body. | **Accretion disk.** Lower the camera toward the disk and watch its far side arc over the shadow. Toggle light-path caching. |
+| [![Flow engraving](gallery/streamline-press.png)](gallery/streamline-press.glsl) | [![Reaction-diffusion print at step 400](gallery/reaction-diffusion.png)](gallery/reaction-diffusion) | [![Alpine valley](gallery/alpine-valley.png)](gallery/alpine-cache) |
+| **Streamline press.** Paper grain follows a vector field around a vermilion cylinder. Change its radius to move the stagnation points. | **Reaction–diffusion.** Drag to seed a two-channel feedback simulation. Change the feed and removal rates to grow a different pattern. | **Cached alpine valley.** Move the camera over a retained elevation texture. [Three-camera comparison](gallery/alpine-cache/benchmark.md) |
+
+The [research studies guide](skills/shader-art-coding/references/research-studies.md) links the original papers, explains the approximations and gives a second shot to try for each technique.
 
 ## Shader gallery
 
@@ -210,8 +224,8 @@ All three water presets and every annotated diagnostic view are compiled and ren
 | Lint + drift | `glsl_tools.py check` | docs and tags on every function, module order, no WebGL1 or sine-hash patterns, reference snippets identical to the library |
 | glslang compile | CI (`checks.yml`) | every library module, reference snippet and template compiles as GLSL ES 3.00 |
 | WebGL2 compile | `tests/` harness | all library/reference/template units and annotated quality/debug variants compile under ANGLE, which also enforces WebGL-only rules |
-| GPU property tests | `tests/properties.py` | 91 tests × 16,384 samples: Lipschitz, exactness, signs, brute-force curve distance, derivatives, divergence, ranges, round trips, facade filtering, water dispersion/Fresnel/attenuation |
-| Renders | harness + gallery | 12 beauty templates plus 17 quality/debug variants; no NaNs or black frames; beauty PNGs saved to `gallery/` |
+| GPU property tests | `tests/properties.py` | 95 tests × 16,384 samples: Lipschitz, exactness, signs, brute-force curve distance, derivatives, divergence, ranges, round trips, facade filtering, water dispersion/Fresnel/attenuation |
+| Renders | harness + gallery | 16 beauty templates plus 22 quality/debug variants; no NaNs or black frames; beauty PNGs saved to `gallery/` |
 | Bundler regressions | `tests/test_bundler.py` | conditional quality macros cannot hide dependencies; annotated variants replace the intended define and reject missing defines |
 | Skill effect | `evals/` (`claude plugin eval`, paid, manual) | output-rule adherence with the skill vs without it on 6 shader tasks, plus no false triggers on 3 near-miss tasks; see [evals/README.md](evals/README.md) |
 

@@ -30,7 +30,7 @@ INDEX_PATH = REF_DIR / "library-index.md"
 
 # Declaration order: a module may only depend on modules listed before it.
 MODULE_ORDER = [
-    "common", "hash", "noise", "pattern", "sdf3d", "sdf2d", "operators", "domain", "architecture", "raymarch", "intersect",
+    "common", "hash", "noise", "pattern", "sdf3d", "sdf2d", "operators", "domain", "architecture", "raymarch", "intersect", "relativity",
     "camera", "shading", "water", "color", "tonemap", "volume", "atmosphere", "post", "debug",
 ]
 
