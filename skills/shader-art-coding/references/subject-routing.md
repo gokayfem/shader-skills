@@ -24,6 +24,13 @@ section with the formulas. The formula files use geometry-first names; this tabl
 | landscape, terrain | heightfield march (scaled bound) | `terrain.glsl` |
 | sea, ocean, lake surface | heightfield trace in a wave slab + Fresnel reflection | `ocean.glsl` |
 | clouds, smoke, fog volumes, nebulae, fire | volume integration | `volumetric-clouds.glsl` |
+| Morpho, iridescent butterfly wing | absorbing wing pigment under angle-dependent scale return | `morpho.glsl` |
+| sea gooseberry, comb jelly | analytic optical path, eight moving comb rows, back-to-front compositing | `comb-jelly.glsl` |
+| black hole, accretion disk | null-ray orbital integration and disk-plane intersections | `lensed-disk.glsl` |
+| flow engraving, wind map, streamline print | line integral convolution of paper noise | `streamline-press.glsl` |
+| growing spots, labyrinth patterns, paintable chemical field | persistent two-channel reaction-diffusion | `multipass/reaction-diffusion/` |
+| static terrain on a moving camera | feedback height atlas and procedural fallback | `multipass/alpine-cache/` |
+| agate, gemstone cross-section, mineral strata | warped contours, filtered growth bands, Voronoi quartz faces | `banded-agate.glsl` |
 | texture, material swatch, wallpaper | 2D procedural pattern | `pattern-swatches.glsl` |
 | comparing noise families / learning noise | 2D scalar-field board | `noise-progression.glsl`; `noise-use-cases.md` |
 | game heightmap, biome map, designed river | 2D height + separate masks | `noise-terrain-map.glsl`; `hybridTerrainHeight`; `noise-use-cases.md` |

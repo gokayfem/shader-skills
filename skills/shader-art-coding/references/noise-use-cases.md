@@ -263,6 +263,13 @@ templates deliberately follow the repo's Shadertoy interface, without custom uni
 | Threshold / smoothstep | Occupancy and transition | Separate scalar fields from their masks; never use equal smoothstep edges |
 | World-space scale | Geometric height or density | Keep normalized noise distinct from meters or extinction coefficients |
 
+For grain on a receding surface, pass `fbmLod` the pixel width in **noise lattice cells**. In uniform fragment
+control flow, use the larger of `length(dFdx(q))` and `length(dFdy(q))` for noise coordinates `q`. Inside a
+ray-hit branch, estimate surface width from pixel angle × hit distance divided by the absolute view-normal
+cosine, then multiply by the material frequency. The terrain template applies this separately to snow and grain.
+With eight requested octaves and a footprint of 0.125 cells, only two noise evaluations survive. At 0.5 cells
+the result is the mean. Use this for material detail. Changing the field used for intersections can move a silhouette.
+
 For normals, account for the input frequency in the chain rule. For raymarching, noise-displaced or warped fields
 are generally not exact SDFs: bound derivatives or use conservative steps. For materials, evaluate colors in linear
 space, tonemap HDR once, then encode to sRGB once. Grayscale previews here intentionally display normalized values

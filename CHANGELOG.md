@@ -3,6 +3,13 @@
 Published versions and downloadable packages are available on
 [GitHub Releases](https://github.com/gokayfem/shader-skills/releases).
 
+## Unreleased
+
+- Four single-pass studies cover butterfly structural color, transparent comb rows, Schwarzschild lensing and streamline engraving. A two-channel feedback simulation adds paintable reaction–diffusion.
+- The offline viewer renders 18 scenes, exposes material and simulation controls, supports frame stepping and exports PNGs.
+- Static alpine elevations and fixed-camera black-hole light paths can be retained across animation frames. The terrain comparison reports image error and frame time at three camera positions.
+- The agate study and footprint-aware fBm bring filtered growth bands and terrain grain into the existing library. Shader checks catch unordered literal smoothstep edges.
+
 ## [2.0.0] — 2026-10-23
 
 First tagged GitHub release, matching the existing 2.0.0 plugin and extension manifests. This release packages

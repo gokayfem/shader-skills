@@ -628,9 +628,9 @@ GLSL:
 
 ```glsl
 float instanceSuitability(float height, float slope, float moisture, float dist) {
-    float altitude = smoothstep(0.05, 0.35, height) * smoothstep(1.0, 0.65, height);
-    float flatness = smoothstep(0.85, 0.35, slope);
-    float distanceFade = smoothstep(160.0, 20.0, dist);
+    float altitude = smoothstep(0.05, 0.35, height) * (1.0 - smoothstep(0.65, 1.0, height));
+    float flatness = (1.0 - smoothstep(0.35, 0.85, slope));
+    float distanceFade = (1.0 - smoothstep(20.0, 160.0, dist));
     return altitude * flatness * moisture * distanceFade;
 }
 ```
@@ -656,7 +656,7 @@ GLSL:
 ```glsl
 float clumpDensity(vec3 p, vec2 cellId) {
     float crown = 1.0 - smoothstep(0.35, 0.95, length(p.xz));
-    float vertical = smoothstep(-0.3, 0.15, p.y) * smoothstep(1.1, 0.45, p.y);
+    float vertical = smoothstep(-0.3, 0.15, p.y) * (1.0 - smoothstep(0.45, 1.1, p.y));
     float breakup = 0.65 + 0.35*fbmTerrain(p.xz*3.5 + cellId);
     return crown * vertical * breakup;
 }
@@ -720,7 +720,7 @@ Stylized ridge field with organic waviness.
 
 Debug view:
 
-Render `smoothstep(0.02, -0.01, layeredRidge(p))`.
+Render `(1.0 - smoothstep(-0.01, 0.02, layeredRidge(p)))`.
 
 ## 24. Curvilinear Basin/Path Mask
 
@@ -760,7 +760,7 @@ GLSL:
 
 ```glsl
 float detailFade(float dist) {
-    return smoothstep(180.0, 35.0, dist);
+    return (1.0 - smoothstep(35.0, 180.0, dist));
 }
 ```
 

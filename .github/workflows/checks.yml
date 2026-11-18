@@ -41,6 +41,10 @@ jobs:
           python -m playwright install --with-deps chromium
       - name: Run harness (SwiftShader)
         run: python tests/run_webgl.py --size 320x180
+      - name: Offline viewer and feedback simulation
+        run: python tests/check_viewer.py
+      - name: Compare cached and procedural terrain
+        run: python tests/compare_alpine_cache.py --width 240 --height 135 --atlas 1024
       - name: Upload results
         if: always()
         uses: actions/upload-artifact@v4
@@ -49,3 +53,4 @@ jobs:
           path: |
             build/webgl-results.json
             build/harness.html
+            build/alpine-cache/

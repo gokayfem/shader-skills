@@ -23,6 +23,7 @@ Tags: **exact** is a true Euclidean distance, safe for blending, AO, shadows and
 - [architecture](#architecture) - stable building parameters and filtered facade fields
 - [raymarch](#raymarch) - sphere tracing, normals, soft shadows and ambient occlusion for SDF scenes
 - [intersect](#intersect) - analytic ray-primitive intersections
+- [relativity](#relativity) - null rays in a Schwarzschild orbital plane, in units of the Schwarzschild radius.
 - [camera](#camera) - look-at frames, primary rays, field of view, thin-lens depth of field
 - [shading](#shading) - BRDF terms and practical lighting models
 - [water](#water) - finite-depth wave dispersion, analytic wave derivatives, exact dielectric Fresnel and RGB attenuation
@@ -82,6 +83,7 @@ noise: value, gradient and simplex noise (2D/3D, analytic derivatives), fBm, tur
 - `float latticeGradDot(vec3 cell, vec3 corner, vec3 f)` - Dot product of a hashed 3D gradient with the offset to its lattice corner.
 - `const int FBM_MAX_OCTAVES = 12;`
 - `float fbm(vec2 p, int octaves, float lacunarity, float persistence)` / `float fbm(vec2 p, int octaves)` / `float fbm(vec3 p, int octaves, float lacunarity, float persistence)` - Fractional Brownian motion over 2D gradient noise. Each octave is rotated to hide lattice alignment. persistence 0.5 is the classic look (H = 1). Lower is smoother, higher is rougher. *Use: clouds, terrain, dirt, roughness breakup, warping input.* Range about [-1,1].
+- `float fbmLod(vec2 p, int octaves, float footprint)` - Screen-filtered 2D fBm with the same spectrum as fbm(p, octaves). Pass the pixel width in input lattice cells. Each octave fades between 4 and 2 pixels per cell. Unresolved bands contribute their mean (zero). *Use: distant rock grain, mineral strata, terrain snow masks, moving procedural materials.*
 - `float erodedFbm(vec2 p, int octaves)` - Terrain fBm where each octave is damped by the accumulated slope, so detail settles in valleys and steep slopes stay smooth. This gives an eroded look without simulation. *Use: mountains, dunes, rocky ground.* Range about [-0.5,1].
 - `float ridgedFbm(vec2 p, int octaves)` - Ridged multifractal: inverted |noise| creates sharp crests; each octave is weighted by the previous one, so detail gathers along ridges. *Use: mountain ridges, lightning-like veins, canyons, eroded rock, alien landscapes.* Range about [0,1].
 - `float turbulence(vec2 p, int octaves)` / `float turbulence(vec3 p, int octaves)` - Perlin's turbulence: fBm of |noise|. The absolute value folds every zero crossing into a sharp crease, at every scale. *Use: fire, marble veins (sin(x + k * turbulence)), smoke wisps, electric glow, lava cracks, wind-torn clouds.* Range [0,1].
@@ -222,6 +224,14 @@ intersect: analytic ray-primitive intersections. Rays are ro + t * rd with unit 
 - `float iPlane(vec3 ro, vec3 rd, vec3 n, float h)` - Ray vs plane dot(p, n) + h = 0 (unit n). Returns t, which is negative when the plane is behind the ray or parallel to it. *Use: floors, water, mirrors, clipping marches to a ground plane.*
 - `vec2 iSphere(vec3 ro, vec3 rd, vec3 c, float r)` - Ray vs sphere centered at c with radius r. Returns vec2(tNear, tFar), or vec2(-1) on a miss. Uses the precision-friendly form that measures from the closest point on the ray. *Use: bounding spheres, glass balls, eyeballs, planets, bubbles.*
 - `vec2 iBox(vec3 ro, vec3 rd, vec3 b)` - Ray vs axis-aligned box centered at the origin with half-extents b (slab method). Returns vec2(tNear, tFar), or vec2(-1) on a miss. Works when the ray starts inside (tNear < 0 < tFar). *Use: bounding boxes for raymarching, glass cubes, rooms.*
+- `vec2 iEllipsoid(vec3 ro, vec3 rd, vec3 radii)` - Ray interval for an axis-aligned ellipsoid at the origin with positive radii. Returns (-1,-1) on a miss. *Use: transparent sea creatures, squashable bubbles, bounded volume integration with a known optical path.*
+
+## relativity
+
+relativity: null rays in a Schwarzschild orbital plane, in units of the Schwarzschild radius.
+
+- `vec2 nullOrbitRate(vec2 state)` - Derivative of (u, du/dphi), where u = Schwarzschild radius / ray radius. phi is the orbital angle in radians. *Use: light bending around a spherical nonrotating black hole, photon sphere diagnostics.*
+- `vec2 nullOrbitStep(vec2 state, float angle)` - Advance a null geodesic by a fixed orbital angle with fourth-order Runge-Kutta. *Use: thin accretion disk crossings, black hole capture cones, critical orbit tests.*
 
 ## camera
 
@@ -271,6 +281,7 @@ color: transfer functions, perceptual color (Oklab / OkLCh), palettes, luminance
 - `vec3 oklchToLinearSrgb(vec3 lch)` - OkLCh (lightness, chroma, hue in radians) -> linear sRGB. Hue sweeps keep lightness constant. L about 0.4-0.9, C about 0.05-0.2 stays mostly in gamut. *Use: harmonious palettes, rainbow ramps with even brightness, per-instance hue variation.*
 - `vec3 cosinePalette(float t, vec3 a, vec3 b, vec3 c, vec3 d)` - Cosine palette a + b * cos(2 pi (c t + d)). Output is display-like (sRGB-ish), so decode it for albedo. Integer c values loop seamlessly over t in [0,1]. *Use: quick gradients, heat maps, psychedelic color cycling, per-id colors.*
 - `vec3 blackbody(float kelvin)` - Approximate linear sRGB color of a blackbody at temperature kelvin (1000-15000 K), normalized to max channel 1. Uses the Krystek (1985) Planckian-locus fit -> XYZ -> sRGB. *Use: fire, embers, lava, stars, incandescent lamps, sunset light, molten metal.*
+- `float braggPeakNm(float periodNm, float n, float cosIncidence)` - First-order peak wavelength for a periodic stack in air, using effective index n and layer period in nm. *Use: structural blue on butterfly wings, angle-dependent multilayer coatings.*
 
 ## tonemap
 

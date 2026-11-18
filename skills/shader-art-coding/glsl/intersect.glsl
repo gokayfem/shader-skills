@@ -38,3 +38,14 @@ vec2 iBox(vec3 ro, vec3 rd, vec3 b) {
     if (tN > tF || tF < 0.0) return vec2(-1.0);
     return vec2(tN, tF);
 }
+
+/// Ray interval for an axis-aligned ellipsoid at the origin with positive radii. Returns (-1,-1) on a miss.
+/// @use transparent sea creatures, squashable bubbles, bounded volume integration with a known optical path
+/// @see Analytic sphere intersection in scaled coordinates.
+vec2 iEllipsoid(vec3 ro, vec3 rd, vec3 radii) {
+    vec3 v = rd / radii;
+    float speed = length(v);
+    vec2 t = iSphere(ro / radii, v / speed, vec3(0.0), 1.0);
+    if (t.x == -1.0 && t.y == -1.0) return vec2(-1.0);
+    return t / speed;
+}

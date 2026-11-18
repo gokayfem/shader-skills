@@ -133,35 +133,23 @@ vec4 gradientNoiseD(vec3 p) {
     return vec4(value, grad);
 }
 const int FBM_MAX_OCTAVES = 12;
-// Fractional Brownian motion over 2D gradient noise. Each octave is rotated to hide lattice alignment. persistence 0.5 is the classic look (H = 1). Lower is smoother, higher is rougher.
-float fbm(vec2 p, int octaves, float lacunarity, float persistence) {
-    const mat2 octaveRotation = mat2(0.8, 0.6, -0.6, 0.8);
-    float sum = 0.0, amp = 1.0, norm = 0.0;
+// Screen-filtered 2D fBm with the same spectrum as fbm(p, octaves). Pass the pixel width in input lattice cells. Each octave fades between 4 and 2 pixels per cell. Unresolved bands contribute their mean (zero).
+float fbmLod(vec2 p, int octaves, float footprint) {
+    int count = clamp(octaves, 0, FBM_MAX_OCTAVES);
+    if (count == 0) return 0.0;
+    float width = max(footprint, 0.0);
+    float sum = 0.0, amplitude = 1.0;
+    const mat2 rotation = mat2(0.8, 0.6, -0.6, 0.8);
     for (int i = 0; i < FBM_MAX_OCTAVES; i++) {
-        if (i >= octaves) break;
-        sum += amp * gradientNoise(p);
-        norm += amp;
-        amp *= persistence;
-        p = lacunarity * (octaveRotation * p) + vec2(17.13, -3.71);
+        if (i >= count || width >= 0.5) break;
+        float keep = 1.0 - smoothstep(0.25, 0.5, width);
+        sum += amplitude * keep * gradientNoise(p);
+        p = 2.01 * (rotation * p) + vec2(17.13, -3.71);
+        amplitude *= 0.5;
+        width *= 2.01;
     }
-    return 1.4 * sum / norm;
-}
-// 2D fBm with the usual defaults (lacunarity 2.01 so octave peaks never re-align, persistence 0.5).
-float fbm(vec2 p, int octaves) { return fbm(p, octaves, 2.01, 0.5); }
-// fBm over 3D gradient noise.
-float fbm(vec3 p, int octaves, float lacunarity, float persistence) {
-    const mat3 octaveRotation = mat3(0.00, 0.80, 0.60,
-                                     -0.80, 0.36, -0.48,
-                                     -0.60, -0.48, 0.64);
-    float sum = 0.0, amp = 1.0, norm = 0.0;
-    for (int i = 0; i < FBM_MAX_OCTAVES; i++) {
-        if (i >= octaves) break;
-        sum += amp * gradientNoise(p);
-        norm += amp;
-        amp *= persistence;
-        p = lacunarity * (octaveRotation * p) + vec3(17.13, -3.71, 5.29);
-    }
-    return sum / norm;
+    // Normalize by the requested spectrum so removing detail never boosts the remaining bands.
+    return 1.4 * sum / (2.0 * (1.0 - exp2(-float(count))));
 }
 // Terrain fBm where each octave is damped by the accumulated slope, so detail settles in valleys and steep slopes stay smooth. This gives an eroded look without simulation.
 float erodedFbm(vec2 p, int octaves) {
@@ -411,14 +399,13 @@ vec3 render(vec2 fragCoord) {
     mat3 cam = cameraMatrix(ro, ta, 0.0);
     vec3 rd = cameraRay(cam, uv, FOCAL);
 
-    vec3 sky = atmosphereSky(rd, SUN_DIR, ro.y, SUN_INTENSITY);
     vec3 sunColor = SUN_INTENSITY * 0.12 * sunTransmittance(ro.y, SUN_DIR);
     vec3 hit = raymarch(ro, rd, 0.01, 40.0, 1.0);
 #if DEBUG_MODE == 4
     return debugHeat(hit.z / float(RAYMARCH_MAX_STEPS));
 #endif
     if (hit.x < 0.0) {
-        return sky + sunColor * 40.0 * sunDisk(rd, SUN_DIR, 0.012, 2.0 / (iResolution.y * FOCAL));
+        return atmosphereSky(rd, SUN_DIR, ro.y, SUN_INTENSITY) + sunColor * 40.0 * sunDisk(rd, SUN_DIR, 0.012, 2.0 / (iResolution.y * FOCAL));
     }
 
     float t = hit.x;
@@ -426,10 +413,12 @@ vec3 render(vec2 fragCoord) {
     vec3 n = calcNormal(p, 0.001 * t);
 
     // material masks: rock on steep slopes, grass on flats, snow on high upward-facing ground
+    // Project a pixel cone onto the local surface, stretching it at grazing incidence.
+    float footprint = (2.0 * t / (iResolution.y * FOCAL)) / max(abs(dot(n, rd)), 0.05);
     float flatness = smoothstep(0.72, 0.88, n.y);
-    float snow = smoothstep(SNOW_LINE - 0.15, SNOW_LINE + 0.1, p.y + 0.25 * fbm(p.xz * 6.0, 3))
+    float snow = smoothstep(SNOW_LINE - 0.15, SNOW_LINE + 0.1, p.y + 0.25 * fbmLod(p.xz * 6.0, 3, footprint * 6.0))
                * smoothstep(0.55, 0.8, n.y);
-    float grain = 0.5 + 0.5 * fbm(p.xz * 40.0, 4);
+    float grain = 0.5 + 0.5 * fbmLod(p.xz * 40.0, 4, footprint * 40.0);
     vec3 rock = mix(vec3(0.10, 0.085, 0.07), vec3(0.20, 0.17, 0.14), grain);
     vec3 grass = mix(vec3(0.06, 0.08, 0.03), vec3(0.11, 0.12, 0.05), grain);
     vec3 albedo = mix(rock, grass, flatness * (1.0 - smoothstep(0.6, 1.0, p.y)));

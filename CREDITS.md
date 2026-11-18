@@ -29,6 +29,7 @@ default to CC BY-NC-SA 3.0, which is incompatible with MIT.
 | Cornette-Shanks phase function | Cornette and Shanks 1992 | math |
 | Simplex noise and its analytic gradient | Stefan Gustavson, "Simplex noise demystified" (2005); Gustavson and McEwan, "Tiling simplex noise and flow noise in two and three dimensions", JCGT 11(1), 2022 | papers; math reimplemented, the psrdnoise reference code is not used |
 | Flow noise (rotating gradients) | Perlin and Neyret, "Flow Noise", SIGGRAPH 2001 technical sketch | math |
+| Footprint-filtered fBm | [Pharr, Jakob and Humphreys, PBRT 3e, Noise](https://pbr-book.org/3ed-2018/Texture/Noise) | octave clamping concept, original implementation |
 | Turbulence | Ken Perlin, "An Image Synthesizer", SIGGRAPH 1985 | math |
 | Gradient-noise learning reference | [Ken Perlin, improved noise](https://cs.nyu.edu/~perlin/noise/) | reference only; fixed-permutation Java code not copied |
 | Noise progression: fBm, ridges, cellular construction, domain warping | [Gonzalez Vivo and Lowe, The Book of Shaders, chapters 12](https://thebookofshaders.com/12/) and [13](https://thebookofshaders.com/13/) | explanatory sources; no source code copied |
@@ -44,3 +45,15 @@ default to CC BY-NC-SA 3.0, which is incompatible with MIT.
 | Finite-depth gravity-wave dispersion | [MIT Marine Hydrodynamics lecture 20](https://ocw.mit.edu/courses/2-20-marine-hydrodynamics-13-021-spring-2005/5d48a5937971d973fd8ca90c051a83f8_lecture20.pdf) | mathematical relation, original implementation |
 | Exact dielectric Fresnel and Beer-Lambert attenuation | [PBRT reflection/transmission](https://www.pbr-book.org/4ed/Reflection_Models/Specular_Reflection_and_Transmission), [transmittance](https://www.pbr-book.org/4ed/Volume_Scattering/Transmittance) | equations reimplemented; no PBRT source copied |
 | Coastal refraction pipeline comparison | [GPU Gems 2 chapter 19, Generic Refraction Simulation](https://developer.nvidia.com/gpugems/gpugems2/part-ii-shading-lighting-and-shadows/chapter-19-generic-refraction-simulation) | reference for scene-buffer alternatives; local coastal shader traces a procedural heightfield instead |
+
+
+## Research studies
+
+| Study | Primary source | Local implementation |
+|---|---|---|
+| Morpho structural color | [Kinoshita et al.](https://forma.katachi-jp.com/abstract/1702/17020103.html), [wing-scale curvature study](https://doi.org/10.1098/rsbl.2024.0358) | Original cubic outlines, procedural scale response and effective optical-period model |
+| Comb-row color | [Optical properties of the iridescent organ of Beroë cucumis](https://doi.org/10.1103/PhysRevE.73.041916) | Eight animated rows on two analytic interfaces, artistic RGB diffraction palette |
+| Schwarzschild disk | [Bruneton](https://arxiv.org/abs/2010.08735) | Null-ray ODE, original RK4 tracer, disk material and fixed-camera transfer texture |
+| Streamline engraving | [Cabral and Leedom](https://www.osti.gov/servlets/purl/10185520-hIb0EP/), [MIT cylinder flow](https://web.mit.edu/fluids-modules/www/potential_flows/Lectures/lec10/lecture10.pdf) | Bidirectional midpoint integration, tapered noise convolution and procedural print |
+| Reaction–diffusion | [Pearson](https://arxiv.org/abs/patt-sol/9304003) | Original finite-difference ping-pong simulation and relief display |
+| Elevation texture reuse | [Asirvatham and Hoppe](https://hhoppe.com/proj/gpugcm/) | Fixed rectangular cache for the existing alpine scene |

@@ -259,7 +259,7 @@ Use contour-band debug to inspect whether the field remains smooth:
 ```glsl
 vec3 contourDebug(float d) {
     float bands = 0.5 + 0.5*cos(80.0*d);
-    float surface = smoothstep(0.02, 0.0, abs(d));
+    float surface = (1.0 - smoothstep(0.0, 0.02, abs(d)));
     return mix(vec3(bands), vec3(1.0, 0.35, 0.1), surface);
 }
 ```
@@ -364,7 +364,7 @@ Do not start with individual leaves. Start with a density envelope:
 ```glsl
 float foliageDensity(vec3 p, vec2 cellId) {
     float crown = 1.0 - smoothstep(0.6, 1.0, length(p.xz));
-    float vertical = smoothstep(-0.4, 0.2, p.y) * smoothstep(1.2, 0.5, p.y);
+    float vertical = smoothstep(-0.4, 0.2, p.y) * (1.0 - smoothstep(0.5, 1.2, p.y));
     float breakup = 0.65 + 0.35*fbm(p.xz*4.0 + cellId, 4);
     return crown * vertical * breakup;
 }
@@ -376,9 +376,9 @@ For heightfield forests, place clumps using a grid over heightfield, but derive 
 
 ```glsl
 float treeSuitability(float height, float slope, float moisture, float dist) {
-    float altitude = smoothstep(0.05, 0.35, height) * smoothstep(1.0, 0.65, height);
-    float flatness = smoothstep(0.85, 0.35, slope);
-    float distanceFade = smoothstep(140.0, 20.0, dist);
+    float altitude = smoothstep(0.05, 0.35, height) * (1.0 - smoothstep(0.65, 1.0, height));
+    float flatness = (1.0 - smoothstep(0.35, 0.85, slope));
+    float distanceFade = (1.0 - smoothstep(20.0, 140.0, dist));
     return altitude * flatness * moisture * distanceFade;
 }
 ```
@@ -499,7 +499,7 @@ Composition overlays can be temporary debug views:
 
 ```glsl
 float ruleLine(vec2 uv, float x) {
-    return smoothstep(0.006, 0.0, abs(uv.x - x));
+    return (1.0 - smoothstep(0.0, 0.006, abs(uv.x - x)));
 }
 vec3 compositionOverlay(vec2 uv, vec3 col) {
     float g = 0.618;

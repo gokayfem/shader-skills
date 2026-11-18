@@ -3,7 +3,7 @@ name: shader-art-coding
 description: >-
   Writes, debugs, and art-directs procedural GLSL fragment shaders (Shadertoy mainImage, WebGL2 / GLSL ES 3.00):
   SDF raymarching, procedural buildings/cities, 2D distance-field graphics, noise / fBm / domain warping, terrain,
-  ocean/coastal water optics, clouds and other volumes, PBR lighting, color and tonemapping. Ships a verified GLSL building-block library with a bundler and
+  ocean/coastal water optics, clouds and other volumes, structural color, black hole lensing, vector-field engraving, feedback simulations, PBR lighting, color and tonemapping. Ships a verified GLSL building-block library with a bundler and
   checker. Use when the user asks for a shader, Shadertoy, GLSL/.frag/.glsl code, a raymarcher, an SDF scene, a
   procedural texture or generative visual, or wants a shader fixed, optimized, ported or explained. Not for
   HLSL/Unity ShaderLab or non-graphics GPU compute.
@@ -30,7 +30,9 @@ can produce it, build it in inspectable stages, and verify each stage with a deb
 1. **Target.** State the image: subject, camera and framing, dominant forms, materials, light, motion.
 2. **Route.** Pick the rendering model and starting template from `references/subject-routing.md`:
    2D distance fields (posters, icons, patterns), SDF raymarching (objects, characters), heightfield marching
-   (landscapes), volume integration (clouds, smoke, fire).
+   (landscapes), volume integration (clouds, smoke, fire). For optical mechanisms, orbital light paths,
+   vector-field prints or evolving patterns, use `references/research-studies.md` to select the representation
+   and a visible test of its behavior.
 3. **Assemble from the library.** Find building blocks with `python3 scripts/glsl_tools.py search <words>` or
    `references/library-index.md`, and call them by name. Do not paste or re-derive library code; it is tested.
 4. **First image fast.** Coordinates, background, one primitive, one light. Then add the debug views.
@@ -80,6 +82,7 @@ Read only what the task needs:
 | `references/noise-use-cases.md` | choosing Perlin/value/simplex/cellular noise, fBm/ridged/billow/warp/hybrid recipes, game use cases and primary-source code links |
 | `references/procedural-buildings.md` | parcel IDs, building massing, setbacks/roofs, facade filtering, city repetition and game integration |
 | `references/terrain-production.md` | terrain representations, designed valleys, slope/altitude materials, tracing limits, chunks and LOD |
+| `references/research-studies.md` | optics, null geodesics, streamline engraving, reaction-diffusion, terrain caching and offline playback |
 | `references/water-quality.md` | high-quality ocean/coastal water, wave derivatives, Fresnel/refraction/absorption, foam, presets and engine-side upgrades |
 | `references/shader-workflow.md` | planning a complex shader end to end; review checklist |
 | `references/composition-and-debugging.md` | the image reads poorly, or something is visually wrong |
@@ -91,7 +94,9 @@ Read only what the task needs:
 Templates in `templates/` are complete, render-verified starting points (gallery in the repository README):
 `raymarch-sdf.glsl`, `terrain.glsl`, `ocean.glsl`, `volumetric-clouds.glsl`, `sdf-2d-poster.glsl`,
 `pattern-swatches.glsl`, `noise-progression.glsl`, `noise-terrain-map.glsl`, `procedural-city.glsl`,
-`alpine-valley.glsl`, `coastal-water.glsl`.
+`alpine-valley.glsl`, `coastal-water.glsl`, `banded-agate.glsl`, `morpho.glsl`, `comb-jelly.glsl`, `lensed-disk.glsl`, `streamline-press.glsl`.
+For two-pass requests deliver both buffers and their channel bindings. Build the offline viewer with
+`scripts/build_viewer.py` to review motion and diagnostic views.
 
 ## Output expectations
 

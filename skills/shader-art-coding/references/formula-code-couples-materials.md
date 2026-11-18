@@ -437,7 +437,7 @@ GLSL:
 
 ```glsl
 float verticalStain(vec3 p) {
-    float flow = smoothstep(0.7, -0.4, p.y);
+    float flow = (1.0 - smoothstep(-0.4, 0.7, p.y));
     float breakup = fbm(vec2(p.x*1.7, p.z*1.7), 4);
     return flow * smoothstep(0.35, 0.8, breakup);
 }

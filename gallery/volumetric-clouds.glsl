@@ -242,7 +242,7 @@ vec3 simpleSky(vec3 rd, vec3 sunDir) {
     vec3 zenith = vec3(0.12, 0.28, 0.62);
     vec3 horizon = vec3(0.62, 0.74, 0.88);
     vec3 col = mix(horizon, zenith, pow(y, 0.5));
-    col = mix(col, vec3(0.28, 0.26, 0.24), smoothstep(0.0, -0.08, rd.y));
+    col = mix(col, vec3(0.28, 0.26, 0.24), 1.0 - smoothstep(-0.08, 0.0, rd.y));
     float mu = max(dot(rd, sunDir), 0.0);
     col += vec3(1.0, 0.75, 0.45) * (0.25 * pow(mu, 8.0) + 0.6 * pow(mu, 64.0) + 2.0 * pow(mu, 512.0));
     return col;
@@ -284,9 +284,10 @@ const float EXPOSURE = 1.0;
 
 // Density in [0, DENSITY]. Use fewer octaves for the light-march samples.
 float cloudDensity(vec3 p, int octaves) {
+    if (COVERAGE <= 0.0) return 0.0;
     float h = (p.y - CLOUD_BOTTOM) / (CLOUD_TOP - CLOUD_BOTTOM);
     if (h < 0.0 || h > 1.0) return 0.0;
-    float profile = smoothstep(0.0, 0.12, h) * smoothstep(1.0, 0.45, h);   // flat-ish bottoms, rounded tops
+    float profile = smoothstep(0.0, 0.12, h) * (1.0 - smoothstep(0.45, 1.0, h));   // flat-ish bottoms, rounded tops
     vec3 q = p * 0.55 + vec3(iTime * WIND, 0.0, 0.0);
     float n = 0.5 + 0.5 * fbm(q, octaves, 2.02, 0.5);
     float d = saturate((n * profile - (1.0 - COVERAGE)) / COVERAGE);
@@ -306,6 +307,7 @@ vec3 render(vec2 fragCoord) {
     // clip the march to the cloud slab
     float t0 = (CLOUD_BOTTOM - ro.y) / rd.y;
     float t1 = min((CLOUD_TOP - ro.y) / rd.y, 30.0);
+    if (t1 <= t0) return col;
     const int STEPS = 48;
     float dt = (t1 - t0) / float(STEPS);
     float t = t0 + dt * interleavedGradientNoise(floor(fragCoord), iFrame);   // jitter hides slicing

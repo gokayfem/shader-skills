@@ -192,20 +192,33 @@ vec3 render(vec2 fragCoord) {
     // capillary ripples: two octaves of simplex flow noise whose gradients spin, so they churn instead of sliding
     float footprint = sqrt(fp.z * fp.w);   // ripples are isotropic: use the ellipse's mean size
     float keepRipple = smoothstep(2.0, 6.0, 0.8 / footprint);
-    vec3 r1 = simplexNoiseD(p.xz * 1.3 + vec2(0.3, 0.9) * iTime, 1.3 * iTime);
-    vec3 r2 = simplexNoiseD(p.xz * 3.7 - vec2(0.6, 0.2) * iTime, -2.1 * iTime);
-    slope += RIPPLE * keepRipple * (1.3 * r1.yz + 0.5 * 3.7 * r2.yz * smoothstep(2.0, 6.0, 0.3 / footprint));
+    float keepFine = smoothstep(2.0, 6.0, 0.3 / footprint);
+    if (keepRipple > 0.0) {
+        vec3 r1 = simplexNoiseD(p.xz * 1.3 + vec2(0.3, 0.9) * iTime, 1.3 * iTime);
+        slope += RIPPLE * keepRipple * 1.3 * r1.yz;
+        if (keepFine > 0.0) {
+            vec3 r2 = simplexNoiseD(p.xz * 3.7 - vec2(0.6, 0.2) * iTime, -2.1 * iTime);
+            slope += RIPPLE * keepRipple * 0.5 * 3.7 * keepFine * r2.yz;
+        }
+    }
     lostSlope2 += RIPPLE * RIPPLE * 4.0 * (1.0 - keepRipple);
     vec3 n = normalize(vec3(-slope.x, 1.0, -slope.y));
 
     // foam: the convexity of the big waves' crests sets how much of a billow-noise lace is covered, so patches
     // grow from crisp filaments on mild crests to solid caps on the sharpest ones
-    float lace = billowFbm(p.xz * vec2(1.2, 2.4) + vec2(0.0, 0.5 * iTime), 6);
-    float coverage = 0.7 * smoothstep(0.08, 0.3, crest);   // below 1, so even the sharpest caps stay broken
-    float foam = FOAM_AMOUNT * coverage * smoothstep(1.0 - coverage, 1.15 - coverage, lace);
-    // inside a patch, foam is a network of bubbles: dense along Voronoi borders, thin inside the cells
-    float bubbles = smoothstep(0.22, 0.0, voronoiBorder(p.xz * vec2(2.5, 4.0), 1.0).x);
-    foam *= mix(0.75, mix(0.4, 1.0, bubbles), smoothstep(2.0, 6.0, 0.3 / footprint));
+    float coverage = 0.7 * smoothstep(0.08, 0.3, crest);
+    float foam = 0.0;
+    if (coverage > 0.0) {
+        float lace = billowFbm(p.xz * vec2(1.2, 2.4) + vec2(0.0, 0.5 * iTime), 6);
+        foam = FOAM_AMOUNT * coverage * smoothstep(1.0 - coverage, 1.15 - coverage, lace);
+        float bubbleTone = 0.75;
+        if (foam > 0.0 && keepFine > 0.0) {
+            float border = voronoiBorder(p.xz * vec2(2.5, 4.0), 1.0).x;
+            float bubbles = 1.0 - smoothstep(0.0, 0.22, border);
+            bubbleTone = mix(bubbleTone, mix(0.4, 1.0, bubbles), keepFine);
+        }
+        foam *= bubbleTone;
+    }
 
     vec3 v = -rd;
     float NoV = max(dot(n, v), 1e-3);

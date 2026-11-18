@@ -48,14 +48,13 @@ vec3 render(vec2 fragCoord) {
     mat3 cam = cameraMatrix(ro, ta, 0.0);
     vec3 rd = cameraRay(cam, uv, FOCAL);
 
-    vec3 sky = atmosphereSky(rd, SUN_DIR, ro.y, SUN_INTENSITY);
     vec3 sunColor = SUN_INTENSITY * 0.12 * sunTransmittance(ro.y, SUN_DIR);
     vec3 hit = raymarch(ro, rd, 0.01, 40.0, 1.0);
 #if DEBUG_MODE == 4
     return debugHeat(hit.z / float(RAYMARCH_MAX_STEPS));
 #endif
     if (hit.x < 0.0) {
-        return sky + sunColor * 40.0 * sunDisk(rd, SUN_DIR, 0.012, 2.0 / (iResolution.y * FOCAL));
+        return atmosphereSky(rd, SUN_DIR, ro.y, SUN_INTENSITY) + sunColor * 40.0 * sunDisk(rd, SUN_DIR, 0.012, 2.0 / (iResolution.y * FOCAL));
     }
 
     float t = hit.x;
@@ -63,10 +62,12 @@ vec3 render(vec2 fragCoord) {
     vec3 n = calcNormal(p, 0.001 * t);
 
     // material masks: rock on steep slopes, grass on flats, snow on high upward-facing ground
+    // Project a pixel cone onto the local surface, stretching it at grazing incidence.
+    float footprint = (2.0 * t / (iResolution.y * FOCAL)) / max(abs(dot(n, rd)), 0.05);
     float flatness = smoothstep(0.72, 0.88, n.y);
-    float snow = smoothstep(SNOW_LINE - 0.15, SNOW_LINE + 0.1, p.y + 0.25 * fbm(p.xz * 6.0, 3))
+    float snow = smoothstep(SNOW_LINE - 0.15, SNOW_LINE + 0.1, p.y + 0.25 * fbmLod(p.xz * 6.0, 3, footprint * 6.0))
                * smoothstep(0.55, 0.8, n.y);
-    float grain = 0.5 + 0.5 * fbm(p.xz * 40.0, 4);
+    float grain = 0.5 + 0.5 * fbmLod(p.xz * 40.0, 4, footprint * 40.0);
     vec3 rock = mix(vec3(0.10, 0.085, 0.07), vec3(0.20, 0.17, 0.14), grain);
     vec3 grass = mix(vec3(0.06, 0.08, 0.03), vec3(0.11, 0.12, 0.05), grain);
     vec3 albedo = mix(rock, grass, flatness * (1.0 - smoothstep(0.6, 1.0, p.y)));

@@ -129,6 +129,53 @@ EXACT_ALLOWANCE = 0.01
 
 # Hand-written properties. Each body is the inside of `int runTest(vec4 a, vec4 b)`; return failure bits.
 PROPERTIES = [
+    ("Bragg peak shortens with obliquity and scales with period", """
+        float d=100.0+100.0*a.x, n=1.1+b.y, c=a.z;
+        float peak=braggPeakNm(d,n,c);
+        return !(peak<=braggPeakNm(d,n,1.0)+1e-3
+              && abs(braggPeakNm(d,n,1.0)-2.0*d*n)<1e-3
+              && abs(braggPeakNm(2.0*d,n,-c)-2.0*peak)<1e-3) ? 1 : 0;""", {}),
+    ("ellipsoid endpoints lie on surface, inside exit and miss sentinel", """
+        vec3 r=vec3(0.3)+a.xyz;
+        vec3 dir=normalize(b.xyz+0.01);
+        vec3 ro=dir*3.0;
+        vec2 t=iEllipsoid(ro,-dir,r);
+        vec2 inside=iEllipsoid(vec3(0),dir,r);
+        return !(t.x>0.0 && t.y>t.x && inside.x<0.0 && inside.y>0.0
+              && abs(length((ro-dir*t.x)/r)-1.0)<2e-4
+              && abs(length((ro-dir*t.y)/r)-1.0)<2e-4
+              && all(equal(iEllipsoid(vec3(4,4,4),vec3(1,0,0),r),vec2(-1)))) ? 1 : 0;""", {}),
+    ("null orbit preserves energy and the circular photon orbit", """
+        vec2 p=vec2(0.12+0.25*a.x,(b.y-0.5)*0.12);
+        float energy=dot(p,p)-p.x*p.x*p.x;
+        for(int i=0;i<12;i++) p=nullOrbitStep(p,0.035);
+        float error=abs(dot(p,p)-p.x*p.x*p.x-energy);
+        return !(error<2e-5 && length(nullOrbitRate(vec2(2.0/3.0,0)))<1e-6) ? 1 : 0;""", {}),
+    ("null orbit captures and escapes on opposite sides of critical impact", """
+        // At infinity, u=0 and u'=1/b. Units are Schwarzschild radii.
+        float critical=1.5*sqrt(3.0);
+        bool capture=a.x>0.5;
+        float impact=critical*(capture?0.997:1.003);
+        vec2 p=vec2(0,1.0/impact);
+        for(int i=0;i<250;i++){
+            p=nullOrbitStep(p,0.05);
+            if(p.x<0.0 || p.x>=1.0) break;
+        }
+        return (capture?p.x>=1.0:p.x<0.0)?0:1;""", {}),
+    ("fbmLod matches resolved bands, fades continuously and skips subpixel detail", """
+        vec2 p = (a.xy - 0.5) * 24.0;
+        int n = 1 + int(b.x * 11.0);
+        float ref = fbm(p, n);
+        float width = 0.5 * b.y;
+        float x = fbmLod(p, n, width);
+        int f = 0;
+        if (!(abs(fbmLod(p, n, 0.0) - ref) < 1e-5)) f |= 1;
+        if (!(fbmLod(p, n, 0.5 + a.w) == 0.0 && fbmLod(p, 0, width) == 0.0)) f |= 2;
+        if (!(abs(x - fbmLod(p, n, width * 1.01)) < 0.03)) f |= 4;
+        // At width 0.375 only half the first band survives.
+        float halfBand = 0.7 * gradientNoise(p) / (2.0 * (1.0 - exp2(-float(n))));
+        if (!(abs(fbmLod(p, n, 0.375) - halfBand) < 1e-5)) f |= 8;
+        return f;""", {}),
     ("building profiles remain inside declared ranges", """
         vec2 id = floor((a.xy-0.5)*200.0);
         vec4 p = buildingProfile(id,vec2(3.0,16.0),vec2(0.6,1.2));

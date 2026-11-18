@@ -9,6 +9,8 @@ skill rather than develop it, see the README.
 skills/shader-art-coding/      the skill (this is what gets installed)
   SKILL.md                     entry point: workflow, conventions, hard rules, reference routing
   glsl/                        building-block library, one module per file (see MODULE_ORDER in glsl_tools.py)
+  multipass/                   source for the feedback simulation and cached terrain example
+  viewer/                      reusable standalone WebGL2 viewer host
   templates/                   complete shaders written against the library (rendered in gallery/)
   references/                  guides and formula-code couples; library-index.md is generated
   scripts/glsl_tools.py        search | bundle | check | index  (stdlib Python only)
@@ -28,6 +30,8 @@ python3 tests/build_gallery.py                                         # regener
 python3 tests/build_harness.py && python3 tests/serve.py               # WebGL2 checks: open /build/harness.html
 python3 tests/build_harness.py --save-gallery                          # same, and rewrite gallery/*.png
 python3 tests/run_webgl.py                                             # headless WebGL2 checks (needs playwright)
+python3 tests/check_viewer.py                                          # offline controls, 2-pass rendering and simulation
+python3 tests/compare_alpine_cache.py                                  # multi-camera timings and image comparisons
 python3 tests/check_evals.py                                           # validate evals/ without running it (free)
 ```
 

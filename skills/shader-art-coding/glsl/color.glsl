@@ -87,3 +87,11 @@ vec3 blackbody(float kelvin) {
     rgb = max(rgb, 0.0);
     return rgb / max(max(rgb.r, rgb.g), max(rgb.b, 1e-6));
 }
+
+/// First-order peak wavelength for a periodic stack in air, using effective index n and layer period in nm.
+/// @use structural blue on butterfly wings, angle-dependent multilayer coatings
+/// @see Kinoshita et al., Forma 17 (2002), 103-121. Effective optical period only.
+float braggPeakNm(float periodNm, float n, float cosIncidence) {
+    float c = clamp(abs(cosIncidence), 0.0, 1.0);
+    return 2.0 * periodNm * sqrt(max(n * n - 1.0 + c * c, 0.0));
+}

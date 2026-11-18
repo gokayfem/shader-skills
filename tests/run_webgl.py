@@ -2,7 +2,7 @@
 """Run the WebGL2 harness headless in Chromium (SwiftShader on machines without a GPU) and fail on any error.
 
   pip install playwright && python3 -m playwright install --with-deps chromium
-  python3 tests/run_webgl.py [--save-gallery] [--size 320x180]
+  python3 tests/run_webgl.py [--save-gallery] [--benchmark] [--size 320x180]
 
 Writes build/webgl-results.json. Exit code 0 only if every unit compiles, every property test passes and every
 template renders without NaNs or a black frame.
@@ -24,6 +24,7 @@ import serve  # noqa: E402
 
 def main() -> int:
     save = "--save-gallery" in sys.argv
+    benchmark = int("--benchmark" in sys.argv)
     size = "320x180"
     if "--size" in sys.argv:
         size = sys.argv[sys.argv.index("--size") + 1]
@@ -40,7 +41,7 @@ def main() -> int:
         browser = pw.chromium.launch(args=["--enable-unsafe-swiftshader", "--ignore-gpu-blocklist"])
         page = browser.new_page()
         page.on("console", lambda msg: print("console:", msg.text) if msg.type == "error" else None)
-        page.goto(f"http://127.0.0.1:{port}/build/harness.html?w={width}&h={height}")
+        page.goto(f"http://127.0.0.1:{port}/build/harness.html?w={width}&h={height}&benchmark={benchmark}")
         page.wait_for_function("window.DONE === true", timeout=20 * 60 * 1000, polling=1000)
         results = page.evaluate("window.RESULTS")
         browser.close()
@@ -60,6 +61,10 @@ def main() -> int:
         print(f"TEST FAIL {t['name']}: {t.get('rates') or t.get('error')}")
     for r in render_fail:
         print(f"RENDER FAIL {r['name']}: {r.get('stats') or r.get('error')}")
+    for render in results["renders"]:
+        timing = render.get("stats", {}).get("warmMedianMs")
+        if timing is not None:
+            print(f"{render['name']}: {timing:.2f} ms warm median at {width}x{height}")
     if results.get("fatal"):
         print("FATAL:", results["fatal"])
         return 1
