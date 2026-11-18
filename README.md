@@ -4,10 +4,9 @@
 [![Release](https://img.shields.io/github/v/release/gokayfem/shader-skills)](https://github.com/gokayfem/shader-skills/releases/latest)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-**Create, debug and refine procedural GLSL shaders with Claude Code, Codex, Cursor, GitHub Copilot and Gemini CLI.**
-Shader Skills combines an agent skill with **196 GLSL functions in 21 modules**, a dependency bundler, a checker
-and **22 single-pass shaders and three multipass examples**. Build SDF raymarched scenes, procedural textures, terrain, water,
-clouds and generative art. The library is compiled in WebGL2 and checked with GPU property tests.
+Shader Skills helps coding agents write, debug and optimize procedural GLSL for Shadertoy and WebGL2. Start with an editable scene, change the lighting or geometry, and bundle it into a single shader. The skill includes **196 GLSL functions across 21 modules**, a dependency bundler and a checker. It works with Claude Code, Codex, Cursor, GitHub Copilot and Gemini CLI.
+
+The full repository includes **25 interactive shader studies** and **two WebGPU worlds**. Use the studies to isolate an effect, then explore how a swimmable kelp forest or a streamed landscape handles visibility, lighting and frame time. [Offline shader viewer](gallery/studies.html) · [WebGPU worlds](worlds/README.md) · [Performance guide](skills/shader-art-coding/references/frame-budgets.md)
 
 ```bash
 npx skills add gokayfem/shader-skills
@@ -27,7 +26,7 @@ Choose `shader-art-coding` and your coding agent in the installer. Then ask:
 
 [![Four live shader studies in motion](gallery/studies-motion.webp)](gallery/studies.html)
 
-Open [the self-contained shader viewer](gallery/studies.html) from a local checkout, or download the HTML using GitHub’s **Download raw file** button. It runs offline in a WebGL2 browser. Switch among 25 scenes, pause motion, inspect diagnostic views and change the controls while rendering.
+Open [the self-contained shader viewer](gallery/studies.html) from a local checkout, or download the HTML using GitHub’s **Download raw file** button. It runs offline in a WebGL2 browser. Explore 22 single-pass shaders and three multipass examples. Pause motion, inspect diagnostic views, or switch between fixed resolution and adaptive 30 or 60 fps targets.
 
 | [![Morpho wing study](gallery/morpho.png)](gallery/morpho.glsl) | [![Comb jelly under side light](gallery/comb-jelly.png)](gallery/comb-jelly.glsl) | [![Lensed accretion disk](gallery/lensed-disk.png)](gallery/lensed-disk.glsl) |
 |---|---|---|
@@ -49,7 +48,11 @@ Compare the chamber to its [80-patch feedback solver](gallery/room-radiosity) in
 
 The full checkout also contains a [swimmable WebGPU dive](worlds/dive/index.html) and a Rust/WebGPU landscape renderer with a browser editor. Open the [worlds guide](worlds/README.md) for launch instructions and subsystem walkthroughs, or [browse all 541 source files and assets](worlds/catalog.md).
 
-[Frame-budget guide and benchmarks](skills/shader-art-coding/references/frame-budgets.md) · Diagnose expensive scenes with paired resolution measurements, inspect the rendering passes, and try the 30 or 60 fps adaptive modes in the offline viewer.
+## Measure rendering performance
+
+Where you spend pixels matters. On an Apple M4 in Chrome, reducing the fixed cloud study from 800 × 450 to 480 × 270 cut median image-pass time from **15.00 to 5.55 ms**. The same change saved **0.70 ms** on the wreck. Each figure includes a one-pixel readback and comes from 60 samples per size. [Benchmark method and p95 results](skills/shader-art-coding/references/frame-budgets.md#reproduce-the-gallery-resolution-experiment)
+
+The worlds show how those decisions look in a complete renderer. Trace half-resolution light shafts and distance-based kelp geometry in the dive, or follow cluster rejection and coarse-first streaming in the landscape. [Rendering techniques](skills/shader-art-coding/references/frame-budgets.md) · [Frame pacing at six dive viewpoints](worlds/README.md#desktop-dive-timing)
 
 ## Shader gallery
 
@@ -268,7 +271,8 @@ the same animation time. The JSON records all seven samples and their median in 
 skills/shader-art-coding/   the skill: SKILL.md, glsl/ library, templates/, references/, scripts/glsl_tools.py
 tests/                      WebGL2 harness, GPU property tests, gallery builder, headless runner
 evals/                      plugin eval suite: with vs without the skill
-gallery/                    rendered templates and paste-ready bundles
+gallery/                    offline viewer, rendered previews and paste-ready shader bundles
+worlds/                     WebGPU dive, landscape engine, launch instructions and source catalog
 adapters/                   prompts for tools without skill support
 .claude-plugin/             Claude Code plugin + marketplace manifests
 ```
@@ -280,6 +284,6 @@ Release history and downloads are in the [changelog](CHANGELOG.md) and
 
 ## Credits and license
 
-MIT. Every function is an original implementation of a published technique. The sources are listed in
+MIT. The GLSL library contains original implementations of published techniques. The two WebGPU worlds retain their own MIT notices. Library sources are listed in
 [CREDITS.md](CREDITS.md): Inigo Quilez's articles, hg_sdf, Jarzynski & Olano's GPU hash study, Hillaire's
 atmosphere and volume work, AgX, Khronos PBR Neutral, Oklab and others.
