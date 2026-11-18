@@ -13,6 +13,10 @@ python3 scripts/serve.py
 
 Open http://localhost:8765/?scene=web to load the baked temple. See the [engine instructions](landscape-engine/README.md) for scene selection and native controls. Additional high-resolution scene packs stream separately. The [editor guide](landscape-engine/docs/editor.md) covers building a project in the browser. The [offline WebGL2 studies](../gallery/studies.html) include smaller editable implementations of seven related scenes and lighting experiments.
 
+| [![Dive through the kelp to the stone fluke](dive-preview.png)](dive/index.html) | [![Baked temple scene with streamed geometry](temple-preview.png)](landscape-engine/README.md) |
+|---|---|
+| Medium detail, first dive viewpoint | Local web-quality temple bake, daylight |
+
 ## From a pixel to its implementation
 
 | What to investigate | Where to look and what to change |
