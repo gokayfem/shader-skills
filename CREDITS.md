@@ -29,6 +29,7 @@ default to CC BY-NC-SA 3.0, which is incompatible with MIT.
 | Cornette-Shanks phase function | Cornette and Shanks 1992 | math |
 | Simplex noise and its analytic gradient | Stefan Gustavson, "Simplex noise demystified" (2005); Gustavson and McEwan, "Tiling simplex noise and flow noise in two and three dimensions", JCGT 11(1), 2022 | papers; math reimplemented, the psrdnoise reference code is not used |
 | Flow noise (rotating gradients) | Perlin and Neyret, "Flow Noise", SIGGRAPH 2001 technical sketch | math |
+| Footprint-filtered fBm | [Pharr, Jakob and Humphreys, PBRT 3e, Noise](https://pbr-book.org/3ed-2018/Texture/Noise) | octave clamping concept, original implementation |
 | Turbulence | Ken Perlin, "An Image Synthesizer", SIGGRAPH 1985 | math |
 | Gradient-noise learning reference | [Ken Perlin, improved noise](https://cs.nyu.edu/~perlin/noise/) | reference only; fixed-permutation Java code not copied |
 | Noise progression: fBm, ridges, cellular construction, domain warping | [Gonzalez Vivo and Lowe, The Book of Shaders, chapters 12](https://thebookofshaders.com/12/) and [13](https://thebookofshaders.com/13/) | explanatory sources; no source code copied |

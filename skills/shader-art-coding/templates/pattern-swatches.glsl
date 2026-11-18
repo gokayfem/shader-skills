@@ -51,7 +51,7 @@ vec3 checker(vec2 p, float px) {
     float z = 1.0 / max(0.55 - p.y, 0.02);
     vec2 floorUV = vec2(p.x * z, z) * 1.5;
     float c = filteredChecker(floorUV, vec2(px * z * z * 1.5 + px * z * 1.5));
-    return mix(vec3(0.05), vec3(0.8), c) * smoothstep(0.55, 0.3, p.y);
+    return mix(vec3(0.05), vec3(0.8), c) * (1.0 - smoothstep(0.3, 0.55, p.y));
 }
 
 void mainImage(out vec4 fragColor, in vec2 fragCoord) {

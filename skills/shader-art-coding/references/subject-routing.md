@@ -24,6 +24,7 @@ section with the formulas. The formula files use geometry-first names; this tabl
 | landscape, terrain | heightfield march (scaled bound) | `terrain.glsl` |
 | sea, ocean, lake surface | heightfield trace in a wave slab + Fresnel reflection | `ocean.glsl` |
 | clouds, smoke, fog volumes, nebulae, fire | volume integration | `volumetric-clouds.glsl` |
+| agate, gemstone cross-section, mineral strata | warped contours, filtered growth bands, Voronoi quartz faces | `banded-agate.glsl` |
 | texture, material swatch, wallpaper | 2D procedural pattern | `pattern-swatches.glsl` |
 | comparing noise families / learning noise | 2D scalar-field board | `noise-progression.glsl`; `noise-use-cases.md` |
 | game heightmap, biome map, designed river | 2D height + separate masks | `noise-terrain-map.glsl`; `hybridTerrainHeight`; `noise-use-cases.md` |

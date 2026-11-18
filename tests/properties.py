@@ -129,6 +129,20 @@ EXACT_ALLOWANCE = 0.01
 
 # Hand-written properties. Each body is the inside of `int runTest(vec4 a, vec4 b)`; return failure bits.
 PROPERTIES = [
+    ("fbmLod matches resolved bands, fades continuously and skips subpixel detail", """
+        vec2 p = (a.xy - 0.5) * 24.0;
+        int n = 1 + int(b.x * 11.0);
+        float ref = fbm(p, n);
+        float width = 0.5 * b.y;
+        float x = fbmLod(p, n, width);
+        int f = 0;
+        if (!(abs(fbmLod(p, n, 0.0) - ref) < 1e-5)) f |= 1;
+        if (!(fbmLod(p, n, 0.5 + a.w) == 0.0 && fbmLod(p, 0, width) == 0.0)) f |= 2;
+        if (!(abs(x - fbmLod(p, n, width * 1.01)) < 0.03)) f |= 4;
+        // At width 0.375 only half the first band survives.
+        float halfBand = 0.7 * gradientNoise(p) / (2.0 * (1.0 - exp2(-float(n))));
+        if (!(abs(fbmLod(p, n, 0.375) - halfBand) < 1e-5)) f |= 8;
+        return f;""", {}),
     ("building profiles remain inside declared ranges", """
         vec2 id = floor((a.xy-0.5)*200.0);
         vec4 p = buildingProfile(id,vec2(3.0,16.0),vec2(0.6,1.2));

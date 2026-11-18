@@ -54,5 +54,13 @@ float scene(vec2 p) { return gradientNoise(p); }
             gt.template_variants("// @variant QUALITY=3\n#define DEBUG_MODE 0\n")
 
 
+class ShaderLint(unittest.TestCase):
+    def test_smoothstep_edges(self):
+        for edges in ("1., .25", "2e-2, 0.02", "-0.2, -1.0"):
+            self.assertTrue(gt.lint_shader(f"smoothstep({edges}, x)", "test", False))
+        source = "smoothstep(-0.5, 0.0, x) + smoothstep(lo, hi, x); // smoothstep(1., 0., x)"
+        self.assertFalse(gt.lint_shader(source, "test", False))
+
+
 if __name__ == "__main__":
     unittest.main()

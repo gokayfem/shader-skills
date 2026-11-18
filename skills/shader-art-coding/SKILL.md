@@ -91,7 +91,7 @@ Read only what the task needs:
 Templates in `templates/` are complete, render-verified starting points (gallery in the repository README):
 `raymarch-sdf.glsl`, `terrain.glsl`, `ocean.glsl`, `volumetric-clouds.glsl`, `sdf-2d-poster.glsl`,
 `pattern-swatches.glsl`, `noise-progression.glsl`, `noise-terrain-map.glsl`, `procedural-city.glsl`,
-`alpine-valley.glsl`, `coastal-water.glsl`.
+`alpine-valley.glsl`, `coastal-water.glsl`, `banded-agate.glsl`.
 
 ## Output expectations
 

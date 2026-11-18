@@ -11,8 +11,15 @@ const float SNOW_ALTITUDE=1.9;
 const float FAR_DISTANCE=70.0;
 const int ALPINE_TRACE_STEPS=320;
 
+float alpineValleyMask(float x) { return 1.0-exp(-0.085*x*x); }
+
+// The unit-gradient corner dots are bounded by sqrt(2); quintic interpolation is convex.
+// Thus |fbm| < 2, |erodedFbm| < 2*sqrt(2), and ridgedFbm <= 1. With the height
+// coefficients below, 0.31 + 23*valley bounds the full terrain before evaluating noise.
+float alpineCeiling(float x) { return 0.31 + 23.0 * alpineValleyMask(x); }
+
 float alpineHeight(vec2 p) {
-    float valley=1.0-exp(-0.085*p.x*p.x);
+    float valley=alpineValleyMask(p.x);
     float peaks=0.65+1.8*erodedFbm(p*vec2(0.30,0.25)+vec2(2.0,7.0),6)
                 +0.35*ridgedFbm(p*0.2,4);
     float broad=0.5+0.5*fbm(p*0.12,4);
@@ -28,8 +35,8 @@ vec3 traceAlpine(vec3 ro,vec3 rd) {
     float t=0.02,previous=0.0;
     for(int i=0;i<ALPINE_TRACE_STEPS;i++) {
         vec3 p=ro+rd*t;
-        float gap=p.y-alpineHeight(p.xz);
-        if(gap<0.0) {
+        if (rd.y >= 0.0 && p.y > 23.31) break;
+        if (p.y <= alpineCeiling(p.x) && p.y < alpineHeight(p.xz)) {
             float lo=previous,hi=t;
             for(int j=0;j<10;j++) {
                 float mid=0.5*(lo+hi);
@@ -57,12 +64,11 @@ vec3 alpineRender(vec2 coord) {
     vec3 ro=vec3(0.15,2.1,10.0-0.25*iTime);
     ro.y=max(ro.y,alpineHeight(ro.xz)+0.7);
     vec3 rd=cameraRay(cameraMatrix(ro,vec3(0.0,1.9,-15.0),0.0),uv,1.8);
-    vec3 sky=alpineSky(rd);
     vec3 hit=traceAlpine(ro,rd);
 #if DEBUG_MODE == 4
     return debugHeat(hit.z/float(ALPINE_TRACE_STEPS));
 #endif
-    if(hit.x<0.0)return sky;
+    if(hit.x<0.0)return alpineSky(rd);
     vec3 p=ro+rd*hit.x;
     float footprint=hit.x*2.0/(iResolution.y*1.8);
     vec3 n=calcNormal(p,max(0.002,footprint*0.5));

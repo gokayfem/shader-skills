@@ -204,6 +204,28 @@ float fbm(vec2 p, int octaves, float lacunarity, float persistence) {
 /// @range about [-1,1]
 float fbm(vec2 p, int octaves) { return fbm(p, octaves, 2.01, 0.5); }
 
+/// Screen-filtered 2D fBm with the same spectrum as fbm(p, octaves). Pass the pixel width in input lattice cells.
+/// Each octave fades between 4 and 2 pixels per cell. Unresolved bands contribute their mean (zero).
+/// @use distant rock grain, mineral strata, terrain snow masks, moving procedural materials
+/// @see https://pbr-book.org/3ed-2018/Texture/Noise (footprint-based octave clamping)
+float fbmLod(vec2 p, int octaves, float footprint) {
+    int count = clamp(octaves, 0, FBM_MAX_OCTAVES);
+    if (count == 0) return 0.0;
+    float width = max(footprint, 0.0);
+    float sum = 0.0, amplitude = 1.0;
+    const mat2 rotation = mat2(0.8, 0.6, -0.6, 0.8);
+    for (int i = 0; i < FBM_MAX_OCTAVES; i++) {
+        if (i >= count || width >= 0.5) break;
+        float keep = 1.0 - smoothstep(0.25, 0.5, width);
+        sum += amplitude * keep * gradientNoise(p);
+        p = 2.01 * (rotation * p) + vec2(17.13, -3.71);
+        amplitude *= 0.5;
+        width *= 2.01;
+    }
+    // Normalize by the requested spectrum so removing detail never boosts the remaining bands.
+    return 1.4 * sum / (2.0 * (1.0 - exp2(-float(count))));
+}
+
 /// fBm over 3D gradient noise.
 /// @use clouds, smoke, nebulae, solid marble
 /// @range about [-1,1]

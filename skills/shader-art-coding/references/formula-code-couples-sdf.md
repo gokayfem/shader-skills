@@ -97,7 +97,7 @@ Debug view:
 ```glsl
 vec3 debugEllipsoid(vec3 p) {
     float d = sdEllipsoid(p, vec3(0.7, 1.0, 0.55));
-    return mix(vec3(fract(16.0*d)), vec3(1.0, 0.25, 0.1), smoothstep(0.02, 0.0, abs(d)));
+    return mix(vec3(fract(16.0*d)), vec3(1.0, 0.25, 0.1), (1.0 - smoothstep(0.0, 0.02, abs(d))));
 }
 ```
 
@@ -128,7 +128,7 @@ Debug view:
 ```glsl
 vec3 debugBox(vec3 p) {
     float d = sdBox(p, vec3(0.8, 0.25, 0.35));
-    return vec3(smoothstep(0.08, -0.02, d));
+    return vec3((1.0 - smoothstep(-0.02, 0.08, d)));
 }
 ```
 
@@ -190,7 +190,7 @@ Debug view:
 ```glsl
 vec3 debugCapsule(vec3 p) {
     float d = sdCapsule(p, vec3(-0.6, 0.0, 0.0), vec3(0.6, 0.3, 0.0), 0.12);
-    return mix(vec3(0.1), vec3(0.9), smoothstep(0.03, -0.03, d));
+    return mix(vec3(0.1), vec3(0.9), (1.0 - smoothstep(-0.03, 0.03, d)));
 }
 ```
 
@@ -221,7 +221,7 @@ Debug view:
 ```glsl
 vec3 debugTorus(vec3 p) {
     float d = sdTorus(p, vec2(0.8, 0.08));
-    return vec3(smoothstep(0.04, -0.02, d));
+    return vec3((1.0 - smoothstep(-0.02, 0.04, d)));
 }
 ```
 
@@ -353,7 +353,7 @@ Debug view:
 ```glsl
 vec3 debugLocalTransform(vec3 p) {
     float d = posedEllipsoid(p, vec3(0.0), vec3(0.45, 0.8, 0.35), 0.45);
-    return vec3(smoothstep(0.05, -0.02, d));
+    return vec3((1.0 - smoothstep(-0.02, 0.05, d)));
 }
 ```
 
@@ -384,7 +384,7 @@ Debug view:
 vec3 debugMirror(vec3 p) {
     vec3 q = mirrorX(p);
     float d = sdSphere(q - vec3(0.32, 0.15, 0.0), 0.15);
-    return vec3(smoothstep(0.03, -0.01, d));
+    return vec3((1.0 - smoothstep(-0.01, 0.03, d)));
 }
 ```
 
@@ -402,7 +402,7 @@ GLSL:
 ```glsl
 vec3 contourDebug(float d) {
     float bands = 0.5 + 0.5*cos(80.0*d);
-    float surface = smoothstep(0.02, 0.0, abs(d));
+    float surface = (1.0 - smoothstep(0.0, 0.02, abs(d)));
     return mix(vec3(bands), vec3(1.0, 0.35, 0.1), surface);
 }
 ```
@@ -450,7 +450,7 @@ Debug view:
 vec3 debugSector(vec3 p) {
     float id;
     vec3 q = cylindricalSector(p, 12.0, id);
-    return vec3(fract(id*0.17), fract(id*0.37), fract(id*0.61)) * smoothstep(0.48, 0.0, abs(q.x));
+    return vec3(fract(id*0.17), fract(id*0.37), fract(id*0.61)) * (1.0 - smoothstep(0.0, 0.48, abs(q.x)));
 }
 ```
 
@@ -557,7 +557,7 @@ Debug view:
 ```glsl
 vec3 debugMortar(vec3 p) {
     float d = sdInterstitialShell(p, 1.0, 0.025);
-    return vec3(0.35, 0.34, 0.31) * smoothstep(0.03, -0.01, d);
+    return vec3(0.35, 0.34, 0.31) * (1.0 - smoothstep(-0.01, 0.03, d));
 }
 ```
 
@@ -637,7 +637,7 @@ float apertureCurve(float x, float open) {
 
 float apertureMask(vec2 uv, float open) {
     float y = apertureCurve(uv.x, open);
-    return smoothstep(0.025, 0.0, abs(uv.y - y));
+    return (1.0 - smoothstep(0.0, 0.025, abs(uv.y - y)));
 }
 ```
 
@@ -667,13 +667,13 @@ GLSL:
 ```glsl
 float softGrooveCurve(vec2 uv) {
     float center = -0.04 + 0.06*uv.x*uv.x;
-    float width = 0.018 * smoothstep(0.55, 0.05, abs(uv.x));
+    float width = 0.018 * (1.0 - smoothstep(0.05, 0.55, abs(uv.x)));
     return abs(uv.y - center) - width;
 }
 
 float softGrooveMask(vec2 uv) {
     float d = softGrooveCurve(uv);
-    return smoothstep(0.02, -0.005, d);
+    return (1.0 - smoothstep(-0.005, 0.02, d));
 }
 ```
 

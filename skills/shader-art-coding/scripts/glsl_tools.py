@@ -346,6 +346,10 @@ def lint_shader(src: str, where: str, complete: bool) -> list[Finding]:
     for pattern, level, msg in SHADER_RULES:
         if re.search(pattern, code, re.M):
             out.append(Finding(level, where, msg))
+    literal = r"([+-]?(?:\d+\.?\d*|\.\d+)(?:[eE][+-]?\d+)?)[fF]?"
+    for edge in re.finditer(rf"\bsmoothstep\s*\(\s*{literal}\s*,\s*{literal}\s*,", code):
+        if float(edge[1]) >= float(edge[2]):
+            out.append(Finding("error", where, f"smoothstep edges {edge[1]}, {edge[2]} must increase"))
     if complete and not re.search(r"\bvoid\s+mainImage\s*\(\s*out\s+vec4\s+\w+\s*,\s*in\s+vec2\s+\w+\s*\)", code):
         out.append(Finding("error", where, "missing 'void mainImage(out vec4 fragColor, in vec2 fragCoord)'"))
     for m in re.finditer(r"\bfor\s*\(([^;]*);([^;]*);", code):
@@ -372,9 +376,7 @@ def lint_library(lib: Library) -> list[Finding]:
                 out.append(Finding("warning", where, "doc comment has no @use line"))
             if re.match(r"sd[A-Z]", it.name) and not ({"exact", "bound", "approx"} & set(tags)):
                 out.append(Finding("error", where, "SDF needs an @exact, @bound or @approx tag"))
-        for pattern, level, msg in SHADER_RULES[:5] + SHADER_RULES[5:6]:
-            if re.search(pattern, strip_comments(it.text), re.M):
-                out.append(Finding(level, where, msg))
+        out.extend(lint_shader(it.text, where, complete=False))
         bad_deps = [d for d in it.deps if any(MODULE_ORDER.index(o.module) > MODULE_ORDER.index(it.module)
                                               for o in lib.by_name[d])]
         if bad_deps:

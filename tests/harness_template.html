@@ -124,6 +124,18 @@ async function main() {
       const l = (a + b + c) / 3; sum += l; if (l < 0.004) black++; if (a > 1.001 || b > 1.001 || c > 1.001) over++;
     }
     const n = W * H; const stats = { nanPct: 100 * nan / n, blackPct: 100 * black / n, mean: sum / n, overPct: 100 * over / n, ms };
+    if (params.get('benchmark') === '1' && !r.diagnostic) {
+      // The first draw above warms the program. Read back identical frames to include GPU completion.
+      const samples = [];
+      for (let pass = 0; pass < 7; pass++) {
+        const start = performance.now();
+        draw(pr.p, W, H, { iResolution: [W, H, 1], iTime: r.time, iFrame: 0, iMouse: [0, 0, 0, 0] });
+        gl.readPixels(0, 0, W, H, gl.RGBA, floatOK ? gl.FLOAT : gl.UNSIGNED_BYTE, data);
+        samples.push(performance.now() - start);
+      }
+      stats.warmSamplesMs = samples;
+      stats.warmMedianMs = [...samples].sort((a, b) => a - b)[3];
+    }
     const ok = nan === 0 && stats.blackPct < 95 && stats.mean > 0.02;
     // visible PNG
     canvas.width = W; canvas.height = H; gl.bindFramebuffer(gl.FRAMEBUFFER, null);

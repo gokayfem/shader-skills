@@ -409,7 +409,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     vec2 sp = uv - vec2(0.42, 0.18);
     float sun = sdCircle(sp, 0.36);
     float gaps = filteredStripes(sp.y * 14.0 + 0.5, px * 14.0);
-    float gapMask = mix(1.0, gaps, smoothstep(0.0, -0.3, sp.y)) ;
+    float gapMask = mix(1.0, gaps, (1.0 - smoothstep(-0.3, 0.0, sp.y)));
     col = mix(col, srgbToLinear(SUN) * 1.6, fillAA(sun, px) * gapMask);
     col += srgbToLinear(SUN) * 0.25 * exp(-6.0 * max(sun, 0.0));   // glow
 
