@@ -1,4 +1,4 @@
-"""Build an offline WebGL2 viewer for the templates and both two-pass examples."""
+"""Build an offline WebGL2 viewer for the templates and the two-pass examples."""
 import argparse
 import json
 import re
@@ -12,7 +12,13 @@ def multipass_sources(lib):
     folder = gt.SKILL_DIR / "multipass/reaction-diffusion"
     reaction = {name: gt.bundle_source(lib, (folder / (name + ".glsl")).read_text(), keep_docs=False)
                 for name in ("image", "buffer-a")}
-    return {"alpine-cache": ("cache", passes()), "reaction-diffusion": ("simulation", reaction)}
+    room_dir = gt.SKILL_DIR / "multipass/room-radiosity"
+    chamber = (gt.TEMPLATE_DIR / "pigment-chamber.glsl").read_text()
+    geometry, image = chamber.split("void mainImage(", 1)
+    common = geometry + (room_dir / "transport.glsl").read_text()
+    room = {"image": gt.bundle_source(lib, "#define ROOM_RADIOSITY 1\n" + common + "void mainImage(" + image),
+            "buffer-a": gt.bundle_source(lib, common + (room_dir / "buffer-a.glsl").read_text())}
+    return {"room-radiosity": ("radiosity", room), "alpine-cache": ("cache", passes()), "reaction-diffusion": ("simulation", reaction)}
 
 
 def build(output, check=False):

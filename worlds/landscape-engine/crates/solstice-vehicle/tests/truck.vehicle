@@ -1,0 +1,60 @@
+# A four-wheel-drive desert pickup: 2.8 tonnes, a supercharged 5.2-litre V8, a ten-speed
+# automatic, a part-time transfer case with a 2.64 low range, and long-travel suspension on
+# 35-inch all-terrain tyres. Its figures are those published for such a truck. It is test data
+# for the vehicle model off the road, and the tests that drive it (truck.rs, ruts.rs, and
+# solstice-game's things.rs) hold it to what such a truck does.
+
+mass 2800                          # 2694 kg at the kerb, with a driver and some fuel
+inertia 7600 8300 1800             # pitch, yaw, roll
+centre 0 0.78 -0.38                # 56% of its weight on the front axle, high as a truck's is
+body 1.96 1.3 5.0 at 0 1.27 0      # what it hits things with: its cab and tray, above the
+                                   # line from bumper to bumper that its wheels keep clear
+tray 1.55 0.545 1.70 at 0 0.905 1.90   # the tray, inside, inside: what is
+                                   # put in it lies in it, and can be thrown out of it
+
+# Thirteen inches of wheel travel at the front and fourteen at the rear, on soft springs: about
+# 1.3 Hz, with dampers firm enough that 2.8 tonnes settles in one move rather than bouncing. The
+# rear is a live axle with next to no anti-roll bar, so that it can cross its wheels.
+front at=2.003 track=1.872 radius=0.4365 inertia=3.6 driven=yes
+front spring=52000 bump=5400 rebound=10200 bar=11000 travel=0.17,0.16 roll_centre=0.15
+front brake=3900 grip=1
+rear at=1.683 track=1.872 radius=0.4365 inertia=4.2 driven=yes
+rear spring=44000 bump=4700 rebound=8900 bar=3000 travel=0.19,0.17 roll_centre=0.35
+rear brake=2300 grip=1
+
+# An all-terrain tyre: about the friction of a road tyre, less than a slick's, gripping best at
+# more slip and giving way gently.
+tyre grip=1.0,0.95 peak=0.13,9 along=1.5,0.3 across=1.35,0.1
+tyre load=7000 sensitivity=0.1 relaxation=0.5
+
+engine idle=700 limit=7000 inertia=0.5 friction=45,0.012
+torque 1000 520
+torque 1500 640
+torque 2000 720
+torque 2500 780
+torque 3000 820
+torque 3500 850
+torque 4250 868                    # 640 lb ft
+torque 5000 850
+torque 5500 830
+torque 6000 805
+torque 6650 771                    # 537 kW: 720 hp
+torque 7000 720
+torque 7400 600
+
+gears 4.696 2.985 2.146 1.769 1.52 1.275 1 0.854 0.689 0.636
+final 4.1
+reverse 4.866
+gearbox shift=0.18 efficiency=0.88 clutch=1500 cruise=0.42
+# Both differentials are open until they are locked: one wheel in the air or in a bog takes the
+# drive, which is what the lockers are for.
+diff preload=40 power=0 coast=0
+front_diff preload=20 power=0 coast=0
+transfer low=2.64 front=0.5 lock=30000 locker=30000
+
+aero drag=1.5 downforce=0 balance=0.5
+steering lock=34 ackermann=0.7 quick=0.55
+geometry anti_dive=0.2 anti_squat=0.25
+# Its traction control lets a wheel slip as far as the ground under it grips best at, as the
+# truck's off-road modes do. No stability control: off the road a slide is how it turns.
+assists abs=yes traction=yes stability=no descent=yes

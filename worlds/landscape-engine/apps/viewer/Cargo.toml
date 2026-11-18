@@ -1,0 +1,53 @@
+[package]
+name = "viewer"
+description = "Interactive viewer for Solstice scenes, on the desktop and in the browser."
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[lib]
+name = "solstice_viewer"
+crate-type = ["cdylib", "rlib"]
+
+# The native viewer always has play mode; only the web's plain build goes without.
+[[bin]]
+name = "viewer"
+path = "src/main.rs"
+required-features = ["gameplay"]
+
+# Play mode: a scene's game, with scripts. On by default; the plain web viewer is built without
+# it, so a page that only looks at scenes downloads none of it (docs/gameplay.md, Viewers).
+[features]
+default = ["gameplay"]
+gameplay = ["dep:solstice-game"]
+# The editor's page (docs/editor.md): picking, moving instances and the map of what made them.
+# Only `editor.html` loads a build with it.
+editor = []
+
+[dependencies]
+solstice-asset.workspace = true
+solstice-game = { workspace = true, optional = true }
+solstice-render.workspace = true
+glam.workspace = true
+log.workspace = true
+wgpu.workspace = true
+
+[target.'cfg(not(target_arch = "wasm32"))'.dependencies]
+env_logger = "0.11"
+png = "0.17"
+pollster.workspace = true
+winit = "0.30"
+
+[target.'cfg(target_arch = "wasm32")'.dependencies]
+console_error_panic_hook = "0.1"
+console_log = "1"
+js-sys = "0.3"
+wasm-bindgen = "0.2"
+wasm-bindgen-futures = "0.4"
+web-sys = { version = "0.3", features = [
+    "Document",
+    "Element",
+    "HtmlCanvasElement",
+    "Response",
+    "Window",
+] }

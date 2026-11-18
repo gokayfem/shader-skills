@@ -87,3 +87,13 @@ vec3 atmosphereSky(vec3 rd, vec3 sunDir, float viewHeightKm, float sunIntensity)
     }
     return radiance;
 }
+
+/// Lambertian light on the visible hemisphere of a projected disk. xy are in disk radii; +z faces the viewer.
+/// @use lunar phases, rotating terminators, distant moons and planets
+/// @see Orthographic sphere normal reconstruction and Lambert's cosine law.
+float lunarDiskLight(vec2 xy, vec3 lightDirection) {
+    float r2 = dot(xy, xy);
+    if (r2 > 1.0) return 0.0;
+    vec3 normal = vec3(xy, sqrt(max(1.0-r2, 0.0)));
+    return max(dot(normal, lightDirection), 0.0);
+}

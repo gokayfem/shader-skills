@@ -1,0 +1,15 @@
+# An old oak grown in the open: a massive, short trunk that breaks into great crooked limbs, the
+# lowest reaching out nearly level and as long as the trunk is tall, under a broad, heavy dome.
+height 6.4
+trunk radius=0.6 flare=0.8 gnarl=0.07
+crown profile 0.72 1 0.95 0.8 0.55
+bark oak_bark
+# The great limbs: seven or eight, crooked, the low ones level and the high ones climbing.
+level per_metre=1.8 span=0.36..0.97 angle=86..30 length=1.3 radius=0.56 upturn=0.1 droop=0.03 gnarl=0.36
+# Boughs, each going its own crooked way.
+level per_metre=1.7 span=0.18..0.97 angle=58 length=0.46 taper=0.4 radius=0.55 upturn=0.2 droop=0.05 gnarl=0.5
+# Branches.
+level per_metre=3 span=0.12..1 angle=52 length=0.5 taper=0.35 radius=0.55 upturn=0.22 droop=0.1 gnarl=0.6
+# The twigs that carry the leaves, bunched towards their tips.
+level per_metre=10.5 span=0.08..1 angle=50 length=0.42 taper=0.3 radius=0.5 upturn=0.3 droop=0.15 gnarl=0.7
+leaves oak_leaves per_metre=30 length=0.11..0.16 width=0.52 variants=0.4,0.32,0.2,0.08 normals=0.5

@@ -1,0 +1,5 @@
+# The faulty test character's roles. `named_tip` deforms nothing, but plays a role, so it stays.
+root    Root
+pelvis  pelvis
+spine   spine
+tip     named_tip

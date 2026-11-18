@@ -1,0 +1,18 @@
+[package]
+name = "bake"
+description = "Generates demo content and bakes it into a Solstice scene file."
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+solstice-bake.workspace = true
+solstice-project.workspace = true
+solstice-asset.workspace = true
+solstice-builder.workspace = true
+solstice-game.workspace = true
+solstice-import.workspace = true
+solstice-procgen.workspace = true
+glam.workspace = true
+rayon.workspace = true
+

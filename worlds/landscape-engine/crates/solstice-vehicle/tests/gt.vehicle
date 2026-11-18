@@ -1,0 +1,43 @@
+# A rear-engined GT racing car, of the size and power the GT3 class runs: a six-cylinder engine
+# behind the rear axle making about 400 kW, a six-speed sequential gearbox, a 2.5 m wheelbase,
+# and 59% of its weight on the rear axle. It is test data for the vehicle model, and the tests
+# that drive it (rear_engined.rs, keys.rs) hold it to what such a car does.
+
+mass 1330                          # with its driver and fuel
+inertia 1650 1800 520              # pitch, yaw, roll
+centre 0 0.4 0.226                 # 59% of its weight on the rear axle
+body 1.96 0.95 4.55 at 0 0.67 0
+
+front at=1.25 track=1.70 radius=0.34 inertia=1.5 driven=no
+front spring=110000 bump=6800 rebound=10000 bar=38000 travel=0.065,0.075 roll_centre=0.03
+front brake=3100 grip=1
+rear at=1.25 track=1.72 radius=0.355 inertia=2.0 driven=yes
+rear spring=179000 bump=10400 rebound=14500 bar=16000 travel=0.07,0.08 roll_centre=0.08
+rear brake=2500 grip=1.07          # the rear tyres are wider, and carry more
+
+engine idle=1100 limit=9000 inertia=0.11 friction=30,0.01
+torque 1500 278
+torque 2000 317
+torque 3000 374
+torque 4000 422
+torque 5000 461
+torque 6000 480
+torque 6500 485
+torque 7000 480
+torque 7500 472
+torque 8000 463
+torque 8400 454                    # 400 kW here
+torque 8800 430
+torque 9200 398
+torque 9600 346
+
+gears 3.34 2.5 1.95 1.58 1.31 1.113
+final 3.9
+reverse 3
+gearbox shift=0.05 efficiency=0.93 clutch=900
+diff preload=80 power=0.5 coast=0.35
+
+aero drag=0.95 downforce=2.1 balance=0.36
+steering lock=26 ackermann=0.6
+geometry anti_dive=0.25 anti_squat=0.35
+assists abs=yes traction=yes stability=yes

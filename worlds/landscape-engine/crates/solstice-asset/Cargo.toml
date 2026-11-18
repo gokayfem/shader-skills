@@ -1,0 +1,11 @@
+[package]
+name = "solstice-asset"
+description = "GPU data layouts and the on-disk scene format shared by the builder and the renderer."
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+bytemuck.workspace = true
+glam.workspace = true
+miniz_oxide.workspace = true

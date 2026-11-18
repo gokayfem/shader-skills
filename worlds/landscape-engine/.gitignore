@@ -1,0 +1,6 @@
+/target
+/dist
+/assets/
+/screenshots
+/.claude
+__pycache__/

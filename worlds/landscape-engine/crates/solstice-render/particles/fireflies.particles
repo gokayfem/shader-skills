@@ -1,0 +1,20 @@
+# Fireflies: at dusk, over long grass and by water, small lights that drift, wink out and come
+# on again somewhere else. Each gives its own light, too little to see by day.
+param strength 1
+
+emitter fireflies
+  budget 260
+  spawn rate=10*strength
+  # Low over the grass, across the whole glade.
+  shape box 56 1.5 48
+  offset 0 1 0
+  lifetime 20 28
+  velocity 0.12 0 0 cone=180 spread=0.6
+  size 0.012 0.02
+  drag 0.8
+  curl 0.3 scale=1.6 change=0.35
+  color 0.72 1 0.22 1
+  brightness 0.6
+  # A flash every few seconds, each a little different in length.
+  color life 0=1 1 1 0 0.05=1 1 1 1 0.11=1 1 1 0 0.27=1 1 1 0 0.32=1 1 1 1 0.4=1 1 1 0 0.55=1 1 1 0 0.6=1 1 1 1 0.66=1 1 1 0 0.83=1 1 1 0 0.88=1 1 1 1 0.95=1 1 1 0
+  render sprite blend=add shading=unlit soft=0.15

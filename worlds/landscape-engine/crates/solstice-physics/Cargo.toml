@@ -1,0 +1,13 @@
+[package]
+name = "solstice-physics"
+description = "Physics for gameplay: Rapier in a solstice-world, with the scene's baked collision."
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+glam.workspace = true
+rapier3d.workspace = true
+solstice-asset.workspace = true
+solstice-vehicle.workspace = true
+solstice-world.workspace = true

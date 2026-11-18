@@ -1,0 +1,6 @@
+# A character walking a round: the smallest scene with an animated actor.
+# Make its files first: tools/blender/make_character.py and python -I scripts/fetch-ual.py --zips FOLDER.
+texture_size 256
+terrain 200 128 0 1000
+camera 6 1.8 6 0.75 -0.1
+actor walker/walker.actor 0 0 0 0

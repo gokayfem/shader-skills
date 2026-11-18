@@ -1,0 +1,18 @@
+[package]
+name = "solstice-game"
+description = "Gameplay's glue: actor, scene and input files, and play mode, which runs a scene's game and says what to draw."
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+glam.workspace = true
+solstice-anim.workspace = true
+solstice-asset.workspace = true
+solstice-physics.workspace = true
+solstice-script.workspace = true
+solstice-vehicle.workspace = true
+solstice-world.workspace = true
+
+[dev-dependencies]
+solstice-anim.workspace = true

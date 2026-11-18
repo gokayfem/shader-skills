@@ -1,0 +1,2 @@
+side,trees,mode,instances,source_triangles,clusters,triangles,cpu_median_ms,cpu_p95_ms,gpu_median_ms,gpu_p95_ms,wall_median_ms,scene_gpu_bytes,peak_working_bytes,peak_private_bytes,dropped,shadow_dropped
+1024,65536,overview,1179649,83377378134,258592,19652992,0.375000,0.712000,2.551808,2.932224,3.201700,352956536,636760064,2034561024,10179858,0

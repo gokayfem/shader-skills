@@ -89,3 +89,15 @@ float translucency(vec3 n, vec3 v, vec3 l, float distortion, float power, float 
 float rimLight(vec3 n, vec3 v, float power) {
     return pow(clamp(1.0 - dot(n, v), 0.0, 1.0), power);
 }
+
+/// Approximate diffuse form factor from a small, oriented patch to a surface point.
+/// Both normals point out of their surfaces. Area is in squared world units. The finite area softens near-field error.
+/// @use room color bleeding, emissive wall tiles, diffuse bounce from a coarse surface cache
+/// @see Classical diffuse radiosity, cosine form factor with an area-regularized denominator.
+float diffusePatchWeight(vec3 point, vec3 normal, vec3 center, vec3 patchNormal, float area) {
+    vec3 delta = center - point;
+    float distance2 = dot(delta, delta);
+    vec3 direction = delta * inversesqrt(max(distance2, 1e-10));
+    float coupling = max(dot(normal, direction), 0.0) * max(dot(patchNormal, -direction), 0.0);
+    return coupling * max(area, 0.0) / max(PI * distance2 + max(area, 0.0), 1e-10);
+}

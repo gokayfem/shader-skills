@@ -1,0 +1,12 @@
+[package]
+name = "solstice-procgen"
+description = "Generates content from seeds: noise fields and seamless surface textures. Runs natively and in the browser."
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+solstice-asset.workspace = true
+solstice-builder.workspace = true
+glam.workspace = true
+rayon.workspace = true

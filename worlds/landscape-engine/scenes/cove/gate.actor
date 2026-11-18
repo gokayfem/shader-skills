@@ -1,0 +1,9 @@
+# The fort's iron gate. It rises like a portcullis when someone near it uses it.
+name gate
+mesh ../../target/scan/large_iron_gate/large_iron_gate.gltf 1.15
+script gate.star
+property locked bool false
+property reach float 4          # how near, in metres, someone must be to use it
+property lift float 3.2         # how far it rises, in metres
+property speed float 0.8        # metres a second
+collider box 3.9 3.5 0.25 at 0 1.75 0

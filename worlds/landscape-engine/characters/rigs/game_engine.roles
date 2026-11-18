@@ -1,0 +1,21 @@
+# The bones of MPFB 2's game-engine rig that each part of the body is played by, for retargeting
+# animation onto it (docs/gameplay.md, Retargeting). A chain lists its bones from the body out.
+root      Root
+pelvis    pelvis
+spine     spine_01 spine_02 spine_03
+neck      neck_01
+head      head
+arm_l     clavicle_l upperarm_l lowerarm_l hand_l
+arm_r     clavicle_r upperarm_r lowerarm_r hand_r
+leg_l     thigh_l calf_l foot_l ball_l
+leg_r     thigh_r calf_r foot_r ball_r
+thumb_l   thumb_01_l thumb_02_l thumb_03_l
+index_l   index_01_l index_02_l index_03_l
+middle_l  middle_01_l middle_02_l middle_03_l
+ring_l    ring_01_l ring_02_l ring_03_l
+pinky_l   pinky_01_l pinky_02_l pinky_03_l
+thumb_r   thumb_01_r thumb_02_r thumb_03_r
+index_r   index_01_r index_02_r index_03_r
+middle_r  middle_01_r middle_02_r middle_03_r
+ring_r    ring_01_r ring_02_r ring_03_r
+pinky_r   pinky_01_r pinky_02_r pinky_03_r

@@ -1,0 +1,15 @@
+# How the keeper moves, in clips from the Universal Animation Library (CC0): idle when still,
+# walking and jogging by how fast it goes. Run scripts/fetch-ual.py --zips FOLDER first.
+source ../../target/ual/ual1/UAL1_Standard.glb
+roles ../../characters/rigs/ual.roles ../../characters/rigs/game_engine.roles
+clip idle Idle_Loop
+clip walk Walk_Loop
+clip jog Jog_Fwd_Loop
+notify walk 0.13 step_l
+notify walk 0.8 step_r
+param speed 0
+state idle clip idle
+state moving blend1d speed 0.1 idle 1.0 walk 6.2 jog
+start idle
+transition idle moving speed > 0.1 fade 0.25
+transition moving idle speed < 0.1 fade 0.3

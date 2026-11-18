@@ -1,0 +1,6 @@
+# Zorah is flown through, and the flying camera has E and Q for up and down. So doors are
+# used with F, a click, the pad's west button, or a tap.
+interact key KeyF
+interact mouse left
+interact gamepad west
+interact touch tap

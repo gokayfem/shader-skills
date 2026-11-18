@@ -1,0 +1,19 @@
+[package]
+name = "solstice-import"
+description = "Imports glTF 2.0 models as Solstice scenes."
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+solstice-anim.workspace = true
+solstice-asset.workspace = true
+solstice-builder.workspace = true
+glam.workspace = true
+gltf = { version = "1.4", features = ["KHR_texture_transform", "extensions"] }
+rayon.workspace = true
+ruzstd = "0.9"
+bytemuck.workspace = true
+
+[dev-dependencies]
+png = "0.17"

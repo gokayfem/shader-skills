@@ -1,0 +1,82 @@
+# A harbour town on an Atlantic coast, about 1860. The design and its map are in docs/harbour.md.
+# Generate the kit first: cargo run --release -p townkit
+#
+# The origin is the middle of the quay's edge, at sea level. North is -Z, east is +X, and the sea
+# lies to the west, so that the sun sets over the harbour mouth.
+
+texture_size 1024
+ocean 0 coastal
+camera -150 3 -20 -1.4 0.02
+
+# ---- The land and the seabed, placed whole: the kit holds them at their place in the world.
+model ../target/town/ground.gltf 0 0 0 0 1
+
+# ---- The stonework.
+part ../target/town/town.gltf quay 0 0 0 0 1
+part ../target/town/town.gltf mole 0 0 0 0 1
+
+# ---- Plain shapes for everything later steps replace, to judge scale and composition.
+part ../target/town/town.gltf massing 0 0 0 0 1
+
+# ---- The houses, each in its place in the kit.
+model ../target/town/houses.gltf 0 0 0 0 1
+
+# ---- The dressed stone over the solids: walls, paving and copings, placed whole.
+model ../target/town/stone.gltf 0 0 0 0 1
+
+# ---- The timber pier, two steps down from the quay, and its T-head. The scan is scaled to 3 m wide.
+part ../target/scan/modular_wooden_pier/modular_wooden_pier.gltf section_01 -3.48 -1.606 41.22 90 1.2
+part ../target/scan/modular_wooden_pier/modular_wooden_pier.gltf section_03 -6.96 -1.606 41.22 90 1.2
+part ../target/scan/modular_wooden_pier/modular_wooden_pier.gltf section_02 -10.44 -1.606 41.22 90 1.2
+part ../target/scan/modular_wooden_pier/modular_wooden_pier.gltf section_01 -13.92 -1.606 41.22 90 1.2
+part ../target/scan/modular_wooden_pier/modular_wooden_pier.gltf section_02 -17.40 -1.606 41.22 90 1.2
+part ../target/scan/modular_wooden_pier/modular_wooden_pier.gltf section_03 -20.88 -1.606 41.22 90 1.2
+part ../target/scan/modular_wooden_pier/modular_wooden_pier.gltf section_02 -24.36 -1.606 41.22 90 1.2
+part ../target/scan/modular_wooden_pier/modular_wooden_pier.gltf section_01 -27.84 -1.606 41.22 90 1.2
+part ../target/scan/modular_wooden_pier/modular_wooden_pier.gltf section_02 -31.32 -1.606 41.22 90 1.2
+part ../target/scan/modular_wooden_pier/modular_wooden_pier.gltf section_03 -34.80 -1.606 41.22 90 1.2
+part ../target/scan/modular_wooden_pier/modular_wooden_pier.gltf section_02 -38.28 -1.606 41.22 90 1.2
+part ../target/scan/modular_wooden_pier/modular_wooden_pier.gltf section_01 -41.76 -1.606 41.22 90 1.2
+part ../target/scan/modular_wooden_pier/modular_wooden_pier.gltf section_02 -45.24 -1.606 41.22 90 1.2
+# The T-head, two rows side by side.
+part ../target/scan/modular_wooden_pier/modular_wooden_pier.gltf section_01 -50.14 -1.606 29.55 0 1.2
+part ../target/scan/modular_wooden_pier/modular_wooden_pier.gltf section_01 -50.14 -1.606 33.03 0 1.2
+part ../target/scan/modular_wooden_pier/modular_wooden_pier.gltf section_01 -50.14 -1.606 36.51 0 1.2
+part ../target/scan/modular_wooden_pier/modular_wooden_pier.gltf section_01 -50.14 -1.606 39.99 0 1.2
+part ../target/scan/modular_wooden_pier/modular_wooden_pier.gltf section_01 -50.14 -1.606 43.47 0 1.2
+part ../target/scan/modular_wooden_pier/modular_wooden_pier.gltf section_01 -50.14 -1.606 46.95 0 1.2
+part ../target/scan/modular_wooden_pier/modular_wooden_pier.gltf section_02 -47.69 -1.606 29.55 0 1.2
+part ../target/scan/modular_wooden_pier/modular_wooden_pier.gltf section_02 -47.69 -1.606 33.03 0 1.2
+part ../target/scan/modular_wooden_pier/modular_wooden_pier.gltf section_02 -47.69 -1.606 36.51 0 1.2
+part ../target/scan/modular_wooden_pier/modular_wooden_pier.gltf section_02 -47.69 -1.606 39.99 0 1.2
+part ../target/scan/modular_wooden_pier/modular_wooden_pier.gltf section_02 -47.69 -1.606 43.47 0 1.2
+part ../target/scan/modular_wooden_pier/modular_wooden_pier.gltf section_02 -47.69 -1.606 46.95 0 1.2
+# A cargo gantry over the head.
+part ../target/scan/modular_wooden_pier/modular_wooden_pier.gltf section_05 -48.6 -1.606 45.5 0 1.2
+
+# ---- Cargo at the warehouse end of the quay, within reach of the hoist.
+part ../target/scan/wooden_barrels_01/wooden_barrels_01.gltf barrel02 8.9 1.93 -37.2 40 1
+part ../target/scan/wooden_barrels_01/wooden_barrels_01.gltf barrel01 9.5 1.93 -36.6 130 1
+part ../target/scan/wooden_barrels_01/wooden_barrels_01.gltf barrel02 9.1 1.93 -36.0 250 1
+model ../target/scan/wooden_crate_02/wooden_crate_02.gltf 8.8 1.93 -33.2 86 1
+model ../target/scan/wooden_crate_02/wooden_crate_02.gltf 8.8 2.38 -33.2 74 1
+
+# ---- Goods waiting to be loaded on the ship, at her gangway.
+model ../target/scan/wooden_crate_01/wooden_crate_01.gltf 4.6 1.93 -4.2 10 1
+model ../target/scan/wooden_crate_01/wooden_crate_01.gltf 5.5 1.93 -3.7 -8 1
+model ../target/scan/wooden_crate_01/wooden_crate_01.gltf 5.0 2.27 -4.0 25 1
+part ../target/scan/wooden_barrels_01/wooden_barrels_01.gltf barrel01 6.5 1.93 -6.2 200 1
+part ../target/scan/wooden_barrels_01/wooden_barrels_01.gltf barrel02 7.2 1.93 -5.6 75 1
+
+# ---- The fishermen's end, by the pier.
+model ../target/scan/wicker_basket_01/wicker_basket_01.gltf 3.4 1.93 37.2 25 1.6
+model ../target/scan/wicker_basket_01/wicker_basket_01.gltf 3.9 1.93 36.5 70 1.6
+model ../target/scan/wooden_bucket_01/wooden_bucket_01.gltf 3.1 1.93 36.3 150 1
+
+# ---- Benches against the front row, looking at the water.
+model ../target/scan/painted_wooden_bench/painted_wooden_bench.gltf 10.55 1.93 7 -90 1
+model ../target/scan/painted_wooden_bench/painted_wooden_bench.gltf 10.55 1.93 -20 -90 1
+
+# ---- A lifebuoy on the wall by the pier, and an old gun kept at the mole's head.
+model ../target/scan/lifebuoy/lifebuoy.gltf 10.92 3.6 36 90 1
+model ../target/scan/cannon_01/cannon_01.gltf -96 3.2 -60.5 -66 1

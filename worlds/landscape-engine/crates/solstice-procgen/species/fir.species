@@ -1,0 +1,12 @@
+# A fir: a straight trunk to the very top, carrying whorls of level branches that droop at
+# their ends, in a narrow cone.
+height 16
+trunk radius=0.22 flare=0.45 gnarl=0.015
+crown cone
+bark fir_bark
+# Whorls of five about 60 cm apart, so the crown reads as one cone rather than tiers.
+level per_metre=8 span=0.1..0.99 angle=102..74 length=0.2 radius=0.4 upturn=0.08 droop=0.3 gnarl=0.12 whorl=5
+# Side shoots, flattened into sprays either side of the branch.
+level per_metre=10 span=0.05..0.97 angle=62 length=0.4 radius=0.55 upturn=0.04 droop=0.12 gnarl=0.25
+# For needles, width is each needle's length as a fraction of its shoot's.
+leaves fir_needles per_metre=22 length=0.16..0.26 width=0.17 variants=0.35,0.3,0.25,0.1 normals=0.4

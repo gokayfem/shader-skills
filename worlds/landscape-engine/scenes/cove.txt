@@ -1,0 +1,129 @@
+# A fort guarding a sheltered cove, with a ship at anchor, built from Poly Haven scans (CC0).
+# Fetch the models first: python scripts/fetch-scans.py scenes/cove.txt 2k
+#
+# Layout: the sea lies towards +X. The fort is a 44 m square centred on the origin, with its
+# gate on the seaward side. Cliffs wrap around behind it and reach the water on both sides.
+
+texture_size 2048
+terrain 900 1024 0.3 52
+ocean -0.6 coastal
+
+# ---- The land in bands: sand along the water, a strip of dirt, then grass across the bowl
+# ---- between the cliffs. The courtyard and the paths from the gate are trodden dirt.
+land 10 5
+yard -21 -21 21 21
+path 23 0 58 -6 3.2
+path 45 -4 63 -36 2.2
+# Nothing grows on the fort, the cliffs or the boulders at their feet.
+clear 0 0 33
+clear -92 -60 16
+clear -92 0 16
+clear -92 60 16
+clear -110 -110 32
+clear -55 -104 22
+clear 0 -104 22
+clear 45 -110 22
+clear -75 98 26
+clear -25 104 24
+clear 20 106 22
+clear 70 112 22
+clear -32 -79 11
+clear -51 3 11
+clear -60 51 11
+clear -22 76 10
+clear 16 95 10
+clear 31 -24 4
+clear 32 27 4
+clear 33 -13 3
+clear -7 33 3
+clear 6 -34 3
+clear -36 -30 4
+# Grass you can walk through, around the fort and back to the cliffs.
+meadow 75
+# Two groves behind the fort, between it and the back cliff, and a few trees standing apart.
+wood -58 -38 20 7
+wood -52 30 18 7
+wood 8 -66 14 9
+wood 6 64 12 9
+camera 66 1.5 -41 2.31 0.03
+
+# ---- Towers on the four corners. Each is wider than the walls, which hides the joints.
+part ../target/scan/modular_fort_01/modular_fort_01.gltf tower_round 22 0 22 0 1
+part ../target/scan/modular_fort_01/modular_fort_01.gltf tower_round 22 0 -22 90 1
+part ../target/scan/modular_fort_01/modular_fort_01.gltf tower_round -22 0 22 180 1
+part ../target/scan/modular_fort_01/modular_fort_01.gltf tower_round -22 0 -22 270 1
+
+# ---- Curtain walls. A wall's outer face is its local -X, and it runs along local +Z from its
+# ---- pivot. So yaw 180 faces the sea and runs towards -Z; yaw 0 faces inland and runs to +Z.
+# Seaward wall, x = 22, with the gate arch at its centre: its opening is centred on z = 0.
+part ../target/scan/modular_fort_01/modular_fort_01.gltf wall_thin_straight_04 22 0 18.525 180 1
+part ../target/scan/modular_fort_01/modular_fort_01.gltf wall_thin_straight_04 22 0 11.115 180 1
+part ../target/scan/modular_fort_01/modular_fort_01.gltf wall_thin_gate_01 22 0 3.705 180 1
+part ../target/scan/modular_fort_01/modular_fort_01.gltf wall_thin_straight_04 22 0 -3.705 180 1
+part ../target/scan/modular_fort_01/modular_fort_01.gltf wall_thin_straight_04 22 0 -11.115 180 1
+# Landward wall, x = -22.
+part ../target/scan/modular_fort_01/modular_fort_01.gltf wall_thin_straight_01 -22 0 -14.82 0 1
+part ../target/scan/modular_fort_01/modular_fort_01.gltf wall_thin_straight_02 -22 0 0 0 1
+# Side walls, z = 22 and z = -22.
+part ../target/scan/modular_fort_01/modular_fort_01.gltf wall_thin_straight_02 -14.82 0 22 90 1
+part ../target/scan/modular_fort_01/modular_fort_01.gltf wall_thin_straight_01 0 0 22 90 1
+part ../target/scan/modular_fort_01/modular_fort_01.gltf wall_thin_straight_01 14.82 0 -22 270 1
+part ../target/scan/modular_fort_01/modular_fort_01.gltf wall_thin_straight_02 0 0 -22 270 1
+
+# ---- A rampart along the inside of the landward wall, reached by a stair along the side wall.
+part ../target/scan/modular_fort_01/modular_fort_01.gltf wall_walkway_straight_01 -19.45 0 -14.56 0 1
+part ../target/scan/modular_fort_01/modular_fort_01.gltf wall_walkway_straight_01 -19.45 0 0 0 1
+part ../target/scan/modular_fort_01/modular_fort_01.gltf wall_stairs_straight_01 -1.26 0 15.91 270 1
+
+# ---- The stair's bottom step is half a metre high, more than a person steps: an invisible
+# ---- half-step makes it two.
+blocker -1.1 0.19 17.3 0.4 0.38 3 0
+
+# ---- The iron gate, filling the 3.4 m opening of the arch. An actor: walk up to it and press
+# ---- E, and it rises (viewer --play, or Play on the web).
+actor cove/gate.actor 20.7 0 0 90
+
+# ---- Whoever plays, starting where the camera does, outside the gate.
+actor cove/player.actor 66 0 -41 132.4
+
+# ---- The courtyard: a statue facing the gate, flanked by smaller monuments on their own bases.
+model ../target/scan/gothic_statue/gothic_statue.gltf -7 0 0 90 2.4
+model ../target/scan/horse_statue_01/horse_statue_01.gltf -2 0 9 200 9
+model ../target/scan/marble_bust_01/marble_bust_01.gltf -2 0 -9 -20 3.2
+# Stores stacked against the wall, just inside the gate.
+model ../target/scan/wooden_barrels_01/wooden_barrels_01.gltf 13 ground -14 30 1
+model ../target/scan/brass_vase_01/brass_vase_01.gltf 15.5 ground -12 0 1.2
+
+# ---- Cliffs: behind the fort, and curving forward on both sides until they reach the sea.
+# The two that stand in the sea are sunk well below the water (-0.6): the scan's base is
+# ragged, and any notch above the waterline shows the sea through it, so the cliff floats.
+model ../target/scan/coastal_cliff_04/coastal_cliff_04.gltf -68 0 0 90 2.4 collide=coarse
+model ../target/scan/coastal_cliff_04/coastal_cliff_04.gltf -28 0 -92 12 2.2 collide=coarse
+model ../target/scan/coastal_cliff_04/coastal_cliff_04.gltf -30 0 92 168 2.2 collide=coarse
+model ../target/scan/coastal_cliff_04/coastal_cliff_04.gltf 88 -2.4 -128 -8 2.4 collide=coarse
+model ../target/scan/coastal_cliff_04/coastal_cliff_04.gltf 90 -2.4 130 188 2.4 collide=coarse
+
+# ---- Rock scattered at the foot of the walls, thickest towards the corners.
+model ../target/scan/boulder_01/boulder_01.gltf 31 ground:0.2 -24 40 2.2
+model ../target/scan/boulder_01/boulder_01.gltf 32 ground:0.2 27 200 1.7
+model ../target/scan/coast_rocks_05/coast_rocks_05.gltf 33 ground:0.2 -13 110 0.7 collide=coarse
+model ../target/scan/coast_rocks_05/coast_rocks_05.gltf -7 ground:0.2 33 20 1.3 collide=coarse
+model ../target/scan/coast_rocks_05/coast_rocks_05.gltf 6 ground:0.2 -34 170 1.1 collide=coarse
+model ../target/scan/coast_rocks_05/coast_rocks_05.gltf -36 ground:0.2 -30 80 1.6 collide=coarse
+
+# ---- Reefs along the waterline, half in the water, framing the bay.
+model ../target/scan/coast_land_rocks_02/coast_land_rocks_02.gltf 70 ground:0.2 -46 25 1.5 collide=coarse
+model ../target/scan/coast_land_rocks_02/coast_land_rocks_02.gltf 76 ground:0.2 52 150 1.8 collide=coarse
+model ../target/scan/coast_land_rocks_02/coast_land_rocks_02.gltf 62 ground:0.2 -70 80 1.2 collide=coarse
+model ../target/scan/coast_rocks_05/coast_rocks_05.gltf 66 ground:0.2 -18 300 0.9 collide=coarse
+model ../target/scan/coast_rocks_05/coast_rocks_05.gltf 69 ground:0.2 19 60 1.1 collide=coarse
+model ../target/scan/coast_rocks_05/coast_rocks_05.gltf 73 ground:0.2 66 200 1.5 collide=coarse
+model ../target/scan/coast_rocks_05/coast_rocks_05.gltf 58 ground:0.2 -34 130 0.6 collide=coarse
+# Stones on the beach, and supplies waiting outside the gate.
+model ../target/scan/coast_rocks_05/coast_rocks_05.gltf 43 ground:0.2 -2 30 0.45 collide=coarse
+model ../target/scan/coast_rocks_05/coast_rocks_05.gltf 55 ground:0.2 -8 190 0.55 collide=coarse
+model ../target/scan/boulder_01/boulder_01.gltf 61 ground:0.2 -38 15 1.1
+model ../target/scan/wooden_barrels_01/wooden_barrels_01.gltf 29 ground -8 95 1
+
+# ---- The ship at anchor in the middle of the bay, sitting at the waterline.
+model ../target/scan/ship_pinnace/ship_pinnace.gltf 140 -0.6 -8 18 1

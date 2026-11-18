@@ -1,0 +1,41 @@
+# Zorah's doors, which the public export leaves shut for good: each leaf is an actor at its
+# hinge, swinging the instances the scene already draws for it. Played without a bake:
+#   viewer zorah_full.solstice --stream --game scenes/zorah      (natively)
+#   ?scene=zorah_full&split&game=zorah                           (on the web)
+# Fly up to a doorway and press F, or click. Instance numbers are from the bake of
+# zorah_textured_public.v1, as `viewer --instances-near` lists them; they are only good
+# for that bake.
+
+input zorah.input
+
+# ---- The throne room's door from the courtyard. Its leaves open into the room, to -X.
+actor door.actor -24.28 2.04 0.765 0 middle=-24.28,2.04,0 swing=90 reach=6 seconds=2.5 instances=40980+6
+actor door.actor -24.28 2.04 -0.765 0 middle=-24.28,2.04,0 swing=-90 reach=6 seconds=2.5 instances=40986+6
+# Its stone panel is one mesh across both leaves, so it can swing with neither: it sinks
+# into the threshold as they open.
+actor door.actor -24.28 2.006 0 0 middle=-24.28,2.04,0 swing=0 slide=0,-7,0 reach=6 seconds=2.5 instances=41002+2
+
+# ---- The throne room's great gate, at its far end. Its leaves open into the room, to +X.
+actor door.actor -49.161 2 -2.403 0 middle=-49.16,2,0 swing=90 reach=8 seconds=5 instances=18728+120
+actor door.actor -49.156 2 2.397 0 middle=-49.16,2,0 swing=-90 reach=8 seconds=5 instances=42601+120
+
+# ---- The courtyard's gate, at its seaward end. Its leaves open into the courtyard, to -X.
+actor door.actor 69.681 7.267 1.357 0 middle=69.68,7.27,0 swing=90 reach=6 seconds=4 instances=22226+21
+actor door.actor 69.681 7.267 -1.352 0 middle=69.68,7.27,0 swing=-90 reach=6 seconds=4 instances=22250+21
+
+# ---- The little gates in the garden walls, either side of the courtyard. Each opens
+# ---- outwards, away from the courtyard. Two are placed on the same spot, at 0.9 13.1.
+actor door.actor 1.79 1 13.1 0 middle=0.9,1,13.1 swing=90 reach=3 seconds=1.5 instances=22817+6
+actor door.actor 0.01 1 13.1 0 middle=0.9,1,13.1 swing=-90 reach=3 seconds=1.5 instances=22823+6
+actor door.actor 1.79 1 13.1 0 middle=0.9,1,13.1 swing=90 reach=3 seconds=1.5 instances=27072+6
+actor door.actor 0.01 1 13.1 0 middle=0.9,1,13.1 swing=-90 reach=3 seconds=1.5 instances=27078+6
+actor door.actor 5.37 1 13.1 0 middle=4.48,1,13.1 swing=90 reach=3 seconds=1.5 instances=28376+6
+actor door.actor 3.59 1 13.1 0 middle=4.48,1,13.1 swing=-90 reach=3 seconds=1.5 instances=28382+6
+actor door.actor -1.802 1 13.1 0 middle=-2.692,1,13.1 swing=90 reach=3 seconds=1.5 instances=40391+6
+actor door.actor -3.582 1 13.1 0 middle=-2.692,1,13.1 swing=-90 reach=3 seconds=1.5 instances=40397+6
+actor door.actor 0.01 1 -13.1 0 middle=0.9,1,-13.1 swing=90 reach=3 seconds=1.5 instances=38714+6
+actor door.actor 1.79 1 -13.1 0 middle=0.9,1,-13.1 swing=-90 reach=3 seconds=1.5 instances=38720+6
+actor door.actor -3.58 1 -13.1 0 middle=-2.69,1,-13.1 swing=90 reach=3 seconds=1.5 instances=40239+6
+actor door.actor -1.8 1 -13.1 0 middle=-2.69,1,-13.1 swing=-90 reach=3 seconds=1.5 instances=40245+6
+actor door.actor 3.602 1 -13.1 0 middle=4.492,1,-13.1 swing=90 reach=3 seconds=1.5 instances=42727+6
+actor door.actor 5.382 1 -13.1 0 middle=4.492,1,-13.1 swing=-90 reach=3 seconds=1.5 instances=42733+6

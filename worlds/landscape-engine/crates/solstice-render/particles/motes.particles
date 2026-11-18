@@ -1,0 +1,22 @@
+# Motes: pollen, seed down and midges adrift in still air over a garden. Each is a few
+# millimetres across and all but invisible, until it crosses a shaft of sun, where it shines.
+# Stand the effect at the middle of the place; `strength` scales how many there are.
+param strength 1
+
+emitter motes
+  budget 3500
+  spawn rate=120*strength
+  # Over the lawns and the water, from the grass to the lowest boughs.
+  shape box 46 5 38
+  offset 0 3 0
+  lifetime 24 32
+  velocity 0 0.03 0 cone=90 spread=0.8
+  size 0.003 0.007
+  drag 1.5
+  # The lightest air carries them, and they wander as it eddies.
+  wind 0.5
+  curl 0.1 scale=3 change=0.15
+  color 1 0.96 0.84 0.9
+  color life 0=1 1 1 0 0.08=1 1 1 1 0.92=1 1 1 1 1=1 1 1 0
+  # They scatter light mostly onward: brightest looked at towards the sun.
+  render sprite soft=0.2 phase=0.75

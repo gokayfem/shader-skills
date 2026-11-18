@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Solstice Editor</title>
+<meta name="description" content="Build scenes for Solstice in the browser: select, move, turn and scale what is in them, with undo. Agents can drive it through window.solstice.">
+<style>
+:root {
+  color-scheme: dark;
+  --bg: #15171a;
+  --panel: #1d2024;
+  --panel-2: #24282d;
+  --line: #31363c;
+  --text: #d9dde2;
+  --muted: #8b939c;
+  --accent: #3e8ef7;
+  --select: #ff9f1a;
+  --x: #e5484d;
+  --y: #46a758;
+  --z: #3e63dd;
+  font: 13px/1.4 system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html, body { margin: 0; height: 100%; background: var(--bg); color: var(--text); overflow: hidden; }
+button, input, textarea, select { font: inherit; color: inherit; }
+body {
+  display: grid;
+  grid-template: "bar bar bar" auto "left view right" 1fr "left log right" 132px "status status status" auto / 260px 1fr 320px;
+}
+#bar {
+  grid-area: bar; display: flex; gap: 6px; align-items: center; padding: 6px 10px;
+  background: var(--panel); border-bottom: 1px solid var(--line); flex-wrap: wrap;
+}
+#bar .brand { font-weight: 600; margin-right: 8px; }
+#bar .group { display: flex; gap: 2px; padding: 2px; background: var(--panel-2); border-radius: 6px; }
+#bar button, .tool {
+  border: 0; background: transparent; padding: 5px 9px; border-radius: 4px; cursor: pointer;
+}
+#bar button:hover:not(:disabled) { background: #333a42; }
+#bar button:disabled { opacity: 0.4; cursor: default; }
+#bar button[aria-pressed="true"] { background: var(--accent); color: white; }
+#bar label { display: flex; align-items: center; gap: 4px; color: var(--muted); }
+#bar input[type="number"] { width: 56px; background: var(--panel-2); border: 1px solid var(--line); border-radius: 4px; padding: 3px 5px; }
+#bar .spacer { flex: 1; }
+#bar a { color: var(--muted); text-decoration: none; padding: 5px 9px; }
+#bar a:hover { color: var(--text); }
+aside { background: var(--panel); overflow: auto; min-height: 0; }
+#left { grid-area: left; border-right: 1px solid var(--line); display: flex; flex-direction: column; }
+#right { grid-area: right; border-left: 1px solid var(--line); }
+aside h2 {
+  margin: 0; padding: 8px 10px; font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase;
+  color: var(--muted); border-bottom: 1px solid var(--line); position: sticky; top: 0; background: var(--panel); z-index: 1;
+}
+#outliner { display: flex; flex-direction: column; min-height: 0; flex: 1; }
+#outliner .search { margin: 8px; padding: 5px 8px; background: var(--panel-2); border: 1px solid var(--line); border-radius: 4px; }
+#outliner .tree { overflow: auto; flex: 1; padding-bottom: 8px; }
+.row { display: flex; align-items: center; gap: 5px; height: 24px; padding-right: 4px; cursor: default; white-space: nowrap; }
+.row:hover { background: #262b31; }
+.row.selected { background: #2b4a75; }
+.row .twisty { width: 12px; color: var(--muted); cursor: pointer; text-align: center; flex: none; }
+.row .icon { width: 14px; text-align: center; flex: none; color: var(--muted); }
+.row .icon.mesh { color: #9fb7d8; } .row .icon.actor { color: #e2a65c; } .row .icon.light { color: #ffd60a; }
+.row .icon.wood { color: var(--y); } .row .icon.pond { color: #5cc8e2; }
+.row .label { overflow: hidden; text-overflow: ellipsis; flex: 1; }
+.row .eye { border: 0; background: transparent; color: var(--muted); cursor: pointer; padding: 0 4px; opacity: 0; }
+.row:hover .eye, .row .eye.off { opacity: 1; }
+#details { padding-bottom: 12px; }
+#details details { border-bottom: 1px solid var(--line); }
+#details summary { padding: 7px 10px; cursor: pointer; font-weight: 600; background: var(--panel-2); }
+#details .field { display: grid; grid-template-columns: 78px 1fr; gap: 6px; align-items: center; padding: 4px 10px; }
+#details .name { color: var(--muted); }
+#details input[type="text"], #details textarea {
+  width: 100%; background: var(--panel-2); border: 1px solid var(--line); border-radius: 4px; padding: 3px 6px; resize: vertical;
+}
+#details input[readonly] { color: var(--muted); }
+#details .vector { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; }
+#details .number { display: flex; align-items: stretch; background: var(--panel-2); border: 1px solid var(--line); border-radius: 4px; overflow: hidden; }
+#details .number input { width: 100%; min-width: 0; border: 0; background: transparent; padding: 3px 4px; }
+#details .axis { width: 16px; display: grid; place-items: center; font-size: 10px; font-weight: 700; color: white; cursor: ew-resize; user-select: none; flex: none; }
+#details .axis.x { background: var(--x); } #details .axis.y { background: var(--y); } #details .axis.z { background: var(--z); }
+#details .axis.s { background: #6b7280; }
+#details .value { color: var(--muted); overflow-wrap: anywhere; }
+#details .hint, #details .empty { color: var(--muted); }
+#details .empty { padding: 10px; }
+main { grid-area: view; position: relative; min-width: 0; min-height: 0; background: black; }
+#view, #overlay-canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+#overlay-canvas { outline: none; touch-action: none; }
+#loading { position: absolute; inset: 0; display: grid; place-items: center; background: var(--bg); }
+#loading-text.error { color: #ff8a8a; max-width: 60ch; }
+#draft {
+  position: absolute; top: 10px; left: 50%; transform: translateX(-50%); background: var(--panel-2);
+  border: 1px solid var(--line); border-radius: 6px; padding: 8px 10px; display: flex; gap: 8px; align-items: center;
+}
+#draft button { border: 1px solid var(--line); background: var(--panel); border-radius: 4px; padding: 3px 8px; cursor: pointer; }
+#log { grid-area: log; overflow: auto; background: #111316; border-top: 1px solid var(--line); padding: 4px 8px; font: 12px/1.5 ui-monospace, Consolas, monospace; }
+.log-warn { color: #e2c05c; } .log-error { color: #ff8a8a; } .log-info { color: var(--muted); }
+#status { grid-area: status; display: flex; gap: 16px; padding: 4px 10px; background: var(--panel); border-top: 1px solid var(--line); color: var(--muted); font-size: 12px; }
+#status #selected { color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 40%; }
+#help { position: absolute; right: 10px; bottom: 10px; color: rgba(255, 255, 255, 0.55); font-size: 11px; text-align: right; pointer-events: none; text-shadow: 0 1px 2px black; }
+@media (max-width: 900px) {
+  body { grid-template: "bar" auto "view" 1fr "left" 30vh "right" 30vh "status" auto / 100%; overflow: auto; }
+  #log, #help { display: none; }
+  #left, #right { border: 0; border-top: 1px solid var(--line); }
+}
+</style>
+</head>
+<body>
+<header id="bar">
+  <span class="brand">Solstice Editor</span>
+  <div class="group">
+    <button id="new" type="button" title="A new scene from blank terrain">New</button>
+    <button id="save" type="button" title="Save the scene (Ctrl+S)">Save</button>
+    <button id="undo" type="button" title="Undo (Ctrl+Z)">Undo</button>
+    <button id="redo" type="button" title="Redo (Ctrl+Y)">Redo</button>
+  </div>
+  <div class="group" role="group" aria-label="Gizmo">
+    <button id="mode-move" type="button" title="Move (W)">Move</button>
+    <button id="mode-rotate" type="button" title="Rotate (E)">Rotate</button>
+    <button id="mode-scale" type="button" title="Scale (R)">Scale</button>
+  </div>
+  <div class="group">
+    <button id="space" type="button" title="Handles in the world's axes or the object's">World</button>
+    <button id="snap" type="button" title="Snap while dragging (hold Ctrl to do the opposite)">Snap</button>
+  </div>
+  <label>Grid <input id="snap-move" type="number" min="0.01" step="0.05" title="Metres a move snaps to"></label>
+  <label>Angle <input id="snap-angle" type="number" min="1" step="1" title="Degrees a turn snaps to"></label>
+  <div class="group"><button id="frame" type="button" title="Frame the selection (F)">Frame</button></div>
+  <span class="spacer"></span>
+  <a id="view-scene" href="./">View scene</a>
+</header>
+<aside id="left"><h2>Outliner</h2><div id="outliner"></div></aside>
+<main>
+  <canvas id="view"></canvas>
+  <canvas id="overlay-canvas" tabindex="0" aria-label="Viewport: click to select, drag the handles to move"></canvas>
+  <div id="help">Click select · W E R move/rotate/scale · F frame · Right-drag + WASD fly · Alt-drag orbit · Middle-drag pan · Wheel zoom</div>
+  <div id="draft" hidden>Unsaved edits from an earlier visit.
+    <button id="draft-restore" type="button">Restore</button><button id="draft-discard" type="button">Discard</button></div>
+  <div id="loading"><div id="loading-text">Starting…</div></div>
+</main>
+<aside id="right"><h2>Details</h2><div id="details"></div></aside>
+<div id="log" role="log" aria-label="Output log"></div>
+<footer id="status"><span id="selected">Nothing selected</span><span id="fps"></span><span id="hint"></span></footer>
+<script type="module" src="./editor/main.js"></script>
+</body>
+</html>

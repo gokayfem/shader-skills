@@ -1,0 +1,9 @@
+# Coastal: green-blue water over a sandy shelf, with a moderate swell rolling in from the open
+# sea to the east. The default, and the cove's.
+absorption 0.40 0.09 0.07    # per metre: red goes first; plankton takes some blue
+scattering 0.010 0.018 0.016 # per metre: the green glow from within
+turbidity 0.2
+foam 1
+choppiness 0.85
+swell height=0.6 period=10 from=100
+fetch 30                     # km of open water the wind blows across

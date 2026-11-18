@@ -1,0 +1,1016 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Solstice</title>
+<!-- No icon, said here so that browsers don't ask for /favicon.ico and log its absence. -->
+<link rel="icon" href="data:,">
+<style>
+  :root {
+    --ink: #f4efe6;
+    --muted: #b9b0a2;
+    --panel: rgba(16, 13, 10, 0.72);
+    --line: rgba(244, 239, 230, 0.16);
+    --accent: #e8a35a;
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; margin: 0; background: #0b0908; color: var(--ink);
+    font: 13px/1.45 ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif; }
+  canvas { position: fixed; inset: 0; width: 100%; height: 100%; display: block; outline: none; }
+
+  .panel { position: fixed; background: var(--panel); border: 1px solid var(--line); border-radius: 8px;
+    backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); padding: 12px 14px; }
+  #hud { top: 12px; left: 12px; min-width: 232px; font-variant-numeric: tabular-nums; }
+  #hud h1 { font-size: 13px; font-weight: 600; margin: 0 0 8px; letter-spacing: 0.02em; }
+  #hud dl { display: grid; grid-template-columns: 1fr auto; gap: 2px 16px; margin: 0; }
+  #hud dt { color: var(--muted); }
+  #hud dd { margin: 0; text-align: right; }
+  #fps { color: var(--accent); font-weight: 600; }
+
+  #controls { top: 12px; right: 12px; width: 232px; display: grid; gap: 10px; }
+  #controls label { display: grid; gap: 4px; color: var(--muted); }
+  #controls select, #controls input { width: 100%; accent-color: var(--accent); }
+  #extras summary { cursor: pointer; color: var(--muted); }
+  #extras[open] { display: grid; gap: 10px; }
+  #extras label:has(input[type=checkbox]) { display: flex; align-items: center; gap: 8px; }
+  #extras input[type=checkbox] { width: auto; }
+  #controls select { background: #1c1712; color: var(--ink); border: 1px solid var(--line);
+    border-radius: 5px; padding: 5px 6px; font: inherit; }
+
+    #scenes { top: 12px; left: 50%; transform: translateX(-50%); display: flex; gap: 4px; padding: 4px; z-index: 1; }
+  #scenes a { color: var(--muted); text-decoration: none; padding: 5px 12px; border-radius: 5px; font-weight: 600; }
+  #scenes a:hover { color: var(--ink); }
+  #scenes a[aria-current] { background: var(--accent); color: #1c1712; }
+
+  #help { left: 12px; bottom: 12px; color: var(--muted); padding: 8px 12px; }
+
+  /* On a narrow screen, the button that shows the settings and the rest of the readouts. */
+  #more { display: none; color: var(--ink); font: inherit; font-weight: 600; cursor: pointer; }
+
+  #play { left: 50%; bottom: 16px; transform: translateX(-50%); padding: 0; z-index: 1; }
+  #play button { background: var(--accent); color: #1c1712; border: 0; border-radius: 7px;
+    padding: 9px 22px; font: inherit; font-weight: 700; cursor: pointer; }
+  /* While playing it is the button to fly, out of the way of the help and the scripts' log. */
+  @media (min-width: 621px) { #play.fly { left: auto; right: 12px; bottom: 12px; transform: none; } }
+  #script-log { left: 12px; right: 12px; bottom: 64px; max-width: 72ch; max-height: 30vh;
+    overflow-y: auto; padding: 8px 12px; font: 12px/1.45 ui-monospace, Consolas, monospace;
+    white-space: pre-wrap; }
+  #script-log .error { color: #ffb4a2; }
+
+  /* A car's dashboard: speed, gear and revs, and the lap's times. */
+  #dash { left: 50%; bottom: 16px; transform: translateX(-50%); display: grid; gap: 8px;
+    grid-template-columns: auto auto; align-items: end; padding: 10px 16px 12px;
+    font-variant-numeric: tabular-nums; pointer-events: none; }
+  #dash[hidden] { display: none; }
+  #dash .speed { font-size: 40px; font-weight: 700; line-height: 1; min-width: 3ch; text-align: right; }
+  #dash .speed small { font-size: 12px; font-weight: 500; color: var(--muted); margin-left: 4px; }
+  #dash .gear { font-size: 40px; font-weight: 700; line-height: 1; color: var(--accent);
+    min-width: 1.4ch; text-align: center; }
+  #dash .revs { grid-column: 1 / -1; height: 6px; border-radius: 3px; background: var(--line); overflow: hidden; }
+  #dash .revs i { display: block; height: 100%; width: 0; background: var(--accent); }
+  #dash .revs i.high { background: #e2543f; }
+  #dash .aids { grid-column: 1 / -1; display: flex; gap: 10px; justify-content: center;
+    color: var(--muted); font-size: 11px; font-weight: 700; letter-spacing: 0.06em; min-height: 1.45em; }
+  #dash .aids b { color: var(--accent); }
+  #laps { top: 12px; left: 12px; display: grid; grid-template-columns: auto auto; gap: 2px 14px;
+    min-width: 168px; font-variant-numeric: tabular-nums; pointer-events: none; }
+  #laps[hidden] { display: none; }
+  #laps h2 { grid-column: 1 / -1; margin: 0 0 4px; font-size: 13px; font-weight: 600; }
+  #laps span { color: var(--muted); }
+  #laps b { text-align: right; font-weight: 600; }
+  #laps b.off { color: #ffb4a2; }
+  /* Driving, the car's readouts take the place of the page's own. */
+  body.driving #hud { display: none; }
+  body.driving #help { max-width: min(46ch, 30vw); }
+  #help b { color: var(--ink); font-weight: 600; }
+
+  #overlay { position: fixed; inset: 0; display: grid; place-items: center; text-align: center; padding: 24px;
+    overflow: auto; }
+  #overlay[hidden] { display: none; }
+  #message { max-width: 44ch; font-size: 15px; }
+  #message.error { color: #ffb4a2; }
+  /* What the browser offered, under a failure to start: on a phone the console is out of reach. */
+  #report { margin-top: 14px; text-align: left; max-width: min(92vw, 80ch); }
+  #report[hidden] { display: none; }
+  #report pre { max-height: 45vh; overflow: auto; margin: 8px 0; padding: 8px 10px; white-space: pre-wrap;
+    word-break: break-word; font: 11px/1.4 ui-monospace, Consolas, monospace; color: var(--muted);
+    background: var(--panel); border: 1px solid var(--line); border-radius: 6px; user-select: text; }
+  #report button { background: #1c1712; color: var(--ink); border: 1px solid var(--line);
+    border-radius: 5px; padding: 5px 12px; font: inherit; cursor: pointer; }
+  progress { width: 280px; height: 6px; margin-top: 14px; accent-color: var(--accent); }
+
+  @media (max-width: 620px) {
+    #controls { top: auto; bottom: 64px; right: 12px; left: 12px; width: auto;
+      max-height: calc(100% - 140px); overflow-y: auto; }
+    /* The view comes first: the frame rate alone, and the rest behind the button. */
+    body:not(.more) #controls { display: none; }
+    body:not(.more) #hud dl > :nth-child(n+3), body:not(.more) #hud h1 { display: none; }
+    #hud { min-width: 0; padding: 6px 10px; }
+    #more:not([hidden]) { display: block; right: 12px; bottom: 12px; padding: 8px 14px; }
+        #help { display: none; }
+    #scenes { top: 8px; }
+    #hud { top: 56px; }
+    #laps { top: 56px; }
+    #dash { bottom: 64px; }
+    #dash .speed, #dash .gear { font-size: 30px; }
+    body.driving #controls { display: none; }
+  }
+</style>
+</head>
+<body>
+<canvas id="view" tabindex="0"></canvas>
+
+<nav class="panel" id="scenes" aria-label="Scene">
+  <a href="?scene=cove" data-scene="cove">Cove</a>
+  <a href="?scene=web" data-scene="web">Temple</a>
+  <a href="?scene=forest" data-scene="forest">Forest</a>
+</nav>
+
+<aside class="panel" id="hud" hidden>
+  <h1>Solstice</h1>
+  <dl>
+    <dt>Frame rate</dt><dd id="fps">-</dd>
+    <dt>Drawn triangles</dt><dd id="triangles">-</dd>
+    <dt>Source triangles</dt><dd id="source">-</dd>
+    <dt>Clusters</dt><dd id="clusters">-</dd>
+    <dt>In software raster</dt><dd id="software">-</dd>
+    <dt>Instances</dt><dd id="instances">-</dd>
+    <dt>Textures</dt><dd id="textures">-</dd>
+    <dt>Geometry pages</dt><dd id="pages">-</dd>
+    <dt>Downloaded</dt><dd id="fetched">-</dd>
+    <dt>GPU errors</dt><dd id="errors">0</dd>
+    <dt>Weather</dt><dd id="weather-now">-</dd>
+    <dt>Time</dt><dd id="time-now">-</dd>
+  </dl>
+</aside>
+
+<button type="button" class="panel" id="more" aria-controls="controls" aria-expanded="false" hidden>Settings</button>
+
+<aside class="panel" id="controls" hidden>
+  <label>View
+    <select id="debug">
+      <option value="lit">Final image</option>
+      <option value="clusters">Clusters</option>
+      <option value="triangles">Triangles</option>
+      <option value="raster">Rasterizer (green: software)</option>
+      <option value="instances">Instances</option>
+      <option value="albedo">Base color</option>
+      <option value="normals">Normals</option>
+      <option value="gi">Indirect diffuse</option>
+      <option value="reflections">Reflections</option>
+      <option value="voxels">GI scene (voxels)</option>
+      <option value="ocean">Sea surface (normals)</option>
+      <option value="wetness">Wetness</option>
+      <option value="motion">Motion</option>
+      <option value="particles">Particle overdraw</option>
+      <option value="particle-light">Particle light</option>
+      <option value="wind">Wind</option>
+    </select>
+  </label>
+  <label>Weather
+    <select id="weather">
+      <option value="changing">Changing</option>
+      <option value="clear">Clear</option>
+      <option value="fair">Fair</option>
+      <option value="broken">Broken cloud</option>
+      <option value="overcast">Overcast</option>
+      <option value="storm">Storm</option>
+      <option value="cirrus">Cirrus</option>
+    </select>
+  </label>
+  <label>Time of day <output id="clock">09:00</output>
+    <input id="time" type="range" min="0" max="24" step="0.05" value="9"></label>
+  <label>Time passes
+    <select id="day-length">
+      <option value="1200">A day in 20 minutes</option>
+      <option value="120">A day in 2 minutes</option>
+      <option value="86400">As in real life</option>
+      <option value="0">Not at all</option>
+    </select>
+  </label>
+  <label>North<input id="north" type="range" min="0" max="360" value="0"></label>
+  <label>Quality
+    <select id="quality">
+      <option value="auto">Automatic</option>
+      <option value="high">High</option>
+      <option value="medium">Medium</option>
+      <option value="low">Low</option>
+    </select>
+  </label>
+  <details id="extras">
+    <summary>Extras</summary>
+    <label><input id="live-weather" type="checkbox"> Real weather now</label>
+    <label><input id="sound" type="checkbox"> Sound (thunder)</label>
+    <label>Place
+      <select id="live-place">
+        <option value="default">London</option>
+        <option value="here">My location</option>
+      </select>
+    </label>
+  </details>
+</aside>
+
+<aside class="panel" id="help" hidden>
+  <b>Click</b> to look around, <b>WASD</b> to move, <b>Q E</b> down and up, <b>Shift</b> faster, <b>Esc</b> to release
+</aside>
+
+<!-- Offered on scenes with a game; playing loads the gameplay build of the viewer. Playing
+     as someone, it is the button that leaves them to fly the camera, and comes back. -->
+<aside class="panel" id="play" hidden><button type="button">Play</button></aside>
+<!-- A car's dashboard, and its lap times: shown while the player drives one. -->
+<aside class="panel" id="dash" hidden>
+  <div class="speed"><span id="dash-speed">0</span><small>km/h</small></div>
+  <div class="gear" id="dash-gear">N</div>
+  <div class="revs"><i id="dash-revs"></i></div>
+  <div class="aids" id="dash-aids"></div>
+</aside>
+<aside class="panel" id="laps" hidden>
+  <h2 id="laps-track"></h2>
+  <span>Lap</span><b id="laps-count">1</b>
+  <span>Time</span><b id="laps-time">-:--.---</b>
+  <span>Last</span><b id="laps-last">-:--.---</b>
+  <span>Best</span><b id="laps-best">-:--.---</b>
+</aside>
+<!-- What the game's scripts log, and their errors. -->
+<aside class="panel" id="script-log" hidden aria-live="polite"></aside>
+
+<div id="overlay">
+  <div>
+    <div id="message">Starting…</div>
+    <progress id="progress" max="1" value="0" hidden></progress>
+    <div id="report" hidden>
+      <pre id="report-text"></pre>
+      <button type="button" id="report-copy">Copy</button>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+const params = new URLSearchParams(location.search);
+// ?play loads the gameplay build, which can run a scene's game. Scenes that are only looked at
+// load the plain build, which is smaller and knows nothing of games.
+const playing = params.has("play");
+const build = playing ? "./play/solstice_viewer.js" : "./pkg/solstice_viewer.js";
+const wasm = await import(build).catch((error) => {
+  // Said on the page, not left at "Starting…": `fail` needs what is set up below.
+  const message = document.getElementById("message");
+  message.textContent = `Could not load the viewer (${build}): ${error.message ?? error}`;
+  message.className = "error";
+  throw error;
+});
+const { default: init } = wasm;
+const { adapterReport, readWithRetries, inflateAtMost, requestAdapter, openScene } =
+  await import("./loader.js");
+const { AutoQuality } = await import("./auto-quality.js");
+
+const sceneName = params.get("scene") ?? "cove";
+if (!/^[\w-]+$/.test(sceneName)) throw new Error("invalid scene name");
+// On GitHub Pages each scene is served by its own site on the same domain, so publishing one
+// never redeploys the viewer or the others. Anywhere else, such as a local build, scenes sit in
+// assets/ beside the page. ?scenes=URL points somewhere else, ending in a slash.
+const SCENE_SITES = { web: "temple", cove: "cove", forest: "forest" };
+const sceneBase = params.get("scenes")
+  ?? (location.hostname.endsWith("github.io") && SCENE_SITES[sceneName]
+    ? `/solstice-scene-${SCENE_SITES[sceneName]}/`
+    : "assets/");
+const sceneUrl = `${sceneBase}${sceneName}.solstice`;
+document.querySelector(`#scenes [data-scene="${sceneName}"]`)?.setAttribute("aria-current", "page");
+// GPU memory the scene may use. Add ?geometry-mb=64 or ?texture-mb=32 to try other budgets.
+const budgetBytes = (name, megabytes) => (Number(params.get(name)) || megabytes) * 1048576;
+// A scene read in parts (?split) is tens of gigabytes, and the usual budgets hold no more of it
+// than the pages it can never drop: its coarsest shapes under its smallest textures. Its own
+// are what docs/zorah.md measured it with, on a 16 GB card.
+const splitScene = params.has("split");
+const geometryBudget = budgetBytes("geometry-mb", splitScene ? 10000 : 128);
+const textureBudget = budgetBytes("texture-mb", splitScene ? 1000 : 64);
+
+const el = (id) => document.getElementById(id);
+const canvas = el("view");
+
+function fail(text) {
+  el("overlay").hidden = false;
+  el("progress").hidden = true;
+  el("message").textContent = text;
+  el("message").className = "error";
+}
+
+
+/// Fails with `text`, and under it what the browser offered, to read or copy.
+async function failWithReport(text) {
+  fail(text);
+  const report = await adapterReport().catch((error) => `No report: ${error.message ?? error}`);
+  console.info(report);
+  el("report-text").textContent = report;
+  el("report").hidden = false;
+  el("report-copy").onclick = () => (navigator.clipboard?.writeText(report) ?? Promise.reject())
+    .then(() => { el("report-copy").textContent = "Copied"; })
+    .catch(() => { el("report-copy").textContent = "Copy failed: select the text"; });
+}
+
+
+// Canvas pixels per CSS pixel are capped at 2, and at 1 once automatic quality's last step asks.
+let pixelRatioCap = 2;
+const canvasSize = () => {
+  const ratio = Math.min(window.devicePixelRatio || 1, pixelRatioCap);
+  return [
+    Math.max(1, Math.round(canvas.clientWidth * ratio)),
+    Math.max(1, Math.round(canvas.clientHeight * ratio)),
+  ];
+};
+
+function compact(n) {
+  if (n >= 1e9) return `${(n / 1e9).toFixed(2)} B`;
+  if (n >= 1e6) return `${(n / 1e6).toFixed(2)} M`;
+  if (n >= 1e3) return `${(n / 1e3).toFixed(1)} K`;
+  return String(n);
+}
+
+
+async function main() {
+  if (!navigator.gpu) {
+    failWithReport("This browser does not support WebGPU. Try a recent version of Chrome or Edge.");
+    return;
+  }
+  // Checked up front, so nobody downloads a whole scene to learn their GPU can't show it.
+  const adapter = await requestAdapter();
+  if (!adapter) {
+    // Some phones' browsers offer a GPU only at WebGPU's "compatibility" level, as on OpenGL ES,
+    // which lacks what the renderer is built on.
+    const compatible = await navigator.gpu.requestAdapter({ featureLevel: "compatibility" })
+      .catch(() => null);
+    failWithReport(compatible
+      ? "This browser offers WebGPU on this GPU only in its compatibility mode, which this viewer can't run on yet."
+      // The browser has WebGPU and offers no adapter at all: on Android, Chrome turns WebGPU
+      // on only for the GPUs it has tested, and leaves others, such as some Samsung phones', out.
+      : "This browser has WebGPU, but offers no adapter for this GPU: it doesn't turn WebGPU on for it yet. "
+        + "In Chrome, chrome://flags/#enable-unsafe-webgpu turns it on anyway, at your own risk.");
+    return;
+  }
+  await init();
+  el("message").textContent = "Loading scene…";
+  [canvas.width, canvas.height] = canvasSize();
+  const { viewer, streamer, file } = await openScene(wasm, canvas, {
+    url: sceneUrl,
+    // ?split reads the manifest from NAME.web, and pages from NAME.solstice.
+    tablesUrl: params.has("split") ? `${sceneBase}${sceneName}.web` : null,
+    geometryBudget,
+    textureBudget,
+    unpackTextures: params.has("unpack-textures"),
+    // ?limits=webgpu asks for no more than the WebGPU defaults, as many phones are given.
+    defaultLimits: params.get("limits") === "webgpu",
+    // ?fetching=N, ?workers=N and ?batch=N try other numbers.
+    streaming: {
+      maxFetching: Number(params.get("fetching")) || 0,
+      workers: Number(params.get("workers")) || 0,
+      pagesPerRequest: Number(params.get("batch")) || 0,
+    },
+    onStage: (text) => { el("message").textContent = text; },
+    onDownload: (received, total) => {
+      el("progress").hidden = received === null || total === 0;
+      if (received === null) return;
+      if (total) el("progress").value = received / total;
+      el("message").textContent = `Downloading scene: ${(received / 1e6).toFixed(0)} MB`;
+    },
+    onTablesProgress: (done, total) => {
+      el("progress").hidden = done >= total;
+      el("progress").value = done / total;
+      el("message").textContent =
+        `Loading the scene's base: ${(done / 1e9).toFixed(1)} of ${(total / 1e9).toFixed(1)} GB`;
+    },
+  });
+
+  const camera = params.get("camera")?.split(",").map(Number);
+  if (camera?.length === 5) viewer.set_camera(...camera);
+  // Still water for a scene whose basins came without theirs: ?ponds=x0,z0,x1,z1,level, with ;
+  // between ponds.
+  if (params.get("ponds")) viewer.set_ponds(params.get("ponds"));
+
+  // Time of day: passing by default, with a slider that follows it and can set it, ?time=HH:MM
+  // to start at, and ?day-length=SECONDS for how fast it passes (0 holds it still).
+  const clockText = (hours) => {
+    const minutes = Math.floor(hours * 60) % (24 * 60);
+    return `${String(Math.floor(minutes / 60)).padStart(2, "0")}:${String(minutes % 60).padStart(2, "0")}`;
+  };
+  const startTime = params.get("time")?.split(":").map(Number);
+  if (startTime?.every(Number.isFinite)) viewer.set_time(startTime[0] + (startTime[1] ?? 0) / 60);
+  if (params.has("day-length")) el("day-length").value = params.get("day-length");
+  // A scene read in parts is far heavier than any other, and every step of the sun redraws its
+  // shadows: there, time stands still unless asked to pass.
+  else if (params.has("split")) el("day-length").value = "0";
+  const applyDayLength = () => viewer.set_day_length(Number(el("day-length").value));
+  el("day-length").addEventListener("change", applyDayLength);
+  applyDayLength();
+  let draggingTime = false;
+  el("time").addEventListener("input", (e) => {
+    draggingTime = true;
+    viewer.set_time(e.target.valueAsNumber);
+  });
+  el("time").addEventListener("change", () => { draggingTime = false; });
+  el("north").addEventListener("input", (e) => viewer.set_north(e.target.valueAsNumber));
+  const showTime = () => {
+    const hours = viewer.time_of_day();
+    if (!draggingTime) el("time").value = hours;
+    el("clock").textContent = clockText(hours);
+    el("time-now").textContent = clockText(hours);
+  };
+
+  // Weather: by default the sky changes by itself, drifting through fair, broken, overcast
+  // and stormy weather and clearing again. The menu fixes one weather instead. Under Extras,
+  // "Real weather now" follows a place's current cloud and wind from Open-Meteo (free, no key):
+  // the place is ?lat=&lon= in the address, the browser's location if asked for, or London.
+  const weather = {
+    place: { name: "London", latitude: 51.51, longitude: -0.13 },
+    timer: null,
+    source: "changing",
+    async live() {
+      const p = this.place;
+      const url = "https://api.open-meteo.com/v1/forecast"
+        + `?latitude=${p.latitude.toFixed(2)}&longitude=${p.longitude.toFixed(2)}`
+        + "&current=cloud_cover_low,cloud_cover_mid,cloud_cover_high,wind_speed_10m,"
+        + "wind_direction_10m,weather_code,precipitation";
+      try {
+        const response = await fetch(url);
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        const now = (await response.json()).current;
+        // Ease into each report over two minutes, as weather changes.
+        viewer.set_observed_weather(
+          now.cloud_cover_low, now.cloud_cover_mid, now.cloud_cover_high,
+          now.wind_speed_10m, now.wind_direction_10m, now.weather_code, now.precipitation,
+          120);
+        this.source = `real weather, ${p.name}`;
+      } catch (error) {
+        console.warn("real weather unavailable:", error);
+        this.source = `${p.name}: real weather unavailable`;
+      }
+    },
+    stopLive() {
+      clearInterval(this.timer);
+      this.timer = null;
+      el("live-weather").checked = false;
+    },
+    startLive() {
+      this.live();
+      clearInterval(this.timer);
+      // Weather services update about every quarter of an hour.
+      this.timer = setInterval(() => this.live(), 15 * 60 * 1000);
+    },
+    choose(name) {
+      this.stopLive();
+      if (name === "changing") {
+        viewer.set_weather_changing(true, "fair");
+        this.source = "changing";
+      } else {
+        viewer.set_weather(name, 30);
+        this.source = "chosen";
+      }
+    },
+  };
+  const lat = parseFloat(params.get("lat"));
+  const lon = parseFloat(params.get("lon"));
+  if (Number.isFinite(lat) && Number.isFinite(lon)) {
+    weather.place = { name: `${lat.toFixed(2)}, ${lon.toFixed(2)}`, latitude: lat, longitude: lon };
+    el("live-place").options[0].textContent = weather.place.name;
+  }
+  el("weather").value = params.get("weather") ?? "changing";
+  el("weather").addEventListener("change", (e) => weather.choose(e.target.value));
+  weather.choose(el("weather").value);
+  el("live-weather").addEventListener("change", (e) => {
+    if (e.target.checked) weather.startLive(); else weather.choose(el("weather").value);
+  });
+  el("live-place").addEventListener("change", (e) => {
+    if (e.target.value === "here" && navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition((position) => {
+        weather.place = {
+          name: "your location",
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude,
+        };
+        if (el("live-weather").checked) weather.startLive();
+      }, () => { weather.source = "location not shared"; });
+    }
+  });
+  if (params.has("live")) {
+    el("live-weather").checked = true;
+    weather.startLive();
+  }
+
+  // ?effect=NAME@x,y,z starts a built-in particle effect there; several are separated by ";".
+  for (const spec of (params.get("effect") ?? "").split(";").filter(Boolean)) {
+    const [name, at = "0,0,0"] = spec.split("@");
+    const [x, y, z] = at.split(",").map(Number);
+    if (!viewer.spawn_effect(name, x || 0, y || 0, z || 0)) console.warn(`no effect ${spec}`);
+  }
+
+  el("debug").addEventListener("change", (e) => viewer.set_debug_view(e.target.value));
+  if (params.get("debug")) {
+    el("debug").value = params.get("debug");
+    viewer.set_debug_view(params.get("debug"));
+  }
+
+  // Automatic quality starts high and steps down while the frame rate stays below target:
+  // see auto-quality.js. Its last step, on a high-density display, draws fewer pixels.
+  const LEVELS = ["high", "medium", "low"];
+  const LOADING_PAGES_PER_REPORT = 200;
+  const auto = new AutoQuality(window.devicePixelRatio || 1);
+  const autoOption = el("quality").querySelector('[value="auto"]');
+  let pagesAtReport = 0;
+  const resizeCanvas = () => {
+    const [width, height] = canvasSize();
+    if (width !== canvas.width || height !== canvas.height) {
+      canvas.width = width;
+      canvas.height = height;
+      viewer.resize(width, height);
+    }
+  };
+  const usePixelRatio = (cap) => {
+    if (cap === pixelRatioCap) return;
+    pixelRatioCap = cap;
+    resizeCanvas();
+  };
+  const adaptQuality = (fps) => {
+    const pages = viewer.pages_installed() + viewer.pages_evicted();
+    const loading = pages - pagesAtReport > LOADING_PAGES_PER_REPORT;
+    pagesAtReport = pages;
+    if (el("quality").value !== "auto") return;
+    const step = auto.report(fps, loading);
+    if (!step) return;
+    viewer.set_quality(step.quality);
+    usePixelRatio(step.pixelRatio);
+    autoOption.textContent = `Automatic (${auto.label})`;
+  };
+  // A preset chosen by hand is drawn at the display's full density.
+  el("quality").addEventListener("change", (e) => {
+    const automatic = e.target.value === "auto";
+    viewer.set_quality(automatic ? auto.step.quality : e.target.value);
+    usePixelRatio(automatic ? auto.step.pixelRatio : 2);
+  });
+  const requestedQuality = params.get("quality");
+  if (LEVELS.includes(requestedQuality)) {
+    el("quality").value = requestedQuality;
+    viewer.set_quality(requestedQuality);
+  }
+
+  const keys = new Set();
+  let lookYaw = 0;
+  let lookPitch = 0;
+  addEventListener("keydown", (e) => {
+    keys.add(e.code);
+    // L calls down lightning ahead, whatever the weather.
+    if (e.code === "KeyL" && !e.repeat && !/^(INPUT|SELECT|TEXTAREA)$/.test(e.target.tagName)) {
+      viewer.strike_lightning();
+    }
+  });
+  addEventListener("keyup", (e) => keys.delete(e.code));
+
+  // Thunder, made here from noise: no sound files. Browsers allow sound only after the visitor
+  // asks for it, so it stays silent until "Sound" is ticked. Each strike's thunder arrives
+  // after the flash by its distance at the speed of sound (the renderer works that out): a
+  // near bolt cracks, then rumbles; a far one only rolls, low and long, as its long channel's
+  // sound arrives from a spread of distances.
+  const thunder = {
+    context: null,
+    noise: null,
+    on: false,
+    enable(on) {
+      this.on = on;
+      if (on && !this.context) {
+        const AudioContext = window.AudioContext ?? window.webkitAudioContext;
+        if (!AudioContext) return;
+        this.context = new AudioContext();
+        // Two seconds of brown noise: a rumble's raw stuff.
+        const length = this.context.sampleRate * 2;
+        this.noise = this.context.createBuffer(1, length, this.context.sampleRate);
+        const data = this.noise.getChannelData(0);
+        let last = 0;
+        for (let i = 0; i < length; i++) {
+          last = (last + 0.02 * (Math.random() * 2 - 1)) / 1.02;
+          data[i] = last * 3.5;
+        }
+      }
+      if (this.context) on ? this.context.resume() : this.context.suspend();
+    },
+    hear(strikes) {
+      if (!this.on || !this.context) return;
+      for (const s of strikes) this.play(s);
+    },
+    play(s) {
+      const ctx = this.context;
+      const start = ctx.currentTime + Math.max(0, s.delay);
+      const out = ctx.createGain();
+      out.gain.value = 0.9 * s.loudness;
+      out.connect(ctx.destination);
+      const near = 1500 / (s.distance + 1500);
+      const parts = 4 + Math.round(s.rumble);
+      for (let k = 0; k < parts; k++) {
+        const crack = k === 0 && s.ground && s.distance < 2500;
+        const source = ctx.createBufferSource();
+        source.buffer = this.noise;
+        source.loop = true;
+        const filter = ctx.createBiquadFilter();
+        filter.type = "lowpass";
+        filter.frequency.value = crack ? 2200 : 90 + 450 * near * Math.random();
+        const gain = ctx.createGain();
+        const at = start + (k === 0 ? 0 : Math.random() * s.rumble * 0.7);
+        const lasts = crack ? 0.5 : 0.8 + Math.random() * s.rumble * 0.6;
+        const peak = crack ? 1 : 0.35 + 0.5 * Math.random();
+        gain.gain.setValueAtTime(0.0001, at);
+        gain.gain.exponentialRampToValueAtTime(peak, at + (crack ? 0.008 : 0.12 + 0.3 * Math.random()));
+        gain.gain.exponentialRampToValueAtTime(0.0001, at + lasts);
+        source.connect(filter).connect(gain).connect(out);
+        source.start(at, Math.random() * 1.5);
+        source.stop(at + lasts + 0.05);
+      }
+    },
+  };
+  el("sound").addEventListener("change", (e) => thunder.enable(e.target.checked));
+  addEventListener("blur", () => keys.clear());
+  // A mouse's click captures the pointer; a touch has nothing to capture.
+  canvas.addEventListener("click", (e) => {
+    if (e.pointerType !== "touch") canvas.requestPointerLock?.();
+  });
+  addEventListener("mousemove", (e) => {
+    if (document.pointerLockElement === canvas) {
+      lookYaw -= e.movementX * 0.002;
+      lookPitch -= e.movementY * 0.002;
+    }
+  });
+
+  const game = await startGame(viewer, file);
+  const axis = (positive, negative) => (keys.has(positive) ? 1 : 0) - (keys.has(negative) ? 1 : 0);
+
+  // Touch, where no game takes it: a stick under the left thumb flies, as a game's does, and
+  // dragging anywhere else looks around.
+  const flying = { forward: 0, right: 0 };
+  if (!game) {
+    const STICK_PIXELS = 60;
+    const LOOK_PER_PIXEL = 0.004;
+    const touches = new Map();
+    const stickTaken = () => [...touches.values()].some((touch) => touch.stick);
+    canvas.addEventListener("touchstart", (e) => {
+      e.preventDefault();
+      for (const t of e.changedTouches) {
+        touches.set(t.identifier, {
+          stick: t.clientX < innerWidth / 2 && !stickTaken(),
+          x0: t.clientX, y0: t.clientY, x: t.clientX, y: t.clientY,
+        });
+      }
+    }, { passive: false });
+    canvas.addEventListener("touchmove", (e) => {
+      e.preventDefault();
+      for (const t of e.changedTouches) {
+        const touch = touches.get(t.identifier);
+        if (!touch) continue;
+        if (touch.stick) {
+          const clamp = (v) => Math.max(-1, Math.min(1, v));
+          flying.right = clamp((t.clientX - touch.x0) / STICK_PIXELS);
+          flying.forward = clamp(-(t.clientY - touch.y0) / STICK_PIXELS);
+        } else {
+          lookYaw -= (t.clientX - touch.x) * LOOK_PER_PIXEL;
+          lookPitch -= (t.clientY - touch.y) * LOOK_PER_PIXEL;
+        }
+        touch.x = t.clientX;
+        touch.y = t.clientY;
+      }
+    }, { passive: false });
+    const endTouch = (e) => {
+      for (const t of e.changedTouches) {
+        if (touches.get(t.identifier)?.stick) Object.assign(flying, { forward: 0, right: 0 });
+        touches.delete(t.identifier);
+      }
+    };
+    canvas.addEventListener("touchend", endTouch);
+    canvas.addEventListener("touchcancel", endTouch);
+  }
+
+  new ResizeObserver(resizeCanvas).observe(canvas);
+
+  el("overlay").hidden = true;
+  for (const id of ["hud", "controls", "help", "more"]) el(id).hidden = false;
+  el("more").addEventListener("click", () => {
+    const open = document.body.classList.toggle("more");
+    el("more").setAttribute("aria-expanded", String(open));
+    el("more").textContent = open ? "Close" : "Settings";
+  });
+
+  el("source").textContent = compact(viewer.source_triangles());
+  el("instances").textContent = viewer.instances().toLocaleString();
+  el("textures").textContent = viewer.texture_summary();
+
+  let previous = performance.now();
+  let frames = 0;
+  let sinceReport = 0;
+  let fps = 0;
+
+  // Exposed for scripted checks.
+  window.solstice = {
+    viewer,
+    file,
+    weather,
+    get frames() { return frames; },
+    get fps() { return fps; },
+    history: [],
+  };
+
+  function tick(now) {
+    const delta = Math.min((now - previous) / 1000, 0.1);
+    previous = now;
+
+    streamer.pump();
+    game?.tick();
+    viewer.frame(
+      delta,
+      Math.max(-1, Math.min(1, axis("KeyW", "KeyS") + flying.forward)),
+      Math.max(-1, Math.min(1, axis("KeyD", "KeyA") + flying.right)),
+      axis("KeyE", "KeyQ"),
+      lookYaw,
+      lookPitch,
+      keys.has("ShiftLeft") || keys.has("ShiftRight"),
+    );
+    lookYaw = 0;
+    lookPitch = 0;
+
+    // The moments the first image was submitted, and what it took, for measuring load times.
+    const heard = viewer.take_thunder();
+    if (heard !== "[]") thunder.hear(JSON.parse(heard));
+    if (frames === 0) {
+      performance.mark("first-frame");
+      window.solstice.firstFrameBytes = file.bytesFetched;
+    }
+    frames += 1;
+    sinceReport += delta;
+    if (sinceReport >= 0.5) {
+      fps = (frames - (tick.lastFrames ?? 0)) / sinceReport;
+      tick.lastFrames = frames;
+      sinceReport = 0;
+      el("fps").textContent = `${fps.toFixed(0)} fps`;
+      el("triangles").textContent = compact(viewer.triangles());
+      el("clusters").textContent = compact(viewer.clusters());
+      el("software").textContent = compact(viewer.software_clusters());
+      el("errors").textContent = viewer.gpu_error_count();
+      el("weather-now").textContent = `${viewer.weather_summary()} (${weather.source})`;
+      showTime();
+      el("pages").textContent = `${viewer.pages_installed()} of ${viewer.pages_total()}`;
+      el("fetched").textContent = `${(file.bytesFetched / 1e6).toFixed(0)} MB`;
+      window.solstice.history.push({
+        time: now,
+        pages: viewer.pages_installed(),
+        fetched: file.bytesFetched,
+        triangles: viewer.triangles(),
+        sharp: viewer.texture_layers_sharp(),
+      });
+      adaptQuality(fps);
+    }
+    requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+}
+
+/// ?game=NAME gives the scene the game in games/NAME/ beside the page, in place of any baked
+/// into it: its scene.game, and, to play it, each file that names. So a scene baked without a
+/// game, or too big to bake again, gets one. A scene opened without ?game= fetches nothing.
+async function giveGame(viewer) {
+  const name = params.get("game");
+  if (name === null) return;
+  viewer.clear_game();
+  if (!/^[\w-]+$/.test(name)) throw new Error("invalid game name");
+  const read = async (file) => {
+    // Only what lies in the game's own folder.
+    if (!/^[\w.-]+(\/[\w.-]+)*$/.test(file) || file.split("/").includes("..")) {
+      throw new Error(`games/${name}: ${file} is not a file in it`);
+    }
+    const response = await fetch(`./games/${name}/${file}`);
+    if (!response.ok) throw new Error(`games/${name}/${file}: ${response.status}`);
+    return response.text();
+  };
+  viewer.add_game_file("scene.game", await read("scene.game"));
+  // The plain build only needs to know there is a game to offer.
+  if (!playing) return;
+  // What scene.game names, and then what those name: a few rounds at most.
+  for (let round = 0; round < 8; round += 1) {
+    const missing = viewer.game_files_missing();
+    if (missing.length === 0) return;
+    const texts = await Promise.all(missing.map(read));
+    missing.forEach((file, i) => viewer.add_game_file(file, texts[i]));
+  }
+  throw new Error(`games/${name}: its files never stop naming more`);
+}
+
+/// Offers Play on a scene with a game, and, in the gameplay build, runs it: passes the keys,
+/// mouse, gamepads and touch on to it, and shows what its scripts log. Returns what to call
+/// each frame, or nothing if no game runs.
+async function startGame(viewer, file) {
+  const given = await giveGame(viewer).catch((error) => error);
+  const failed = given instanceof Error;
+  // Said where a game's mistakes are, when playing; a page only looking is not stopped by it.
+  if (failed && !playing) console.warn(String(given.message ?? given));
+  if (!viewer.has_gameplay() && !(failed && playing)) return null;
+  if (!playing) {
+    el("play").hidden = false;
+    el("play").querySelector("button").addEventListener("click", () => {
+      params.set("play", "");
+      location.search = params.toString();
+    });
+    return null;
+  }
+  const log = el("script-log");
+  const show = (lines) => {
+    for (const line of lines) {
+      const row = document.createElement("div");
+      if (line.startsWith("error: ")) row.className = "error";
+      row.textContent = line;
+      log.append(row);
+    }
+    while (log.childElementCount > 100) log.firstElementChild.remove();
+    if (lines.length) {
+      log.hidden = false;
+      log.scrollTop = log.scrollHeight;
+    }
+  };
+  try {
+    if (failed) throw given;
+    // Fetched only now: a scene that is only looked at never downloads its collision.
+    const started = performance.now();
+    const ranges = viewer.collision_ranges();
+    // Baked before scenes had collision. One that has it may still have none to fetch.
+    if (!viewer.has_collision()) show(["this scene has no collision: rebake it to walk on it"]);
+    if (ranges.length > 0) {
+      // The parts lie one after another, so they come as one request.
+      const first = ranges[0];
+      const whole = await readWithRetries(file, first, ranges[ranges.length - 1]);
+      const sizes = viewer.collision_sizes();
+      // Array.from: `sizes` is a typed array, whose own `map` can only hold numbers.
+      const parts = Array.from(sizes, (size, i) =>
+        inflateAtMost(whole.subarray(ranges[i * 2] - first, ranges[i * 2 + 1] - first), size));
+      for (const part of await Promise.all(parts)) viewer.deliver_collision(part);
+    }
+    const fetched = performance.now();
+    viewer.play();
+    console.info(`game loaded: collision fetched in ${(fetched - started).toFixed(0)} ms, ` +
+      `world built in ${(performance.now() - fetched).toFixed(0)} ms`);
+  } catch (error) {
+    show(String(error.message ?? error).split("\n").map((line) => `error: ${line}`));
+    return null;
+  }
+
+  // Keys and the mouse, while the pointer is captured.
+  const locked = () => document.pointerLockElement === canvas;
+  // Not keys typed into the page's own controls, such as the quality list.
+  const typing = (e) => e.target instanceof HTMLElement && e.target.closest("select, input, textarea, button");
+  addEventListener("keydown", (e) => { if (!e.repeat && !typing(e)) viewer.key(e.code, true); });
+  addEventListener("keyup", (e) => viewer.key(e.code, false));
+  addEventListener("blur", () => viewer.release_all());
+  const BUTTONS = ["left", "middle", "right"];
+  canvas.addEventListener("mousedown", (e) => {
+    if (locked() && BUTTONS[e.button]) viewer.mouse_button(BUTTONS[e.button], true);
+  });
+  addEventListener("mouseup", (e) => { if (BUTTONS[e.button]) viewer.mouse_button(BUTTONS[e.button], false); });
+  addEventListener("mousemove", (e) => { if (locked()) viewer.mouse_motion(e.movementX, e.movementY); });
+
+  // Touch: a stick under the left thumb, looking under the right, and quick taps.
+  const STICK_PIXELS = 60;
+  const TAP_MS = 250;
+  const touches = new Map();
+  // The stick belongs to the first thumb down on the left, until it lifts.
+  const stickTaken = () => [...touches.values()].some((touch) => touch.stick);
+  canvas.addEventListener("touchstart", (e) => {
+    e.preventDefault();
+    for (const t of e.changedTouches) {
+      touches.set(t.identifier, {
+        stick: t.clientX < innerWidth / 2 && !stickTaken(),
+        x0: t.clientX, y0: t.clientY, x: t.clientX, y: t.clientY, start: performance.now(),
+      });
+    }
+  }, { passive: false });
+  canvas.addEventListener("touchmove", (e) => {
+    e.preventDefault();
+    for (const t of e.changedTouches) {
+      const touch = touches.get(t.identifier);
+      if (!touch) continue;
+      if (touch.stick) {
+        viewer.touch_stick((t.clientX - touch.x0) / STICK_PIXELS, (t.clientY - touch.y0) / STICK_PIXELS);
+      } else {
+        viewer.touch_look(t.clientX - touch.x, t.clientY - touch.y);
+      }
+      touch.x = t.clientX;
+      touch.y = t.clientY;
+    }
+  }, { passive: false });
+  const endTouch = (e) => {
+    for (const t of e.changedTouches) {
+      const touch = touches.get(t.identifier);
+      if (!touch) continue;
+      touches.delete(t.identifier);
+      if (touch.stick) viewer.touch_stick(0, 0);
+      const moved = Math.hypot(t.clientX - touch.x0, t.clientY - touch.y0);
+      if (performance.now() - touch.start < TAP_MS && moved < 10) viewer.touch_tap();
+    }
+  };
+  canvas.addEventListener("touchend", endTouch);
+  canvas.addEventListener("touchcancel", endTouch);
+
+  // Gamepads, in the standard layout, read each frame.
+  const PAD_BUTTONS = ["south", "east", "west", "north", "l1", "r1", "l2", "r2", "select",
+    "start", "l3", "r3", "up", "down", "left", "right"];
+  const PAD_AXES = ["left_x", "left_y", "right_x", "right_y"];
+  // The pad used most recently is the one read. When none is left, or another takes over,
+  // whatever the last one held is let go, so a pad unplugged mid-stride doesn't keep walking.
+  let padIndex = null;
+  const readGamepads = () => {
+    const pads = [...(navigator.getGamepads?.() ?? [])]
+      .filter((pad) => pad?.connected && pad.mapping === "standard");
+    const pad = pads.reduce((a, b) => (!a || b.timestamp > a.timestamp ? b : a), null);
+    if (padIndex !== null && pad?.index !== padIndex) {
+      PAD_BUTTONS.forEach((name) => viewer.gamepad_button(name, 0));
+      PAD_AXES.forEach((name) => viewer.gamepad_axis(name, 0));
+    }
+    padIndex = pad?.index ?? null;
+    if (!pad) return;
+    pad.buttons.forEach((b, i) => PAD_BUTTONS[i] && viewer.gamepad_button(PAD_BUTTONS[i], b.value));
+    pad.axes.forEach((v, i) => PAD_AXES[i] && viewer.gamepad_axis(PAD_AXES[i], v));
+  };
+
+  // A car's dashboard, while the player drives one.
+  const DRIVE_HELP = "<b>W S</b> or the <b>arrows</b> to go and stop, <b>A D</b> to steer, "
+    + "<b>Space</b> handbrake, <b>R</b> back on track, <b>C</b> camera, <b>P</b> drives a lap for you, "
+    + "<b>V</b> to fly. A <b>gamepad</b>: triggers and left stick to drive, right stick to look round, "
+    + "<b>Select</b> camera, <b>Y</b> back on track";
+  const lapTime = (seconds) => {
+    if (seconds < 0) return "-:--.---";
+    const minutes = Math.floor(seconds / 60);
+    return `${minutes}:${(seconds - minutes * 60).toFixed(3).padStart(6, "0")}`;
+  };
+  let driving = false;
+  const drawDash = () => {
+    // Only a car has instruments, and not while the player is away flying.
+    const hud = viewer.drives() ? viewer.hud() : [];
+    if (hud.length === 0) {
+      if (driving) {
+        driving = false;
+        el("dash").hidden = true;
+        el("laps").hidden = true;
+        document.body.classList.remove("driving");
+      }
+      return;
+    }
+    if (!driving) {
+      driving = true;
+      el("dash").hidden = false;
+      el("laps").hidden = false;
+      el("laps-track").textContent = viewer.hud_track();
+      // The page's own readouts make way for the car's.
+      document.body.classList.add("driving");
+      if (!viewer.flying()) el("help").innerHTML = DRIVE_HELP;
+    }
+    const [speed, gear, revs, limit, , , abs, traction, limiter, laps, time, last, best, valid, stability] = hud;
+    el("dash-speed").textContent = speed.toFixed(0);
+    el("dash-gear").textContent = gear < 0 ? "R" : gear === 0 ? "N" : String(gear);
+    const bar = el("dash-revs");
+    bar.style.width = `${Math.min(100, (revs / Math.max(limit, 1)) * 100).toFixed(1)}%`;
+    bar.className = limiter || revs > limit * 0.93 ? "high" : "";
+    el("dash-aids").innerHTML = (abs ? "<b>ABS</b>" : "") + (traction ? "<b>TC</b>" : "")
+      + (stability ? "<b>ESC</b>" : "");
+    el("laps-count").textContent = String(laps + 1);
+    const now = el("laps-time");
+    now.textContent = lapTime(time);
+    now.className = valid ? "" : "off";
+    el("laps-last").textContent = lapTime(last);
+    el("laps-best").textContent = lapTime(best);
+  };
+
+  const WALK_HELP = "<b>Click</b> to play, <b>WASD</b> to move, the <b>mouse</b> to look, <b>E</b> to use, <b>V</b> to fly, <b>Esc</b> to release";
+  const FLY_HELP = "Flying. <b>Click</b> to look around, <b>WASD</b> to move, <b>E</b> and <b>Q</b> for up and down, <b>V</b> to play again";
+  if (viewer.has_player()) {
+    // Someone to play: V, or the button, leaves them standing to fly the camera, and comes back.
+    const button = el("play").querySelector("button");
+    const setFlying = (flying) => {
+      viewer.set_flying(flying);
+      button.textContent = flying ? "Stop flying" : "Fly";
+      el("help").innerHTML = flying ? FLY_HELP : driving ? DRIVE_HELP : WALK_HELP;
+    };
+    setFlying(params.has("fly"));
+    el("play").classList.add("fly");
+    el("play").hidden = false;
+    button.addEventListener("click", () => {
+      setFlying(!viewer.flying());
+      // Left with the keyboard, the button would take the keys meant for the game.
+      button.blur();
+    });
+    addEventListener("keydown", (e) => {
+      if (e.code === "KeyV" && !e.repeat && !typing(e)) setFlying(!viewer.flying());
+    });
+  } else {
+    el("help").innerHTML = "Playing. <b>Click</b> to look around, <b>WASD</b> to move, <b>Esc</b> to release";
+  }
+  return { tick() { readGamepads(); drawDash(); show(viewer.take_messages()); } };
+}
+
+main().catch((error) => {
+  console.error(error);
+  // Under any failure to start, what the browser offered: it is often why, and costs nothing
+  // on a page that has already failed.
+  failWithReport(error?.message ?? String(error));
+});
+</script>
+</body>
+</html>

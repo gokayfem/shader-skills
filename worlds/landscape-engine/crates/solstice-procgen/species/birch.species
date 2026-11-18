@@ -1,0 +1,10 @@
+# A silver birch: a tall, slender white trunk, steep limbs, and fine twigs that hang down.
+height 14
+trunk radius=0.15 flare=0.3 gnarl=0.06
+crown round
+bark birch_bark
+level per_metre=3.4 span=0.35..0.98 angle=56..28 length=0.36 radius=0.5 upturn=0.22 droop=0.05 gnarl=0.3
+level per_metre=3 span=0.2..0.95 angle=45 length=0.5 radius=0.5 droop=0.45 gnarl=0.4
+# The hanging twigs that carry the leaves.
+level per_metre=7 span=0.2..1 angle=30 length=0.4 radius=0.6 droop=0.6 gnarl=0.5
+leaves birch_leaves per_metre=34 length=0.045..0.07 width=0.7 variants=0.35,0.35,0.22,0.08 normals=0.5

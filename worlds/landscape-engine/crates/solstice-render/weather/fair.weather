@@ -1,0 +1,9 @@
+# Fair weather: small, separate cumulus on a clear day, flat-bottomed and heaped on top.
+coverage 0.3
+type 0.9
+base 1200
+thickness 1600
+density 1
+cirrus 0.15
+wind speed=7 from=250 gusts=0.45 turbulence=0.45
+evolution 1

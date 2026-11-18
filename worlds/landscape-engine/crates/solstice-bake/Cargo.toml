@@ -1,0 +1,24 @@
+[package]
+name = "solstice-bake"
+description = "Builds scenes from a project or a scene text: terrain, land, foliage, models and gameplay, into a SceneAsset. Shared by the native bake and the editor's in-browser bake."
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+solstice-project.workspace = true
+solstice-anim.workspace = true
+solstice-asset.workspace = true
+solstice-builder.workspace = true
+solstice-game.workspace = true
+solstice-script.workspace = true
+solstice-import.workspace = true
+solstice-procgen.workspace = true
+glam.workspace = true
+rayon.workspace = true
+rustc-hash.workspace = true
+bytemuck.workspace = true
+sha2 = "0.10"
+
+[dev-dependencies]
+solstice-physics.workspace = true

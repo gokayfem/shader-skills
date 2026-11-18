@@ -1,0 +1,3 @@
+case,source_triangles,clusters,pages,raw_bytes,deflated_bytes,pool_bytes,packing_ms
+terrain,73728,1164,23,2190976,1015535,3014656,1.210
+foliage,32768,800,33,3159988,759240,4325376,1.141

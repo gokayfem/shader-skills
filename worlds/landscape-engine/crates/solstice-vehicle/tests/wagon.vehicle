@@ -1,0 +1,45 @@
+# A big diesel four-wheel-drive wagon of the early 1990s, on coils and live axles: two tonnes,
+# 315 N m, a five-speed gearbox and a transfer case, and no driver's aids. Its `hold` lines are
+# the places things are carried in it. It is test data for what a blow does to a car
+# (solstice-game's impact.rs and blows.rs).
+
+mass 2010
+inertia 3871 4228 904
+centre 0 0.76 -0.18
+body 1.84 1.30 4.87 at 0 1.21 0.12
+driver right
+hold 0.743 0.420 0.430 at -0.461 0.860 -0.000
+hold 1.666 0.420 0.390 at 0.000 0.860 0.825
+hold 1.642 0.450 1.255 at 0.000 0.955 1.857
+
+front at=1.485 track=1.560 radius=0.4000 inertia=2.77 driven=yes
+front spring=46661 bump=4846 rebound=9153 bar=7896 travel=0.11,0.10 roll_centre=0.15
+front brake=2800 grip=1
+rear at=1.485 track=1.560 radius=0.4000 inertia=3.19 driven=yes
+rear spring=39482 bump=4217 rebound=7986 bar=2154 travel=0.13,0.11 roll_centre=0.35
+rear brake=1651 grip=1
+
+tyre grip=1.0,0.95 peak=0.13,9 along=1.5,0.3 across=1.35,0.1
+tyre load=5025 sensitivity=0.1 relaxation=0.5
+
+engine idle=750 limit=4400 inertia=0.33 friction=27,0.012
+torque 1000 189
+torque 1400 283
+torque 1800 315
+torque 2600 315
+torque 3400 267
+torque 4000 205
+torque 4400 126
+
+gears 3.93 2.33 1.45 1 0.82
+final 4.1
+reverse 4.2
+gearbox shift=0.35 efficiency=0.88 clutch=1077 cruise=0.42
+diff preload=40 power=0 coast=0
+front_diff preload=20 power=0 coast=0
+transfer low=2.3 front=0.5 lock=30000 locker=30000
+
+aero drag=1.17 downforce=0 balance=0.5
+steering lock=33 ackermann=0.7 quick=0.55
+geometry anti_dive=0.2 anti_squat=0.25
+assists abs=no traction=no stability=no descent=no

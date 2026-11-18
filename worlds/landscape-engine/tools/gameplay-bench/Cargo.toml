@@ -1,0 +1,7 @@
+[workspace]
+resolver = "2"
+members = ["b_base", "b_rhai", "b_starlark", "b_monty", "b_rapier", "b_bevy", "b_hecs", "b_world", "b_anim", "b_script", "b_play", "b_walk"]
+
+[profile.release]
+opt-level = 3
+lto = "thin"
