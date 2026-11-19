@@ -28,6 +28,7 @@ section with the formulas. The formula files use geometry-first names; this tabl
 | sea gooseberry, comb jelly | analytic optical path, eight moving comb rows, back-to-front compositing | `comb-jelly.glsl` |
 | black hole, accretion disk | null-ray orbital integration and disk-plane intersections | `lensed-disk.glsl` |
 | flow engraving, wind map, streamline print | line integral convolution of paper noise | `streamline-press.glsl` |
+| woods, meadow edges, riparian vegetation | Stable founder groves, moisture-dependent species and a crown-derived understory | `woodland-edge.glsl`; [vegetation habitats](vegetation-habitats.md) |
 | growing spots, labyrinth patterns, paintable chemical field | persistent two-channel reaction-diffusion | `multipass/reaction-diffusion/` |
 | static terrain on a moving camera | feedback height atlas and procedural fallback | `multipass/alpine-cache/` |
 | agate, gemstone cross-section, mineral strata | warped contours, filtered growth bands, Voronoi quartz faces | `banded-agate.glsl` |

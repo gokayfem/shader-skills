@@ -72,6 +72,10 @@ The worlds show how those decisions look in a complete renderer. Trace half-reso
 The agate shader combines filtered mineral bands with a faceted quartz pocket. Adjust `BAND_COUNT` to change the
 spacing and `BACKLIGHT` to bring out the translucent center. The Voronoi crystal calculation runs inside the pocket.
 
+[![Woodland edge habitat study](gallery/woodland-edge.png)](gallery/woodland-edge.glsl)
+
+Open **Woodland Edge** in the offline viewer to widen the wet bank or clear trees and inspect the understory response. [Habitat study](skills/shader-art-coding/references/vegetation-habitats.md)
+
 Each image links to its paste-ready shader. The sources are in [`skills/shader-art-coding/templates/`](skills/shader-art-coding/templates/).
 
 ## Why

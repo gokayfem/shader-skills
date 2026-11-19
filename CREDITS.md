@@ -13,6 +13,7 @@ default to CC BY-NC-SA 3.0, which is incompatible with MIT.
 | PCG hashes (pcgHash, pcg3d, pcg4d) and hash quality data | Jarzynski and Olano, "Hash Functions for GPU Rendering", JCGT 9(3), 2020 | paper CC BY-ND 3.0; arithmetic reimplemented |
 | Interleaved gradient noise | Jorge Jimenez, "Next Generation Post Processing in Call of Duty: Advanced Warfare", SIGGRAPH 2014 | constants are facts |
 | R2 low-discrepancy sequence | Martin Roberts, "The Unreasonable Effectiveness of Quasirandom Sequences" | constants are facts |
+| Habitat-based stand placement and canopy-driven understory | [SmartImposter forest generation](https://github.com/SamG-Coder/SmartImposter/blob/34d4cb1/src/world.rs) | MIT; original stateless shader study |
 | Curl noise | Bridson, Hourihan and Nordenstam, SIGGRAPH 2007 | math |
 | Enhanced (over-relaxed) sphere tracing (documented, not shipped) | Keinert et al., STAG 2014 | math |
 | AgX tonemapping (minimal polynomial version) | Troy Sobotka (AgX); Benjamin Wrensch / iolite (polynomial fit) | MIT |
