@@ -67,3 +67,22 @@ float truchetArcs(vec2 p, float w) {
     vec2 q = f - 0.5 * sign(f.x + f.y + 1e-6);
     return abs(length(q) - 0.5) - w;
 }
+
+/// Equilateral triangle containing p (unit edge). Each column holds integer lattice ID in xy, barycentric weight in z.
+/// @use stable per-vertex seeds for stochastic tiling of rock, leather, plaster or brushed metal
+/// @see Mikkelsen, Practical Real-Time Hex-Tiling (2022)
+mat3 triangleTileWeights(vec2 p) {
+    float row = p.y * (2.0 / sqrt(3.0));
+    vec2 lattice = vec2(p.x - 0.5 * row, row);
+    vec2 base = floor(lattice);
+    vec2 f = fract(lattice);
+    vec2 tip = vec2(0.0);
+    vec3 weights = vec3(1.0 - f.x - f.y, f.x, f.y);
+    if (f.x + f.y > 1.0) {
+        tip = vec2(1.0);
+        weights = vec3(f.x + f.y - 1.0, 1.0 - f.y, 1.0 - f.x);
+    }
+    return mat3(vec3(base + tip, weights.x),
+                vec3(base + vec2(1.0, 0.0), weights.y),
+                vec3(base + vec2(0.0, 1.0), weights.z));
+}

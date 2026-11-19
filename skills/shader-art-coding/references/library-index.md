@@ -108,6 +108,7 @@ pattern: tilings and antialiased procedural patterns. The filtered versions inte
 - `vec4 hexGrid(vec2 p)` - Hexagonal tiling with unit spacing between neighboring centers. Neighbors sit left/right, so hexes are pointy-top. Returns vec4(local offset from the hex center, integer-valued hex id). *Use: honeycomb, scales, tiles, game boards, hex pixelation.*
 - `float hexEdgeDistance(vec2 local)` - Distance from a hexGrid local coordinate to its hexagon's edge (0.5 at the center, 0 on the edge). *Use: hex borders, bevels, edge wear on tiles.*
 - `float truchetArcs(vec2 p, float w)` - Truchet tiling of quarter-circle arcs, randomly flipped per cell. Returns signed distance to arcs of half-width w. *Use: maze-like ornaments, pipes, Celtic-style weaves, procedural circuitry.*
+- `mat3 triangleTileWeights(vec2 p)` - Equilateral triangle containing p (unit edge). Each column holds integer lattice ID in xy, barycentric weight in z. *Use: stable per-vertex seeds for stochastic tiling of rock, leather, plaster or brushed metal.*
 
 ## sdf3d
 

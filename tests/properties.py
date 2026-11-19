@@ -371,6 +371,19 @@ PROPERTIES = [
         if (e.x < -1e-4 || e.x > 1.0) f |= 2;
         if (abs(length(e.yz) - v.x) > 1e-3) f |= 4;   // both agree on the nearest point
         return f;""", {}),
+    ("triangle tile weights reconstruct points on both sides of cell diagonals", """
+        vec2 p = (a.xy - 0.5) * 64.0;
+        mat3 tile = triangleTileWeights(p);
+        vec2 reconstructed = vec2(0.0);
+        float sum = 0.0;
+        for (int i = 0; i < 3; i++) {
+            vec3 v = tile[i];
+            if (v.z < -1e-6 || any(notEqual(v.xy, floor(v.xy)))) return 1;
+            reconstructed += v.z * vec2(v.x + 0.5 * v.y, 0.5 * sqrt(3.0) * v.y);
+            sum += v.z;
+        }
+        if (abs(sum - 1.0) > 1e-5 || length(reconstructed - p) > 1e-4) return 2;
+        return 0;""", {}),
     ("hexGrid ids are integers and local stays inside the hexagon", """
         vec2 p = (a.xy - 0.5) * 60.0;
         vec4 h = hexGrid(p);

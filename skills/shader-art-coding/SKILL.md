@@ -86,6 +86,7 @@ Read only what the task needs:
 | `references/frame-budgets.md` | diagnosing low FPS, GPU timing, foliage culling, half-resolution shafts, cache invalidation, streaming budgets and adaptive resolution |
 | `references/world-rendering.md` | kelp forests, sponges, shipwrecks, tides, foliage detail, room radiosity and full-world source navigation |
 | `references/water-quality.md` | high-quality ocean/coastal water, wave derivatives, Fresnel/refraction/absorption, foam, presets and engine-side upgrades |
+| `references/material-sampling.md` | breaking up tiled materials while preserving authored trim, layer masks, and relief |
 | `references/shader-workflow.md` | planning a complex shader end to end; review checklist |
 | `references/composition-and-debugging.md` | the image reads poorly, or something is visually wrong |
 | `references/formula-cookbook.md` | multi-step recipes: modular cell lattices, terrain synthesis, organic composition |

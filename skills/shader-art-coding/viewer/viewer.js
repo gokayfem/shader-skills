@@ -51,6 +51,7 @@ function trackCadence(interval) {
 
 // name, label, minimum, maximum, default, increment. Turn just these named constants into live uniforms.
 const knobs={
+    'patinated-brass':[['SHUFFLE','Stochastic grain',0,1,1,1]],
     'room-radiosity':[['PANEL_X','Lamp position',-0.7,0.7,0.15,0.025],['BOUNCE','Indirect contribution',0,3,1,0.05]],
     'kelp-passage':[['CURRENT','Current strength',0,1.5,0.7,0.05],['SHAFTS','Sun shafts',0,2,0.8,0.05]],
     'sponge-shelf':[['LANTERN','Rim fluorescence',0,3,1.2,0.05]],
@@ -65,6 +66,7 @@ const knobs={
     'reaction-diffusion':[['FEED','Feed',0.018,0.060,0.035,0.001],['KILL','Removal',0.045,0.070,0.061,0.001]]
 };
 const diagnosticNames={
+    'patinated-brass':{2:'Relief normals',5:'Grain / recess / patina'},
     'room-radiosity':{6:'Indirect radiance'},
     'kelp-passage':{3:'Kelp / wildlife / shafts'}, 'sponge-shelf':{2:'Surface normals'},
     'ribbed-wreck':{4:'Trace cost'}, 'pigment-chamber':{6:'Direct / left / right bounce'},

@@ -9,6 +9,7 @@ default to CC BY-NC-SA 3.0, which is incompatible with MIT.
 |---|---|---|
 | SDF primitives, operators, smooth minimum, domain repetition, normals, soft shadows, intersectors, fog, palettes, filtered patterns, Voronoi borders, noise derivatives, domain warping | Inigo Quilez, iquilezles.org/articles | articles state no license; ideas reimplemented |
 | Chamfer, stairs and engrave combinators, polar and mirrored repetition | Mercury demogroup, hg_sdf (mercury.sexy/hg_sdf) | MIT OR CC BY-NC 4.0 |
+| Stochastic surface sampling and independent material masks | Mikkelsen, Practical Real-Time Hex-Tiling (2022); [SmartImposter ground material](https://github.com/SamG-Coder/SmartImposter/blob/34d4cb1/shaders/tri.rchit); [KingdomComeGlueMapper building blend audit](https://github.com/SamG-Coder/KingdomComeGlueMapper/blob/47f031a/docs/building-material-audit.md) | Both repositories MIT; original analytic example |
 | PCG hashes (pcgHash, pcg3d, pcg4d) and hash quality data | Jarzynski and Olano, "Hash Functions for GPU Rendering", JCGT 9(3), 2020 | paper CC BY-ND 3.0; arithmetic reimplemented |
 | Interleaved gradient noise | Jorge Jimenez, "Next Generation Post Processing in Call of Duty: Advanced Warfare", SIGGRAPH 2014 | constants are facts |
 | R2 low-discrepancy sequence | Martin Roberts, "The Unreasonable Effectiveness of Quasirandom Sequences" | constants are facts |
