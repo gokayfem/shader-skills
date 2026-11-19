@@ -1,6 +1,6 @@
 # Credits and Sources
 
-All GLSL in this repository is an original implementation, released under the MIT license (see LICENSE). The
+The shader-art-coding GLSL library and templates are original implementations released under the [MIT license](LICENSE). The
 techniques come from the published work below. Numeric constants (matrices, fit coefficients, physical
 coefficients) are facts reproduced from their sources. No third-party shader source is copied; Shadertoy shaders
 default to CC BY-NC-SA 3.0, which is incompatible with MIT.
@@ -70,4 +70,4 @@ The [Patinated Brass](skills/shader-art-coding/templates/patinated-brass.glsl) a
 
 ## World studies
 
-The patch lighting studies use the classical diffuse interreflection formulation of Goral, Torrance, Greenberg and Battaile, [Modeling the Interaction of Light Between Diffuse Surfaces](https://doi.org/10.1145/800031.808601). The templates approximate patch transfer with center-to-center visibility and bounded diffuse weights. The complete world distributions carry their original notices in their respective LICENSE files under worlds/.
+The patch lighting studies use the classical diffuse interreflection formulation of Goral, Torrance, Greenberg and Battaile, [Modeling the Interaction of Light Between Diffuse Surfaces](https://doi.org/10.1145/800031.808601). The templates approximate patch transfer with center-to-center visibility and bounded diffuse weights. The bundled worlds retain the original MIT notices for [Maksymilian Dendura’s dive](worlds/dive/LICENSE) and [SamG-Coder’s landscape engine](worlds/landscape-engine/LICENSE).

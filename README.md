@@ -296,4 +296,4 @@ The GLSL library is released under the [MIT license](LICENSE). Its technique sou
 
 Thanks to **SamG-Coder** for SmartImposter’s forest and ground rendering work and KingdomComeGlueMapper’s material and vegetation studies. **Morten S. Mikkelsen** published the hex-tiling technique behind the stochastic grain study. [Material and vegetation credits](CREDITS.md#material-and-vegetation-studies)
 
-The two bundled WebGPU worlds retain their original notices. [Dive license](worlds/dive/LICENSE) · [Landscape engine license](worlds/landscape-engine/LICENSE)
+The bundled WebGPU worlds retain their original MIT notices for [Dive by Maksymilian Dendura](worlds/dive/LICENSE) and [Landscape engine by SamG-Coder](worlds/landscape-engine/LICENSE).
