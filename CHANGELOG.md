@@ -3,16 +3,20 @@
 Published versions and downloadable packages are available on
 [GitHub Releases](https://github.com/gokayfem/shader-skills/releases).
 
-## Unreleased
+## [3.0.0] — 2026-11-19
+
+- Patinated Brass demonstrates stochastic material tiling and engraved patina. Woodland Edge uses stream proximity and canopy cover to distribute vegetation.
 
 - Six new single-pass shaders explore underwater habitats, a wreck, coastal night lighting, forest detail selection and diffuse color bleeding. A seventh study retains indirect radiance in an 80-patch feedback buffer.
 - Five shader helpers cover anchored current motion, caustic patterns, projected error, diffuse patch transport and lunar lighting. The viewer can adapt its resolution from recent frame cadence.
 - Two complete WebGPU world source trees include a one-file dive and a landscape engine with scene baking, streamed geometry, weather, gameplay and a browser editor. A subsystem guide and file catalog accompany the source.
-
 - Four single-pass studies cover butterfly structural color, transparent comb rows, Schwarzschild lensing and streamline engraving. A two-channel feedback simulation adds paintable reaction–diffusion.
-- The offline viewer renders 25 scenes, exposes material and simulation controls, supports frame stepping and exports PNGs.
+- The offline viewer renders 27 scenes, exposes material and simulation controls, supports frame stepping and exports PNGs.
 - Static alpine elevations and fixed-camera black-hole light paths can be retained across animation frames. The terrain comparison reports image error and frame time at three camera positions.
 - The agate study and footprint-aware fBm bring filtered growth bands and terrain grain into the existing library. Shader checks catch unordered literal smoothstep edges.
+- The library now has 197 distinct function names (222 signatures) across 21 modules. The WebGL2 harness compiles 216 units, runs 101 property tests and renders 56 cases.
+
+Download `shader-art-coding-v3.0.0.zip` for the portable skill or a source archive for the full gallery, tests and WebGPU worlds. Verify the portable download with `SHA256SUMS`.
 
 ## [2.0.0] — 2026-10-23
 
@@ -33,4 +37,5 @@ the current library and accumulated improvements; it does not imply that all fea
 Download `shader-art-coding-v2.0.0.zip` for the portable skill, or a source archive for the full repository.
 The skill ZIP includes the project's license and technique credits. `SHA256SUMS` verifies the skill ZIP.
 
+[3.0.0]: https://github.com/gokayfem/shader-skills/releases/tag/v3.0.0
 [2.0.0]: https://github.com/gokayfem/shader-skills/releases/tag/v2.0.0
