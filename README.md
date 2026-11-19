@@ -63,6 +63,10 @@ The worlds show how those decisions look in a complete renderer. Trace half-reso
 | [![Dusk poster](gallery/sdf-2d-poster.png)](gallery/sdf-2d-poster.glsl) | [![Pattern swatches](gallery/pattern-swatches.png)](gallery/pattern-swatches.glsl) | [![Open ocean](gallery/ocean.png)](gallery/ocean.glsl) |
 | 2D distance-field poster: Oklab gradients, polar leaves, Bézier trunks | Texture-free materials: warped marble, Voronoi cracks, hex tiles, Truchet, filtered checker | Ocean: dispersive waves with analytic curvature foam, Fresnel sky, glitter path widening with distance |
 
+[![Engraved brass with stochastic grain and recessed patina](gallery/patinated-brass.png)](gallery/patinated-brass.glsl)
+
+[Inspect the grain, normals, and layer masks in the material study](skills/shader-art-coding/references/material-sampling.md).
+
 [![Backlit agate with quartz facets and iron-rich growth bands](gallery/banded-agate.png)](gallery/banded-agate.glsl)
 
 The agate shader combines filtered mineral bands with a faceted quartz pocket. Adjust `BAND_COUNT` to change the
