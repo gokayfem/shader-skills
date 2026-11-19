@@ -1,6 +1,6 @@
 # Credits and Sources
 
-All GLSL in this repository is an original implementation, released under the MIT license (see LICENSE). The
+The shader-art-coding GLSL library and templates are original implementations released under the [MIT license](LICENSE). The
 techniques come from the published work below. Numeric constants (matrices, fit coefficients, physical
 coefficients) are facts reproduced from their sources. No third-party shader source is copied; Shadertoy shaders
 default to CC BY-NC-SA 3.0, which is incompatible with MIT.
@@ -9,11 +9,9 @@ default to CC BY-NC-SA 3.0, which is incompatible with MIT.
 |---|---|---|
 | SDF primitives, operators, smooth minimum, domain repetition, normals, soft shadows, intersectors, fog, palettes, filtered patterns, Voronoi borders, noise derivatives, domain warping | Inigo Quilez, iquilezles.org/articles | articles state no license; ideas reimplemented |
 | Chamfer, stairs and engrave combinators, polar and mirrored repetition | Mercury demogroup, hg_sdf (mercury.sexy/hg_sdf) | MIT OR CC BY-NC 4.0 |
-| Stochastic surface sampling and independent material masks | Mikkelsen, Practical Real-Time Hex-Tiling (2022); [SmartImposter ground material](https://github.com/SamG-Coder/SmartImposter/blob/34d4cb1/shaders/tri.rchit); [KingdomComeGlueMapper building blend audit](https://github.com/SamG-Coder/KingdomComeGlueMapper/blob/47f031a/docs/building-material-audit.md) | Both repositories MIT; original analytic example |
 | PCG hashes (pcgHash, pcg3d, pcg4d) and hash quality data | Jarzynski and Olano, "Hash Functions for GPU Rendering", JCGT 9(3), 2020 | paper CC BY-ND 3.0; arithmetic reimplemented |
 | Interleaved gradient noise | Jorge Jimenez, "Next Generation Post Processing in Call of Duty: Advanced Warfare", SIGGRAPH 2014 | constants are facts |
 | R2 low-discrepancy sequence | Martin Roberts, "The Unreasonable Effectiveness of Quasirandom Sequences" | constants are facts |
-| Habitat-based stand placement and canopy-driven understory | [SmartImposter forest generation](https://github.com/SamG-Coder/SmartImposter/blob/34d4cb1/src/world.rs) | MIT; original stateless shader study |
 | Curl noise | Bridson, Hourihan and Nordenstam, SIGGRAPH 2007 | math |
 | Enhanced (over-relaxed) sphere tracing (documented, not shipped) | Keinert et al., STAG 2014 | math |
 | AgX tonemapping (minimal polynomial version) | Troy Sobotka (AgX); Benjamin Wrensch / iolite (polynomial fit) | MIT |
@@ -49,6 +47,16 @@ default to CC BY-NC-SA 3.0, which is incompatible with MIT.
 | Coastal refraction pipeline comparison | [GPU Gems 2 chapter 19, Generic Refraction Simulation](https://developer.nvidia.com/gpugems/gpugems2/part-ii-shading-lighting-and-shadows/chapter-19-generic-refraction-simulation) | reference for scene-buffer alternatives; local coastal shader traces a procedural heightfield instead |
 
 
+## Material and vegetation studies
+
+The [Patinated Brass](skills/shader-art-coding/templates/patinated-brass.glsl) and [Woodland Edge](skills/shader-art-coding/templates/woodland-edge.glsl) shaders are original implementations informed by the following work.
+
+| Author and work | Contribution to these studies |
+|---|---|
+| Morten S. Mikkelsen, [*Practical Real-Time Hex-Tiling*](https://jcgt.org/published/0011/03/05/), JCGT 11(3), pp. 77–94 (2022) | The paper describes blending randomized samples across a triangular lattice. The brass shader applies this idea to procedural grain. |
+| SamG-Coder, [SmartImposter](https://github.com/SamG-Coder/SmartImposter/tree/34d4cb1) · [MIT license](https://github.com/SamG-Coder/SmartImposter/blob/34d4cb1/LICENSE) | The [ground shader](https://github.com/SamG-Coder/SmartImposter/blob/34d4cb1/shaders/tri.rchit) informed the brass sampling study. Its [forest generation](https://github.com/SamG-Coder/SmartImposter/blob/34d4cb1/src/world.rs) and [biome roles](https://github.com/SamG-Coder/SmartImposter/blob/34d4cb1/src/biome.rs) informed Woodland Edge’s single-cohort groves and canopy-dependent understory. |
+| SamG-Coder, [KingdomComeGlueMapper](https://github.com/SamG-Coder/KingdomComeGlueMapper/tree/47f031a) · [MIT license](https://github.com/SamG-Coder/KingdomComeGlueMapper/blob/47f031a/LICENSE) | The [two-UV material audit](https://github.com/SamG-Coder/KingdomComeGlueMapper/blob/47f031a/docs/building-material-audit.md) informed the brass study’s separate grain and recess masks. The [vegetation guide](skills/shader-art-coding/references/vegetation-habitats.md) cites [sector conversion](https://github.com/SamG-Coder/KingdomComeGlueMapper/blob/47f031a/tools/merged_vegetation.py) as a reference for preserving instance transforms. |
+
 ## Research studies
 
 | Study | Primary source | Local implementation |
@@ -62,4 +70,4 @@ default to CC BY-NC-SA 3.0, which is incompatible with MIT.
 
 ## World studies
 
-The patch lighting studies use the classical diffuse interreflection formulation of Goral, Torrance, Greenberg and Battaile, [Modeling the Interaction of Light Between Diffuse Surfaces](https://doi.org/10.1145/800031.808601). The templates approximate patch transfer with center-to-center visibility and bounded diffuse weights. The complete world distributions carry their original notices in their respective LICENSE files under worlds/.
+The patch lighting studies use the classical diffuse interreflection formulation of Goral, Torrance, Greenberg and Battaile, [Modeling the Interaction of Light Between Diffuse Surfaces](https://doi.org/10.1145/800031.808601). The templates approximate patch transfer with center-to-center visibility and bounded diffuse weights. The bundled worlds retain the original MIT notices for [Maksymilian Dendura’s dive](worlds/dive/LICENSE) and [SamG-Coder’s landscape engine](worlds/landscape-engine/LICENSE).

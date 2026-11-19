@@ -292,6 +292,8 @@ Release history and downloads are in the [changelog](CHANGELOG.md) and
 
 ## Credits and license
 
-MIT. The GLSL library contains original implementations of published techniques. The two WebGPU worlds retain their own MIT notices. Library sources are listed in
-[CREDITS.md](CREDITS.md): Inigo Quilez's articles, hg_sdf, Jarzynski & Olano's GPU hash study, Hillaire's
-atmosphere and volume work, AgX, Khronos PBR Neutral, Oklab and others.
+The GLSL library is released under the [MIT license](LICENSE). Its technique sources include Inigo Quilez, hg_sdf, Jarzynski and Olano, Hillaire, AgX, Khronos PBR Neutral, and Oklab. [Full credits and sources](CREDITS.md)
+
+Thanks to **SamG-Coder** for SmartImposter’s forest and ground rendering work and KingdomComeGlueMapper’s material and vegetation studies. **Morten S. Mikkelsen** published the hex-tiling technique behind the stochastic grain study. [Material and vegetation credits](CREDITS.md#material-and-vegetation-studies)
+
+The bundled WebGPU worlds retain their original MIT notices for [Dive by Maksymilian Dendura](worlds/dive/LICENSE) and [Landscape engine by SamG-Coder](worlds/landscape-engine/LICENSE).
