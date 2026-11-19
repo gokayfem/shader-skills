@@ -63,6 +63,23 @@ def main():
                 assert page.locator("#view").evaluate("c=>c.toDataURL()") != before
                 slider.fill("1")
                 assert page.locator("#view").evaluate("c=>c.toDataURL()") == before
+            if name == "woodland-edge":
+                page.select_option("#mode", "5")
+                clearing = page.get_by_label("Clearing radius", exact=False)
+                clearing.fill("0")
+                read_fields = """() => {
+                    show();
+                    const pixels = new Uint8Array(canvas.width * canvas.height * 4);
+                    gl.readPixels(0, 0, canvas.width, canvas.height, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
+                    return Array.from(pixels);
+                }"""
+                before = bytes(page.evaluate(read_fields))
+                clearing.fill("3.5")
+                after = bytes(page.evaluate(read_fields))
+                assert before[1::4] == after[1::4], "Clearing moved the wet bank"
+                for channel in (0, 2):
+                    old, new = before[channel::4], after[channel::4]
+                    assert sum(new) < sum(old) and all(b <= a for a, b in zip(old, new)), channel
             checks[name] = round(mean, 2)
         page.select_option("#scene", "room-radiosity")
         radiance = page.evaluate("""() => {

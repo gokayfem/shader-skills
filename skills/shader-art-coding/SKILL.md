@@ -84,6 +84,7 @@ Read only what the task needs:
 | `references/terrain-production.md` | terrain representations, designed valleys, slope/altitude materials, tracing limits, chunks and LOD |
 | `references/research-studies.md` | optics, null geodesics, streamline engraving, reaction-diffusion, terrain caching and offline playback |
 | `references/frame-budgets.md` | diagnosing low FPS, GPU timing, foliage culling, half-resolution shafts, cache invalidation, streaming budgets and adaptive resolution |
+| `references/vegetation-habitats.md` | placing tree groves, wet-bank species and understory from shared fields |
 | `references/world-rendering.md` | kelp forests, sponges, shipwrecks, tides, foliage detail, room radiosity and full-world source navigation |
 | `references/water-quality.md` | high-quality ocean/coastal water, wave derivatives, Fresnel/refraction/absorption, foam, presets and engine-side upgrades |
 | `references/shader-workflow.md` | planning a complex shader end to end; review checklist |
