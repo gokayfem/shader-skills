@@ -1,8 +1,8 @@
 {
   "name": "shader-skills",
   "displayName": "Shader Skills",
-  "version": "2.0.0",
-  "description": "GLSL and Shadertoy shader skill for AI coding agents. Includes 186 functions, SDF raymarching, procedural terrain, water, clouds, noise, a bundler, a checker and 11 examples.",
+  "version": "3.0.0",
+  "description": "Build procedural GLSL for Shadertoy and WebGL2 with 21 library modules, 24 single-pass shaders, three multipass studies, a dependency bundler and a checker.",
   "author": {
     "name": "gokayfem",
     "url": "https://github.com/gokayfem"

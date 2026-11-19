@@ -4,9 +4,9 @@
 [![Release](https://img.shields.io/github/v/release/gokayfem/shader-skills)](https://github.com/gokayfem/shader-skills/releases/latest)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-Shader Skills helps coding agents write, debug and optimize procedural GLSL for Shadertoy and WebGL2. Start with an editable scene, change the lighting or geometry, and bundle it into a single shader. The skill includes **196 GLSL functions across 21 modules**, a dependency bundler and a checker. It works with Claude Code, Codex, Cursor, GitHub Copilot and Gemini CLI.
+Shader Skills helps coding agents write, debug and optimize procedural GLSL for Shadertoy and WebGL2. Start with an editable scene, change the lighting or geometry, and bundle it into a single shader. The skill includes **197 distinct GLSL function names across 21 modules**, a dependency bundler and a checker. It works with Claude Code, Codex, Cursor, GitHub Copilot and Gemini CLI.
 
-The full repository includes **25 interactive shader studies** and **two WebGPU worlds**. Use the studies to isolate an effect, then explore how a swimmable kelp forest or a streamed landscape handles visibility, lighting and frame time. [Offline shader viewer](gallery/studies.html) · [WebGPU worlds](worlds/README.md) · [Performance guide](skills/shader-art-coding/references/frame-budgets.md)
+The full repository includes **27 interactive shader studies** and **two WebGPU worlds**. Use the studies to isolate an effect, then explore how a swimmable kelp forest or a streamed landscape handles visibility, lighting and frame time. [Offline shader viewer](gallery/studies.html) · [WebGPU worlds](worlds/README.md) · [Performance guide](skills/shader-art-coding/references/frame-budgets.md)
 
 ```bash
 npx skills add gokayfem/shader-skills
@@ -26,7 +26,7 @@ Choose `shader-art-coding` and your coding agent in the installer. Then ask:
 
 [![Four live shader studies in motion](gallery/studies-motion.webp)](gallery/studies.html)
 
-Open [the self-contained shader viewer](gallery/studies.html) from a local checkout, or download the HTML using GitHub’s **Download raw file** button. It runs offline in a WebGL2 browser. Explore 22 single-pass shaders and three multipass examples. Pause motion, inspect diagnostic views, or switch between fixed resolution and adaptive 30 or 60 fps targets.
+Open [the self-contained shader viewer](gallery/studies.html) from a local checkout, or download the HTML using GitHub’s **Download raw file** button. It runs offline in a WebGL2 browser. Explore 24 single-pass shaders and three multipass examples. Pause motion, inspect diagnostic views, or switch between fixed resolution and adaptive 30 or 60 fps targets.
 
 | [![Morpho wing study](gallery/morpho.png)](gallery/morpho.glsl) | [![Comb jelly under side light](gallery/comb-jelly.png)](gallery/comb-jelly.glsl) | [![Lensed accretion disk](gallery/lensed-disk.png)](gallery/lensed-disk.glsl) |
 |---|---|---|
@@ -135,7 +135,7 @@ cd shader-skills
 - **Gemini CLI:** `gemini extensions install https://github.com/gokayfem/shader-skills`.
 - **Hermes:** copy it to `~/.hermes/skills/`.
 
-**claude.ai:** download `shader-art-coding-v2.0.0.zip` from the [v2.0.0 release](https://github.com/gokayfem/shader-skills/releases/tag/v2.0.0) and upload it under Settings > Capabilities > Skills. The ZIP also works as a portable skill folder for manual installation.
+**claude.ai:** download `shader-art-coding-v3.0.0.zip` from the [v3.0.0 release](https://github.com/gokayfem/shader-skills/releases/tag/v3.0.0) and upload it under Settings > Capabilities > Skills. The ZIP also works as a portable skill folder for manual installation.
 
 **ChatGPT, Gemini Gems and other chat tools:** see [`adapters/`](adapters/).
 
@@ -167,11 +167,13 @@ which guides scene analysis, procedural reconstruction and visual comparison aga
 
 | Module | Highlights |
 |---|---|
+| `common` | Rotation, remapping and curve helpers |
+| `relativity` | Schwarzschild light-path integration for the lensed accretion disk |
 | `hash` | PCG integer hashes (`pcg3d`, `pcg4d`): bit-exact across GPUs, no sine; safe integer-input float wrappers |
 | `noise` | value, gradient and 2D simplex noise with analytic derivatives, fBm, eroded/ridged/billow fBm, two-level domain warp, hybrid terrain height, curl noise, Voronoi (F1/F2, borders, smooth), interleaved-gradient and R2 dithering |
 | `pattern` | box-filtered checker, grid and stripes (alias-free with no supersampling), hex grid with edge distance, Truchet |
 | `sdf3d` | 22 primitives including exact capped cone, round cone, cut and hollow spheres, death star, hex prism, link, gyroid, 3D Bézier tube |
-| `sdf2d` | 16 primitives including vesica, moon, heart, star, regular polygon, rounded box with per-corner radii, quadratic Bézier |
+| `sdf2d` | 20 primitives including vesica, moon, heart, star, regular polygon, rounded box with per-corner radii, quadratic Bézier |
 | `operators` | smooth min/max/subtract (quadratic and C2 cubic), smooth union with material blend weight, chamfer, stairs, engrave, round, onion, extrude, revolve, exact elongate |
 | `domain` | repetition (infinite, limited, mirrored), polar sectors, folds, twist and bend with their Lipschitz corrections |
 | `architecture` | stable parcel-based building dimensions/roof IDs, box-filtered facade windows that converge to opening area |
@@ -249,8 +251,8 @@ All three water presets and every annotated diagnostic view are compiled and ren
 | Lint + drift | `glsl_tools.py check` | docs and tags on every function, module order, no WebGL1 or sine-hash patterns, reference snippets identical to the library |
 | glslang compile | CI (`checks.yml`) | every library module, reference snippet and template compiles as GLSL ES 3.00 |
 | WebGL2 compile | `tests/` harness | all library/reference/template units and annotated quality/debug variants compile under ANGLE, which also enforces WebGL-only rules |
-| GPU property tests | `tests/properties.py` | 100 tests × 16,384 samples: Lipschitz, exactness, signs, brute-force curve distance, derivatives, divergence, ranges, round trips, facade filtering, water dispersion/Fresnel/attenuation |
-| Renders | harness + gallery | 22 beauty templates plus 28 quality/debug variants; no NaNs or black frames; beauty PNGs saved to `gallery/` |
+| GPU property tests | `tests/properties.py` | 101 tests × 16,384 samples: Lipschitz, exactness, signs, brute-force curve distance, derivatives, divergence, ranges, round trips, facade filtering, water dispersion/Fresnel/attenuation |
+| Renders | harness + gallery | 24 beauty templates plus 32 quality/debug variants; no NaNs or black frames; beauty PNGs saved to `gallery/` |
 | Bundler regressions | `tests/test_bundler.py` | conditional quality macros cannot hide dependencies; annotated variants replace the intended define and reject missing defines |
 | Skill effect | `evals/` (`claude plugin eval`, paid, manual) | output-rule adherence with the skill vs without it on 6 shader tasks, plus no false triggers on 3 near-miss tasks; see [evals/README.md](evals/README.md) |
 
