@@ -31,6 +31,7 @@ section with the formulas. The formula files use geometry-first names; this tabl
 | growing spots, labyrinth patterns, paintable chemical field | persistent two-channel reaction-diffusion | `multipass/reaction-diffusion/` |
 | static terrain on a moving camera | feedback height atlas and procedural fallback | `multipass/alpine-cache/` |
 | agate, gemstone cross-section, mineral strata | warped contours, filtered growth bands, Voronoi quartz faces | `banded-agate.glsl` |
+| patina, layered wear, breaking up repeated surface grain | Blend three seeded samples on a triangular lattice. Keep object-local wear in a separate coordinate system. | `patinated-brass.glsl`; [material sampling study](material-sampling.md) |
 | texture, material swatch, wallpaper | 2D procedural pattern | `pattern-swatches.glsl` |
 | comparing noise families / learning noise | 2D scalar-field board | `noise-progression.glsl`; `noise-use-cases.md` |
 | game heightmap, biome map, designed river | 2D height + separate masks | `noise-terrain-map.glsl`; `hybridTerrainHeight`; `noise-use-cases.md` |

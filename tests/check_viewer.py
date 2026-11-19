@@ -63,6 +63,30 @@ def main():
                 assert page.locator("#view").evaluate("c=>c.toDataURL()") != before
                 slider.fill("1")
                 assert page.locator("#view").evaluate("c=>c.toDataURL()") == before
+            if name == "patinated-brass":
+                page.select_option("#mode", "5")
+                # An 8-bit readback can round each input and the product separately.
+                masks = page.evaluate("""() => {
+                    function read(shuffle) {
+                        parameters.SHUFFLE=shuffle;
+                        show();
+                        const pixels=new Uint8Array(canvas.width*canvas.height*4);
+                        gl.readPixels(0,0,canvas.width,canvas.height,gl.RGBA,gl.UNSIGNED_BYTE,pixels);
+                        return pixels;
+                    }
+                    const plain=read(0), varied=read(1);
+                    let changed=0, coated=0, clear=0;
+                    for(let i=0;i<plain.length;i+=4) {
+                        if(plain[i+1]!==varied[i+1]) throw Error('Engraving moved with the grain');
+                        if(Math.abs(varied[i]*varied[i+1]/255-varied[i+2])>2)
+                            throw Error('Patina lost a mask input');
+                        if(plain[i]!==varied[i]) changed++;
+                        if(varied[i+2]>32) coated++;
+                        if(varied[i+1]===0) clear++;
+                    }
+                    return {changed,coated,clear};
+                }""")
+                assert all(value > 0 for value in masks.values()), masks
             checks[name] = round(mean, 2)
         page.select_option("#scene", "room-radiosity")
         radiance = page.evaluate("""() => {
