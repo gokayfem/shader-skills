@@ -2,4 +2,4 @@ interface:
   display_name: "Shader Art Coding"
   short_description: "Procedural GLSL/Shadertoy shaders with a verified building-block library"
   brand_color: "#E8673C"
-  default_prompt: "Use $shader-art-coding to design and implement a polished Shadertoy GLSL shader, bundled and compile-checked."
+  default_prompt: "Use $shader-art-coding to build my shader from relevant repository examples and verify its appearance and implementation."

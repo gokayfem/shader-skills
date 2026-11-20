@@ -141,6 +141,8 @@ cd shader-skills
 
 ## Use
 
+Copy the [general shader task prompt](prompts/shader-task.md) for creation, repair, explanation or optimization. For shot-by-shot recreation, use the [reference video prompt](prompts/video-to-shader-prompt.md). Browse the [example guide](skills/shader-art-coding/references/example-selection.md) for source files and visual checks.
+
 Ask naturally: *"Make a Shadertoy shader of a glass jellyfish drifting through god rays"*, or *"why does my
 raymarcher have holes?"* The skill routes the request, then the agent finds blocks, writes the shader, bundles it
 and checks it. From a cloned repository, try the included still-life template:

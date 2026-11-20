@@ -15,6 +15,8 @@ Fill these in before sending (leave a line blank to let the agent measure it fro
 The video is the spec. Nothing in this document describes its content; you derive all of it from the frames
 (section 1) and get the breakdown approved before building.
 
+During the reference breakdown, use the skill’s [example guide](../skills/shader-art-coding/references/example-selection.md). For each distinct visible mechanism, record the closest source, what can be adapted to this single pass, and the frame or motion that will test it. Look beyond the main subject to its environment, materials, illumination, camera and transitions. Reuse these observations in the milestone comparisons.
+
 ## 0. Quality bar (read first; overrides anything below that conflicts)
 
 This is a showcase piece. **Visual and motion quality outrank performance.** Report fps, but do not trade detail or

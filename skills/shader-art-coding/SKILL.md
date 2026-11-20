@@ -28,7 +28,7 @@ can produce it, build it in inspectable stages, and verify each stage with a deb
 ## Workflow
 
 1. **Target.** State the image: subject, camera and framing, dominant forms, materials, light, motion.
-2. **Route.** Pick the rendering model and starting template from `references/subject-routing.md`:
+2. **Route.** Consult [the example guide](references/example-selection.md) for working sources and visual checks. Pick the rendering model and starting template from `references/subject-routing.md`:
    2D distance fields (posters, icons, patterns), SDF raymarching (objects, characters), heightfield marching
    (landscapes), volume integration (clouds, smoke, fire). For optical mechanisms, orbital light paths,
    vector-field prints or evolving patterns, use `references/research-studies.md` to select the representation
@@ -95,10 +95,13 @@ Read only what the task needs:
 | `references/formula-code-couples-terrain.md` | heightfields, density fields, accumulation, atmosphere |
 | `references/formula-code-couples-materials.md` | masks, palettes, lighting terms, polish, motion |
 
-Templates in `templates/` are complete, render-verified starting points (gallery in the repository README):
-`raymarch-sdf.glsl`, `terrain.glsl`, `ocean.glsl`, `volumetric-clouds.glsl`, `sdf-2d-poster.glsl`,
-`pattern-swatches.glsl`, `noise-progression.glsl`, `noise-terrain-map.glsl`, `procedural-city.glsl`,
-`alpine-valley.glsl`, `coastal-water.glsl`, `banded-agate.glsl`, `morpho.glsl`, `comb-jelly.glsl`, `lensed-disk.glsl`, `streamline-press.glsl`.
+[Choose examples and visual checks](references/example-selection.md) across the complete template and multipass collection.
+For a creation or redesign, open the closest implementation. For a repair, compare the failing stage with its working counterpart.
+For an explanation, trace the relevant function and its caller. For a performance request, compare the same view and settings before and after.
+Use supplementary examples for specific features and check the assumptions they share with the primary example.
+For a visual deliverable, inspect a render at the requested size and a diagnostic that exposes the main failure mode.
+Report the example used, what you adapted and what you observed. Identify any check you could not run.
+
 For two-pass requests deliver both buffers and their channel bindings. Build the offline viewer with
 `scripts/build_viewer.py` to review motion and diagnostic views.
 

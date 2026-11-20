@@ -7,8 +7,7 @@ code environment to bundle and check shaders.
 Without skills, use a Project:
 
 1. Paste `adapters/universal-system-prompt.md` (the part below the line) into the project instructions.
-2. Add to project knowledge: `references/library-index.md`, `references/subject-routing.md`,
-   `references/sdf-library-guide.md`, `references/rendering-pipeline.md`, and the `glsl/*.glsl` files.
-3. Add: "Copy library functions verbatim with their dependencies instead of rewriting them."
+2. From `skills/shader-art-coding/`, provide `SKILL.md`, `references/example-selection.md`, `references/subject-routing.md` and `references/library-index.md`. Include the subject references, template or multipass source and GLSL modules for the work you expect. When folder access is available, provide the entire skill so every route can be followed.
+3. Instruct the assistant to open the selected example, reuse library functions with their dependencies, and describe which checks it could actually perform. For work on the full WebGPU worlds, supply the relevant source from the checkout using `worlds/README.md` and `worlds/catalog.md` to locate it.
 
 For Claude Code, install the plugin or copy the skill folder (see the repository README).
