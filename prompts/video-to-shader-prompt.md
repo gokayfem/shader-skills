@@ -22,24 +22,23 @@ During the reference breakdown, use the skill’s [example guide](../skills/shad
 This is a showcase piece. **Visual and motion quality outrank performance.** Report fps, but do not trade detail or
 smoothness for speed without asking. Nothing is simplified without approval (section 9).
 
-**Done means every check below passes.** A check that fails is listed as failing. It is never "good enough".
+Apply the checks to what appears in the clip. Identify the relevant rows once during the breakdown. For a locked-off mineral study, for example, track the band contours, highlight motion and exposure. For a swimming animal, track the body silhouette, stroke phase, parallax and attenuation. A failed applicable check stays visible in the review until corrected.
 
-- **Motion**
-  - Pose, speed and camera never jump at a transition. Prove it with 10-frame strips at 1/60 s spacing around each
+- **Motion** (apply continuity within continuous action and preserve observed cuts, impacts and locked cameras)
+  - During continuous action, check pose, speed and camera for unintended jumps. Prove it with 10-frame strips at 1/60 s spacing around each
     one: every change of gait or state (walk, run, stop, hop takeoff and landing, fall, turn), every camera move,
     and the loop seam.
   - Planted feet (or any contact: wheels, paws, hands) never slide. Prove it with a close-up strip of one full gait
     cycle per gait.
   - Gait phase is integrated (phase = ∫ speed / stride dt, computed analytically), so changing speed never jumps the
     phase.
-  - Every state blends into the next: walk, run, stand and jump are weights eased over time, never 0/1 switches.
+  - For smooth gait changes, ease the weights for walk, run, stand and jump over the observed transition interval.
   - Secondary motion (hair, ears, cloth, tails, antennae, foliage) is spring-damped: it lags, overshoots and settles.
     It is analytic (damped responses to the body's acceleration events), since a single pass has no state.
   - Jumps and thrown objects are ballistic under one gravity consistent with the scene's scale: anticipation squash,
     stretch on the rise, squash on contact, a settle afterwards. Bouncing objects lose height (restitution below 1),
     and their spin matches the distance they roll.
-  - The camera follows with critical damping, computed analytically. Never stepped, never averaged samples, no
-    jitter.
+  - For a continuously tracking camera with a damped response, evaluate the follow analytically and check for jitter at speed changes.
 - **Detail**
   - At 1280×720, anything covering more than 10 % of the frame shows three levels: silhouette, secondary forms
     (folds, seams, ledges, lobes, clumps), and surface detail.
@@ -83,6 +82,17 @@ inspection. Then write `REFERENCE.md` with the items below and show it for appro
 8. **Style notes:** the look (toon, stylized PBR, clay), edge softness, saturation, grade, bloom, depth of field.
 9. **What you cannot reproduce exactly,** and the substitute you propose for each (section 9 decides).
 
+For each difficult mechanism, add one row to the breakdown. Describe a measurement someone else could repeat in the same frame.
+
+| Moment in the supplied clip | Observation to record | Implementation to inspect | Comparison to make |
+|---|---|---|---|
+| First clear view of a solid entering another layer | Screen position of the overlap and which edge disappears | Nearest-hit selection, silhouette or layer masks | Flat IDs beside the reference crop immediately before and after entry |
+| Highlight, glow or apparent color change | Whether it follows the subject, light or screen as the camera moves | Local material mask, optical response or post pass | Freeze pose, vary the suspected driver, then compare the real time sequence |
+| Repeating movement, hold, cut or loop seam | Frame of onset, peak, release and any intentional discontinuity | Time mapping and the affected object's transform or field | Short strip centered on that transition with each render paired to its reference timestamp |
+| Background that changes with camera travel | Relative shift of one near and one far landmark | Camera projection, procedural coordinates and depth ordering | Overlay both paths through the shot and inspect where they diverge |
+
+Use rows matching the footage. Record uncertain causes as hypotheses. A single projected image can support several different depths, scales or lighting setups. Choose a consistent reconstruction and test it against another frame when available.
+
 ## 2. Goal and priorities
 
 - **Goal:** a real-time interpretation that reads as the same shot: the same beats at the same times, the same
@@ -123,9 +133,7 @@ frame with the measured patch colours painted on passes a colour-only check.
 
 ## 4. Scene construction
 
-- **Model:** SDF raymarching (start from `templates/raymarch-sdf.glsl`; borrow ground marching and fog from
-  `templates/terrain.glsl`). Scene contract `vec2 map(vec3 p)` returning `vec2(distance, materialId)`, with material
-  ids as named constants.
+- **Model.** Choose from the measured shot. For sculpted solids, start with `templates/raymarch-sdf.glsl` and its distance/material contract. For a graphic animation, separate the 2D masks and composite in layer order. For a landscape, follow a heightfield example and add solid or volume intersections as required. For a cloud shot, trace the density interval. State which intersections, fields or layers determine each major occlusion. Keep the final implementation single-pass.
 - **Scale:** the main subject's height is 1 unit unless the breakdown says otherwise. Place everything from the
   measured relative positions, then tune against the side-by-sides.
 - **Bounds and LOD:** a bounding volume around every object group; evaluate detailed SDFs only inside it, and blend
@@ -140,7 +148,7 @@ frame with the measured patch colours painted on passes a colour-only check.
 
 ## 5. Animation
 
-- Everything is computed analytically from `T = mod(iTime + START_TIME, LOOP)`: keyed speeds integrated exactly,
+- Use the reference timebase. For looping clips use `T = mod(iTime + START_TIME, LOOP)`. For one-shot clips clamp to the shot duration. Preserve intentional cuts, holds and fixed cameras. Where the subject calls for analytic motion, use keyed speeds integrated exactly,
   foot planting by phase, closed-form springs for secondary motion, ballistic arcs for jumps and props, and a camera
   follow solved in closed form. Evaluate the subject state once per pixel before marching, not inside `map`.
 - Key the timeline to the breakdown: speed keys (time, speed, cadence), event times (jumps, contacts, interactions),
@@ -151,14 +159,13 @@ frame with the measured patch colours painted on passes a colour-only check.
 
 ## 6. Camera, light and atmosphere
 
-- **Camera:** a damped follow with per-beat holds and offsets taken from the camera log (pull-backs, holds, rushes,
-  height changes), blended with smooth weights. Check framing numerically: subject height in frame and horizon line
+- **Camera:** take framing, holds, cuts and motion from the camera log. Use a damped follow for tracked shots that show that behavior. Check framing numerically: subject height in frame and horizon line
   against the reference at every timeline row.
 - **Light:** key direction and color from the breakdown, sky and bounce fill, soft shadows that never go black, AO.
 - **Sky, clouds, haze, god rays, particles:** as the breakdown shows. Cheap 2D or analytic versions are fine where
   the reference treats them as background (section 9).
 - **Pipeline:** linear lighting, exposure, a tonemapper chosen by comparing measured saturation with the reference,
-  `linearToSrgb`, vignette if the reference has one, and `ditherTPDF`. The loop seam is clean (fade or matched end
+  `linearToSrgb`, vignette if the reference has one, and `ditherTPDF`. For looping footage, the loop seam is clean (fade or matched end
   state).
 
 ## 7. Milestones

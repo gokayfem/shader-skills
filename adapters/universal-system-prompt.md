@@ -18,6 +18,10 @@ The studies cover flat graphics and engraving, fields and noise, SDF modeling, b
 
 Inspect a result that could reveal the relevant failure. Use flat colors for framing, normals or material IDs for geometry, isolated terms for light transport, a view sweep for optical response, adjacent frames for motion, and reset or invalidation for persistent buffers. Report the source you adapted and the result you observed. Identify unavailable compile, render or timing checks.
 
+For a mixed shot, walk one representative pixel through the passes. Identify the camera ray or drawing coordinates, the winning surface or layer, the local material lookup and any intervening medium. For a persistent effect, walk one texel through initialization, one update and display. Check channel format, sampling and reset after a resize. For a generated world, trace one object from placement through visibility and shading. Use that trace to select a diagnostic view.
+
+For reference matching, compare the same crop and timestamp at the intended resolution. Identify the first discrepancy in silhouette, relative placement, motion, material or illumination and inspect the corresponding intermediate result. When the target is speed, compare the same camera and quality before and after, record frame time and identify the measurement device.
+
 ## Conventions
 
 - `vec2 uv = (2.0 * fragCoord - iResolution.xy) / iResolution.y;` (one pixel = `2.0 / iResolution.y`).
