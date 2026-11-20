@@ -3,6 +3,22 @@
 Start with the row closest to the requested effect. Open the example source to inspect its inputs, coordinate system and pass structure. For a mixed scene, use one example for the main representation and borrow individual techniques from the others. Each row names source symbols and suggests a visible test to adapt to the brief.
 
 
+## Contents
+
+- [Graphic silhouettes and pattern](#graphic-silhouettes-and-pattern)
+- [Fields and surfaces](#fields-and-surfaces)
+- [Geometry and built structures](#geometry-and-built-structures)
+- [Landscape and plants](#landscape-and-plants)
+- [Ocean and air](#ocean-and-air)
+- [Underwater subjects and optics](#underwater-subjects-and-optics)
+- [Illumination](#illumination)
+- [Effects with persistent state](#effects-with-persistent-state)
+- [Finding the implementation behind a study](#finding-the-implementation-behind-a-study)
+- [Choosing library modules inside an example](#choosing-library-modules-inside-an-example)
+- [Joining examples in one deliverable](#joining-examples-in-one-deliverable)
+
+For an exact helper, run `python3 scripts/glsl_tools.py examples fresnelDielectric` from the skill directory. It prints the library signature, the first direct call in each matching source, and any debug legend or modes declared in that file. A multipass fragment can inherit additional views from the assembled display pass. For a helper used indirectly, search its name in `glsl/`, then look up the calling helper.
+
 ### Graphic silhouettes and pattern
 
 | Working source | Follow in the code | Review the adaptation |

@@ -154,6 +154,7 @@ python3 skills/shader-art-coding/scripts/glsl_tools.py check /tmp/shader-skills-
 ```
 
 What the commands do:
+- `examples fresnelDielectric` lists direct example calls by source line and shows the coastal-water shader’s debug modes, including mode 5 for Fresnel.
 - `search` ranks functions by name, summary and `@use` tags.
 - `bundle` resolves dependencies transitively and emits them in declaration order.
 - `check` lints the file and compiles it when `glslangValidator` is installed (`brew install glslang` or

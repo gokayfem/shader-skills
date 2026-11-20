@@ -17,6 +17,8 @@ The video is the spec. Nothing in this document describes its content; you deriv
 
 During the reference breakdown, use the skill’s [example guide](../skills/shader-art-coding/references/example-selection.md). For each distinct visible mechanism, record the closest source, what can be adapted to this single pass, and the frame or motion that will test it. Look beyond the main subject to its environment, materials, illumination, camera and transitions. Reuse these observations in the milestone comparisons.
 
+Use targeted search first. From the skill directory, run `python3 scripts/glsl_tools.py search <terms>` to find a helper, then `python3 scripts/glsl_tools.py examples <exactName>` for direct uses and available debug views. Open the matching source at the reported line. For host-side wiring, run `rg -n -w <symbol>` inside the relevant world’s source directory and follow its definition and consumers. For a visual brief without a known symbol, start with the example guide.
+
 ## 0. Quality bar (read first; overrides anything below that conflicts)
 
 This is a showcase piece. **Visual and motion quality outrank performance.** Report fps, but do not trade detail or

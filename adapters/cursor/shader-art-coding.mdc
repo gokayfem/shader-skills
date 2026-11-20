@@ -7,6 +7,7 @@ alwaysApply: false
 Copy this file into your project's `.cursor/rules/`. Install the skill too (Cursor reads `~/.cursor/skills`,
 `~/.claude/skills` and `.agents/skills`), so the rule can point at it.
 
+- Use `scripts/glsl_tools.py examples <exactName>` for direct shader helper calls and debug modes. Use `rg -n -w <symbol>` in the relevant source directory for host-side lookups.
 - Start with the skill’s `references/example-selection.md`. Open the closest working template or multipass study, then follow the relevant subject and library references. For full-world source use the checkout’s `worlds/README.md` and `worlds/catalog.md`.
 - Inspect the requested effect with a diagnostic from the selected study. For motion, sample multiple frames. For optimization, compare the same workload. Report which source informed the result and which checks ran.
 - Use the `shader-art-coding` skill: find functions with `scripts/glsl_tools.py search`, call library functions by

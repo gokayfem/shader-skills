@@ -3,6 +3,7 @@
 
 Commands (run from anywhere):
   search TERM...        find library functions by name, summary or @use tags ("petal", "noise terrain")
+  examples NAME         locate direct calls in templates and multipass sources, with available debug views
   bundle SHADER [-o F]  inline exactly the library functions SHADER uses -> paste-ready Shadertoy code
   check [SHADER...]     lint shaders (and compile with glslangValidator if installed); no args = check the skill
   index [--check]       regenerate references/library-index.md (or fail if it is stale)
@@ -617,11 +618,44 @@ def cmd_search(lib: Library, terms: list[str]) -> int:
     return 0
 
 
+def cmd_examples(lib: Library, name: str) -> int:
+    functions = [item for item in lib.by_name.get(name, []) if item.kind == "fn"]
+    if not functions:
+        print(f"Unknown library function {name!r}. Use search to find its exact name.", file=sys.stderr)
+        return 1
+    print(f"glsl/{functions[0].module}.glsl: " + " / ".join(item.signature for item in functions))
+    call = re.compile(rf"\b{re.escape(name)}\s*\(")
+    matches = 0
+    paths = sorted(TEMPLATE_DIR.glob("*.glsl")) + sorted((SKILL_DIR / "multipass").glob("*/*.glsl"))
+    for path in paths:
+        source = path.read_text(encoding="utf-8")
+        # Keep newlines so locations still refer to the original source.
+        code = re.sub(r"/\*.*?\*/|//[^\n]*", lambda m: " " + "\n" * m[0].count("\n"), source, flags=re.S)
+        first = call.search(code)
+        if not first or any(it.kind == "fn" and it.name == name for it in parse(source)):
+            continue
+        line = code.count("\n", 0, first.start()) + 1
+        print(f"{path.relative_to(SKILL_DIR)}:{line}")
+        legend = re.search(r"^\s*#define\s+DEBUG_MODE\s+\d+[^\n]*?//([^\n]+)", source, re.M)
+        if legend:
+            print("    DEBUG_MODE: " + legend[1].strip())
+        else:
+            modes = sorted({int(m) for m in re.findall(r"#(?:el)?if\s+DEBUG_MODE\s*==\s*(\d+)", code)})
+            if modes:
+                print("    DEBUG_MODE: " + ", ".join(map(str, modes)))
+        matches += 1
+    if not matches:
+        print("No direct calls in the shipped template or multipass sources.")
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     sub = ap.add_subparsers(dest="cmd", required=True)
     s = sub.add_parser("search")
     s.add_argument("terms", nargs="+")
+    e = sub.add_parser("examples")
+    e.add_argument("name", help="exact library function name")
     b = sub.add_parser("bundle")
     b.add_argument("shader")
     b.add_argument("-o", "--output")
@@ -636,6 +670,8 @@ def main(argv: list[str] | None = None) -> int:
     lib = Library()
     if args.cmd == "search":
         return cmd_search(lib, args.terms)
+    if args.cmd == "examples":
+        return cmd_examples(lib, args.name)
     if args.cmd == "bundle":
         out = bundle_source(lib, Path(args.shader).read_text(encoding="utf-8"), keep_docs=not args.no_docs)
         if args.output:

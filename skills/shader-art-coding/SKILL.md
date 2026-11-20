@@ -35,6 +35,7 @@ can produce it, build it in inspectable stages, and verify each stage with a deb
    and a visible test of its behavior.
 3. **Assemble from the library.** Find building blocks with `python3 scripts/glsl_tools.py search <words>` or
    `references/library-index.md`, and call them by name. Do not paste or re-derive library code; it is tested.
+   Run `python3 scripts/glsl_tools.py examples <exactName>` to locate direct calls and debug views. Use `rg -n -w <symbol>` within the relevant world directory for host-side callers.
 4. **First image fast.** Coordinates, background, one primitive, one light. Then add the debug views.
 5. **Refine in order:** proportions, composition, material separation, lighting, atmosphere, color, antialiasing,
    performance.
